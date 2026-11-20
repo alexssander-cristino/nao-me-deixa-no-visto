@@ -163,3 +163,18 @@ A leitura deste relatório e dos módulos atuais confirmou que o jogo ainda usa:
 
 ### Estado da operação
 **A operação permanece aberta.** A integração de portas e gavetas é um avanço funcional, não a conclusão absoluta solicitada. CI, validação visual real no Windows e benchmark físico da RTX 3050 ainda são critérios bloqueadores.
+
+
+### Resultado de validação automatizada após a integração
+
+Workflow: https://github.com/alexssander-cristino/nao-me-deixa-no-visto/actions/runs/44824652262  
+Commit de código testado: `14f1e96d94d65d20fbd3f5e2d1df030c43d0b97d`
+
+- Linux: **42 testes aprovados, 0 falhas**; pacote Electron Linux gerado.
+- Windows: **42 testes aprovados, 0 falhas**; build portátil Windows aprovado.
+- Artefatos `game-build-Windows` e `game-build-Linux` publicados pelo workflow.
+- Execução concluída com **success**.
+- O primeiro CI da integração encontrou apenas uma asserção antiga que esperava `schema:3`; a expectativa foi atualizada para o payload `schema:4` com snapshot de mecanismos. Nenhum teste foi removido.
+- Essa aprovação comprova testes automatizados e empacotamento, não comprova playtest visual no desktop nem benchmark de hardware.
+
+Classificação atualizada: **testes automatizados — CONCLUÍDO** para o commit acima; **build portátil Windows — CONCLUÍDO** em CI; **teste manual Windows e RTX 3050 — NÃO VALIDADO**.
