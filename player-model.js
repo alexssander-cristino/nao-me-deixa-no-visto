@@ -101,7 +101,7 @@
       leg.knee.rotation.x=moving?Math.max(0,-swing*(i===0?1:-1))*(run?.85:.48):0;
       leg.ankle.rotation.x=moving?-leg.hip.rotation.x*.25:0;
     });
-    body.rotation.y=Number(state.yaw)||0;
+    body.rotation.y=(Number(state.yaw)||0)+Math.PI;
     body.position.set(Number(state.x)||0,0,Number(state.z)||0);
     body.visible=state.visible!==false;
   }
