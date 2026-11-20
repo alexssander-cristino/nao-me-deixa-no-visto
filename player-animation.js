@@ -47,7 +47,25 @@
       sphere(foot,shoe,0,-.015,-.075,.085,.065,.16);
       return {hip,knee,foot,side};
     });
-    avatar.userData={torso,arms,legs,phase:0,model:"player-articulated-procedural-v1"};
+    // Esqueleto hierárquico do jogador; os segmentos visuais existentes são ligados aos ossos.
+    const bone=(name,parent,position)=>{const b=new THREE.Bone();b.name=name;b.position.set(position[0],position[1],position[2]);if(parent)parent.add(b);return b;};
+    const rootBone=bone("root",null,[0,0,0]);
+    const pelvisBone=bone("pelvis",rootBone,[0,.76,0]);
+    const spineBone=bone("spine",pelvisBone,[0,.20,0]);
+    torso.position.set(0,0,0);spineBone.add(torso);
+    const shoulderBones=arms.map((arm,index)=>{
+      const side=arm.side,b=bone(side<0?"shoulder.L":"shoulder.R",spineBone,[side*.29,.29,-.055]);
+      arm.shoulder.position.set(0,0,0);b.add(arm.shoulder);
+      return {...arm,shoulder:b};
+    });
+    const hipBones=legs.map((leg,index)=>{
+      const side=leg.side,b=bone(side<0?"hip.L":"hip.R",pelvisBone,[side*.135,-.2,0]);
+      leg.hip.position.set(0,0,0);b.add(leg.hip);
+      return {...leg,hip:b};
+    });
+    const bones=[rootBone,pelvisBone,spineBone,...shoulderBones.map(v=>v.shoulder),...hipBones.map(v=>v.hip)];
+    const skeleton=new THREE.Skeleton(bones);skeleton.calculateInverses();rootBone.updateMatrixWorld(true);avatar.add(rootBone);
+    avatar.userData={torso:spineBone,arms:shoulderBones,legs:hipBones,phase:0,model:"player-skeletal-v2",rig:{root:rootBone,pelvis:pelvisBone,spine:spineBone,shoulders:shoulderBones.map(v=>v.shoulder),hips:hipBones.map(v=>v.hip),bones,skeleton}};
     return avatar;
   }
   function update(avatar,player,dt){
@@ -60,7 +78,7 @@
     avatar.position.set(player.x||0,player.feetY||0,player.z||0);
     avatar.rotation.y=Number.isFinite(player.y)?player.y:0;
     avatar.visible=!player.hid;
-    data.torso.position.y=crouched?.76:.96;
+    data.torso.position.y=crouched?0:.20;
     data.torso.rotation.x=crouched?-.12:Math.sin(data.phase*2)*.012*amount;
     data.torso.position.y+=(moving?Math.abs(Math.sin(data.phase*2))*(running?.018:.008):0);
     data.legs.forEach((leg,index)=>{
