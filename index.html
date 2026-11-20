@@ -27,7 +27,7 @@ label{display:flex;gap:10px;align-items:center;justify-content:space-between;wid
 <div id="hud"><div class="a" id="obj"></div><div class="a" style="left:16px;bottom:18px;font-size:12px">Fôlego<div class="bar"><i id="bs" style="background:#c9b27a"></i></div><div style="margin-top:6px">Lanterna [F]</div><div class="bar"><i id="bb" style="background:#e8d36a"></i></div><div id="lightState">LIGADA · 100%</div></div><div id="reticle"></div><div class="a" id="pr"></div><div class="a" id="sb"></div><div class="a" id="nt"></div></div>
 <div class="ov on" id="mn"><h1>NÃO ME DEIXA NO VISTO</h1><p>Anderson acorda às 03h17 numa casa abandonada. Bateria: 2%. 47 chamadas perdidas. Valdirene já sabe que ele acordou.</p><button onclick="newG()">Novo jogo</button><button id="ct" onclick="cont()">Continuar</button><button onclick="cfg(1)">Configurações</button><p style="font-size:14px;opacity:.7">WASD mover · Shift correr · Ctrl agachar/silenciar · F lanterna · E interagir · Mouse olhar · Esc pausa<br>Feche as portas atrás de você: ela demora a derrubá-las. Use fones de ouvido.</p></div>
 <div class="ov" id="pa"><h1>PAUSADO</h1><button onclick="resume()">Continuar</button><button onclick="cfg(1)">Configurações</button><button onclick="menu()">Menu principal</button></div>
-<div class="ov" id="cf"><h1>CONFIGURAÇÕES</h1><label>Volume <input type="range" min="0" max="1" step=".05" id="r1" oninput="S.vol=+this.value;if(mg)mg.gain.value=S.vol;sv()"></label><label>Sensibilidade <span><input type="range" min=".2" max="2.5" step=".05" id="r2" oninput="S.sens=+this.value;$('sensVal').textContent=this.value;sv()"><output id="sensVal">1.00</output></span></label><label>Brilho <input type="range" min=".8" max="2" step=".1" id="r3" oninput="S.bri=+this.value;ap();sv()"></label><label>Dificuldade <select id="diff" onchange="S.diff=this.value;sv()"><option value="easy">Tranquilo</option><option value="normal">Normal</option><option value="hard">Sem misericórdia</option></select></label><button onclick="cfg(0)">Voltar</button></div>
+<div class="ov" id="cf"><h1>CONFIGURAÇÕES</h1><label>Volume <input type="range" min="0" max="1" step=".05" id="r1" oninput="S.vol=+this.value;if(mg)mg.gain.value=S.vol;sv()"></label><label>Sensibilidade <span><input type="range" min=".2" max="2.5" step=".05" id="r2" oninput="S.sens=+this.value;$('sensVal').textContent=this.value;sv()"><output id="sensVal">1.00</output></span></label><label>Brilho <input type="range" min=".8" max="2" step=".1" id="r3" oninput="S.bri=+this.value;ap();sv()"></label><label>Qualidade gráfica <select id="quality"><option value="low">Desempenho</option><option value="medium">Equilibrada</option><option value="high">Alta</option></select></label><label>Campo de visão <span><input id="fov" type="range" min="65" max="100" step="1"><output id="fovVal">72°</output></span></label><label>Dificuldade <select id="diff" onchange="S.diff=this.value;sv()"><option value="easy">Tranquilo</option><option value="normal">Normal</option><option value="hard">Sem misericórdia</option></select></label><button onclick="cfg(0)">Voltar</button></div>
 <div class="ov" id="go"><h1>VALDIRENE TE ENCONTROU</h1><p id="gt"></p><button onclick="retry()">Tentar de novo</button><button onclick="menu()">Menu principal</button></div>
 <div class="ov" id="en"><h1 id="et" style="font-size:clamp(22px,4.5vw,40px)"></h1><p id="ep"></p><button onclick="menu()">Menu principal</button></div>
 <div class="ov" id="al"><h1 style="font-size:32px">O ALTAR</h1><p>Valdirene espera de véu, a dois metros. O celular vibra: a mensagem de 13 anos atrás, ainda sem resposta.</p><button onclick="alt(1)">Responder a mensagem</button><button onclick="alt(0)">Dizer "sim" e casar</button></div>
@@ -252,4 +252,132 @@ if(e.code=='KeyF'&&!e.repeat&&!paused&&!modal){pl.on=pl.bat>0?!pl.on:0;th(pl.on?
 if(e.code=='Escape')pause();if(e.code=='KeyP')paused?resume():pause()});
 addEventListener('keyup',e=>keys[e.code]=0);addEventListener('blur',()=>keys={});
 let last=0;(function loop(t){requestAnimationFrame(loop);const dt=Math.min((t-last)/1000||0,.05);last=t;if(state=='play'&&!paused&&!modal)upd(dt);rd.render(scene,camera)})(0);
+
+/* PATCH 1.2 — atmosfera, qualidade escalável e controles refinados */
+S.quality = S.quality || "high";
+S.fov = Math.max(65, Math.min(100, Number(S.fov) || 76));
+let dustField = null;
+let dustVelocity = null;
+let stepClock = 0;
+let lastStepRun = false;
+
+function applyGraphics(){
+  if(!rd || !spot) return;
+  const q = S.quality || "high";
+  const config = q === "low"
+    ? {pixel:1, shadows:false, map:512, particles:55, fog:0.92}
+    : q === "medium"
+      ? {pixel:1.25, shadows:true, map:768, particles:145, fog:1}
+      : {pixel:1.65, shadows:true, map:1024, particles:260, fog:1.06};
+  rd.setPixelRatio(Math.min(window.devicePixelRatio || 1, config.pixel));
+  rd.shadowMap.enabled = config.shadows;
+  spot.castShadow = config.shadows;
+  spot.shadow.mapSize.set(config.map, config.map);
+  spot.shadow.needsUpdate = true;
+  if(scene && scene.fog) scene.fog.density = (lv===1?.052:lv===4?.06:lv===2?.068:.078) * config.fog;
+  const qEl = $("quality"), fEl = $("fov"), fv = $("fovVal");
+  if(qEl) qEl.value = q;
+  if(fEl) fEl.value = String(S.fov);
+  if(fv) fv.textContent = Math.round(S.fov) + "°";
+}
+function createDust(){
+  if(!scene || !THREE) return;
+  if(dustField && dustField.parent) dustField.parent.remove(dustField);
+  const q = S.quality || "high";
+  const count = q==="low" ? 55 : q==="medium" ? 145 : 260;
+  const positions = new Float32Array(count*3);
+  dustVelocity = new Float32Array(count);
+  const width = Math.max(12, cols*4), depth = Math.max(12, rows*4);
+  for(let i=0;i<count;i++){
+    positions[i*3] = (Math.random()-.5)*width;
+    positions[i*3+1] = .25+Math.random()*Math.max(1,L[lv].h-.5);
+    positions[i*3+2] = (Math.random()-.5)*depth;
+    dustVelocity[i] = .08+Math.random()*.2;
+  }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute("position",new THREE.BufferAttribute(positions,3));
+  const mat = new THREE.PointsMaterial({
+    color:0xc9bba5, size:q==="high"?.026:.019,
+    transparent:true, opacity:q==="high"?.28:.19,
+    depthWrite:false, sizeAttenuation:true
+  });
+  dustField = new THREE.Points(geo,mat);
+  dustField.frustumCulled = false;
+  scene.add(dustField);
+}
+function animateDust(dt){
+  if(!dustField || !dustField.geometry) return;
+  const a = dustField.geometry.attributes.position;
+  for(let i=0;i<a.count;i++){
+    let y = a.getY(i) + dustVelocity[i]*dt;
+    if(y > L[lv].h-.15) y = .18;
+    a.setY(i,y);
+    a.setX(i,a.getX(i)+Math.sin(performance.now()*.00022+i)*dt*.012);
+  }
+  a.needsUpdate = true;
+  dustField.position.x = pl.x*.12;
+  dustField.position.z = pl.z*.12;
+}
+const __buildAtmosphere = build;
+build = function(n){
+  __buildAtmosphere(n);
+  createDust();
+  applyGraphics();
+};
+const __updateAtmosphere = upd;
+upd = function(dt){
+  __updateAtmosphere(dt);
+  animateDust(dt);
+  const moving = Math.abs(pl.mx||0)+Math.abs(pl.mz||0)>.35;
+  if(moving){
+    stepClock -= dt;
+    const interval = pl.run ? .34 : pl.crouch ? .72 : .49;
+    if(stepClock<=0){
+      stepClock=interval;
+      const freq = lv===0 ? 115 : lv===3 ? 78 : lv===4 ? 92 : 135;
+      const amp = pl.run ? .095 : pl.crouch ? .025 : .055;
+      at(pl.x,pl.z,gain=>{
+        nz(.075,freq+(Math.random()-.5)*35,amp,gain,lv===0?"lowpass":"bandpass");
+      });
+      if(pl.run!==lastStepRun) th(pl.run?58:92,.09,.045);
+    }
+  } else stepClock=0;
+  lastStepRun=!!pl.run;
+};
+const __cfgAtmosphere = cfg;
+cfg = function(open){
+  __cfgAtmosphere(open);
+  if(open){
+    $("quality").value=S.quality||"high";
+    $("fov").value=String(S.fov);
+    $("fovVal").textContent=Math.round(S.fov)+"°";
+  }
+};
+$("quality").addEventListener("change",e=>{
+  S.quality=e.target.value;
+  applyGraphics();
+  createDust();
+  sv();
+});
+$("fov").addEventListener("input",e=>{
+  S.fov=Math.max(65,Math.min(100,Number(e.target.value)||76));
+  $("fovVal").textContent=Math.round(S.fov)+"°";
+  if(camera){camera.fov=S.fov;camera.updateProjectionMatrix()}
+  sv();
+});
+const __resumeAtmosphere = resume;
+resume = function(){
+  __resumeAtmosphere();
+  if(camera){camera.fov=S.fov;camera.updateProjectionMatrix()}
+};
+const __newGameAtmosphere = newG;
+newG = function(){
+  __newGameAtmosphere();
+  applyGraphics();
+};
+camera.fov=S.fov;
+camera.updateProjectionMatrix();
+applyGraphics();
+createDust();
+
 </script></body></html>
