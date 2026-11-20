@@ -463,3 +463,11 @@ test("Valdirene opens an unlocked wardrobe when searching for a hidden player", 
   assert.match(html, /enemy-cabinet-search/);
   assert.match(html, /mechanismSystem\.toggle\(door\.id,mechanismInventory\)/);
 });
+
+test("continuing the active slot hydrates saved keys, mechanisms and player state", () => {
+  const html = read("index.html");
+  assert.match(html, /SG\.keys=Array\.isArray\(p\.keys\)\?p\.keys:\[\]/);
+  assert.match(html, /SG\.mechanisms=Array\.isArray\(p\.mechanisms\)\?p\.mechanisms:\[\]/);
+  assert.match(html, /SG\.playerState=\{feetY:/);
+  assert.match(html, /SG\.settings=p\.settings/);
+});
