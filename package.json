@@ -1,0 +1,46 @@
+{
+  "name": "ela-nao-aceita-o-fim",
+  "productName": "Ela Não Aceita o Fim",
+  "version": "1.0.0",
+  "description": "Jogo de terror em primeira pessoa com Valdirene",
+  "main": "main.cjs",
+  "scripts": {
+    "start": "electron-forge start",
+    "package": "electron-forge package",
+    "make": "electron-forge make"
+  },
+  "dependencies": {
+    "three": "0.128.0"
+  },
+  "devDependencies": {
+    "@electron-forge/cli": "^7.10.0",
+    "@electron-forge/maker-squirrel": "^7.10.0",
+    "@electron-forge/maker-zip": "^7.10.0",
+    "electron": "^39.0.0"
+  },
+  "config": {
+    "forge": {
+      "packagerConfig": {
+        "asar": true,
+        "name": "ElaNaoAceitaOFim"
+      },
+      "makers": [
+        {
+          "name": "@electron-forge/maker-squirrel",
+          "config": {
+            "name": "ela_nao_aceita_o_fim",
+            "authors": "Desenvolvedor",
+            "description": "Ela Não Aceita o Fim"
+          }
+        },
+        {
+          "name": "@electron-forge/maker-zip",
+          "platforms": [
+            "win32"
+          ],
+          "config": {}
+        }
+      ]
+    }
+  }
+}
