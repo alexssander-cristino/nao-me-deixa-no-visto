@@ -413,3 +413,19 @@ test("mission progression integrates collectible keys, a locked cabinet and a po
   assert.match(html, /keys:keyInventory\.serialize\(\)/);
   assert.match(html, /keyInventory\.restore\(/);
 });
+
+test("Valdirene model exposes a named hierarchical skeleton used by animated limbs", () => {
+  require("../models.js");
+  const THREE = require("three");
+  const model = globalThis.GameModels.createValdirene(THREE, false);
+  const rig = model.userData.rig;
+  assert.equal(model.userData.model, "valdirene-procedural-v3");
+  assert.ok(rig.skeleton instanceof THREE.Skeleton);
+  assert.equal(rig.spine.parent, rig.pelvis);
+  assert.equal(rig.neck.parent, rig.spine);
+  assert.equal(rig.head.parent, rig.neck);
+  assert.equal(rig.shoulders.length, 2);
+  assert.equal(rig.hips.length, 2);
+  assert.equal(model.arms[0].userData.fore.parent.parent, model.arms[0]);
+  assert.equal(model.legs[0].userData.knee.parent.parent, model.legs[0]);
+});
