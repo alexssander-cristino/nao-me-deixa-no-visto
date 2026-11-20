@@ -74,6 +74,30 @@ test("Valdirene animation blends patrol, search and chase poses without teleport
   assert.ok(Number.isFinite(model.head.rotation.z));
 });
 
+test("loading manager reports weighted progress only after real tasks complete", async () => {
+  require("../loading-manager.js");
+  const manager = new globalThis.GameLoadingManager.LoadingManager();
+  const completed = [];
+  const progress = [];
+  const result = await manager.run([
+    { label: "scene", weight: 3, run: async () => { completed.push("scene"); } },
+    { label: "compile", weight: 1, run: async () => { completed.push("compile"); } }
+  ], value => progress.push(value));
+  assert.deepEqual(completed, ["scene", "compile"]);
+  assert.equal(result.ok, true);
+  assert.equal(result.completed, 2);
+  assert.deepEqual(progress.map(value => value.percent), [0, 75, 100, 100]);
+  assert.equal(progress.at(-1).label, "Pronto");
+});
+
+test("loading manager rejects invalid tasks and always releases its running lock", async () => {
+  require("../loading-manager.js");
+  const manager = new globalThis.GameLoadingManager.LoadingManager();
+  await assert.rejects(manager.run([{ label: "broken", run: () => { throw new Error("asset failed"); } }]), /asset failed/);
+  assert.equal(manager.running, false);
+  await assert.rejects(manager.run([{}]), /Tarefa de carregamento inválida/);
+});
+
 test("controller accelerates smoothly and respects the world collider", () => {
   require("../physics.js");
   require("../controller.js");
