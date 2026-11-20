@@ -39,6 +39,7 @@ label{display:flex;gap:10px;align-items:center;justify-content:space-between;wid
 <script src="./physics.js"></script>
 <script src="./controller.js"></script>
 <script src="./models.js"></script>
+<script src="./player-model.js"></script>
 <script>
 const $=i=>document.getElementById(i),R=Math.random,P=Math.PI,pk=a=>a[0|R()*a.length];
 let S={vol:.7,sens:.85,bri:1,diff:'normal',quality:'high',fov:76};
@@ -628,6 +629,29 @@ upd = function(dt){
       time:pl.run?.7:.42
     };
   }
+};
+
+/* PLAYER 3D — rig visual articulado separado do colisor e da câmera FPS. */
+let playerVisual=null;
+const __buildWithPlayerVisual=build;
+build=function(n){
+  __buildWithPlayerVisual(n);
+  if(playerVisual&&playerVisual.parent)playerVisual.parent.remove(playerVisual);
+  playerVisual=GamePlayerModel.create(THREE,{firstPerson:true});
+  playerVisual.name="PlayerBody";
+  scene.add(playerVisual);
+  GamePlayerModel.update(playerVisual,{x:pl.x,z:pl.z,yaw:pl.y,visible:false},0);
+};
+const __updateWithPlayerVisual=upd;
+upd=function(dt){
+  __updateWithPlayerVisual(dt);
+  if(!playerVisual)return;
+  const speed=Math.hypot(pl.mx||0,pl.mz||0);
+  GamePlayerModel.update(playerVisual,{
+    x:pl.x,z:pl.z,yaw:pl.y,speed,
+    running:!!pl.run,crouching:!!pl.crouch,
+    visible:state==="play"&&!pl.hid
+  },dt);
 };
 
 </script></body></html>
