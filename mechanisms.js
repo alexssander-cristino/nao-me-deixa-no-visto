@@ -55,8 +55,11 @@
         const item=this.get(record.id);if(!item){ignored++;continue;}
         const progress=Number(record.progress),target=Number(record.target);
         if(!Number.isFinite(progress)||!Number.isFinite(target)){ignored++;continue;}
-        item.progress=clamp(progress,0,1);item.target=target>=.5?1:0;
-        item.locked=!!record.locked;item.usedKey=!!record.usedKey;item.enabled=record.enabled!==false;
+        item.usedKey=record.usedKey===true;
+        item.locked=item.key?(record.locked===true||record.locked===false&&!item.usedKey):record.locked===true;
+        item.progress=item.locked?0:clamp(progress,0,1);
+        item.target=item.locked?0:(target>=.5?1:0);
+        item.enabled=record.enabled!==false;
         this._apply(item);restored++;
       }
       return {ok:true,restored,ignored};
