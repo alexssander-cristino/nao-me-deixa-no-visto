@@ -115,7 +115,7 @@ test("gameplay wires audible investigation and an animated lethal Valdirene atta
 
 test("manual saves include player state, collected progress and relevant settings", () => {
   const html = read("index.html");
-  assert.match(html, /schema:3,chapter:lv/);
+  assert.match(html, /schema:4,mechanisms:mechanismSystem\.serialize\(\),chapter:lv/);
   assert.match(html, /feetY:pl\.feetY\|\|0/);
   assert.match(html, /difficulty:S\.diff,quality:S\.quality/);
   assert.match(html, /openDoors:Object\.keys\(doors\)\.filter/);
