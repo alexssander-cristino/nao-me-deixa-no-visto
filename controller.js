@@ -36,7 +36,7 @@
       const nextHeight=approach(player.capsuleHeight||this.baseHeight,targetHeight,14,delta);
       const canStand=moveCharacter.canFit?moveCharacter.canFit(player,{radius:this.radius,height:nextHeight}):true;
       player.crouch=wantsCrouch||(!canStand&&nextHeight>this.crouchHeight+.04);
-      player.capsuleHeight=player.crouch?Math.min(nextHeight,this.crouchHeight):nextHeight;
+      player.capsuleHeight=(!wantsCrouch&&!canStand)?Math.min(nextHeight,this.crouchHeight):nextHeight;
       const hasInput=!!(forward||strafe)&&!player.hid;
       player.run=0;
       let maxSpeed=player.crouch?this.crouchSpeed:this.walkSpeed;
