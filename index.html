@@ -332,7 +332,7 @@ if(k==0)flick=1;
 else if(k==1){const o=Object.values(doors).filter(d=>d.o&&Math.hypot(d.x-pl.x,d.z-pl.z)<16);if(o.length)odoor(pk(o),0);else flick=.8}
 else if(k==2){for(let i=0;i<6;i++)setTimeout(()=>{if(state=='play'&&!paused){const a=pl.y+i*.12,r=5-i*.7;at(pl.x+Math.sin(a)*r,pl.z+Math.cos(a)*r,q=>nz(.1,420,.9,q))}},i*480)}
 else if(k==3)appar();
-else if(k==4){[0,250,500,750].forEach(t=>setTimeout(()=>th(880,.15,.25),t));setTimeout(()=>state=='play'&&!paused&&say('Alô? Amor? Já comeu?'),2600)}
+else if(k==4){[0,250,500,750].forEach(t=>setTimeout(()=>{if(state==='play'&&!paused)th(880,.15,.25)},t));setTimeout(()=>state=='play'&&!paused&&say('Alô? Amor? Já comeu?'),2600)}
 else{at(pl.x+Math.cos(pl.y)*.4,pl.z-Math.sin(pl.y)*.4,q=>nz(1.2,3500,.6,q,'bandpass'));say('Amor... eu tô aqui...')}}
 // jogo
 function animateInteractions(dt){for(let i=interactionTweens.length-1;i>=0;i--){const tween=interactionTweens[i];tween.elapsed+=dt;const p=Math.min(1,tween.elapsed/tween.duration),ease=1-Math.pow(1-p,3);tween.object.position.y=tween.baseY+.42*ease;tween.object.scale.setScalar(Math.max(.001,1-.92*ease));tween.object.traverse(mesh=>{if(!mesh.isMesh)return;const materials=Array.isArray(mesh.material)?mesh.material:[mesh.material];materials.forEach(material=>{if(material&&material.opacity!==undefined){material.opacity=1-p;material.transparent=true}})});if(p>=1){scene.remove(tween.object);tween.object.traverse(mesh=>{if(mesh.geometry)mesh.geometry.dispose();if(mesh.material)(Array.isArray(mesh.material)?mesh.material:[mesh.material]).forEach(material=>material&&material.dispose&&material.dispose())});interactionTweens.splice(i,1)}}}
@@ -390,7 +390,7 @@ spot.visible=pl.on&&pl.bat>0;flashlightFill.visible=spot.visible;beam.visible=sp
 pls.forEach((p,i)=>{if(!p.u){const c=rc(0);p.u=c}p.position.set(p.u[1]*4,2.6,p.u[0]*4);p.intensity=.35+R()*.3});
 updateScare(dt);
 const dist=Math.hypot(V.x-pl.x,V.z-pl.z),dg=V.st=='dorm'?0:Math.max(0,1-dist/16)*(V.st=='chase'?1:.55);
-$('dg').style.opacity=dg;if(dg>.12){hb-=dt;if(hb<=0){hb=1.15-dg*.75;th(60,.15,.5*dg+.1);setTimeout(()=>th(50,.15,.35*dg),170)}}
+$('dg').style.opacity=dg;if(dg>.12){hb-=dt;if(hb<=0){hb=1.15-dg*.75;th(60,.15,.5*dg+.1);setTimeout(()=>{if(state==='play'&&!paused)th(50,.15,.35*dg)},170)}}
 /* Removido jitter aleatório aplicado à câmera a cada frame: ele causava microteletransportes visuais. */
 $('bs').style.width=pl.st+'%';$('bb').style.width=pl.bat+'%';$('lightState').textContent=(pl.on&&pl.bat>0?'LIGADA':'DESLIGADA')+' · '+Math.ceil(pl.bat)+'%';$('lightState').style.color=pl.bat<15?'#e45a50':'#d8cfc4';$('obj').textContent=(lv+1)+'. '+L[lv].n+': '+pl.got+'/'+pl.need+' '+L[lv].o+(sec?'  ·  ✦':'')}
 function rs(){rd.setSize(innerWidth,innerHeight);camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix()}
