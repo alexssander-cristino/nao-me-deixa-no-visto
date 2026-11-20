@@ -297,7 +297,31 @@ $('bs').style.width=pl.st+'%';$('bb').style.width=pl.bat+'%';$('lightState').tex
 function rs(){rd.setSize(innerWidth,innerHeight);camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix()}
 cv=$('cv');rd=new THREE.WebGLRenderer({canvas:cv,antialias:true,powerPreference:'high-performance'});rd.setPixelRatio(Math.min(devicePixelRatio,1.75));rd.shadowMap.enabled=true;rd.shadowMap.type=THREE.PCFSoftShadowMap;rd.outputEncoding=THREE.sRGBEncoding;rd.toneMapping=THREE.ACESFilmicToneMapping;rd.toneMappingExposure=1.15;
 camera=new THREE.PerspectiveCamera(72,1,.1,70);camera.rotation.order='YXZ';
-spot=new THREE.SpotLight(0xffe7c2,3.1,30,.29,.72,1.25);spot.position.set(0,-.08,-.12);spot.castShadow=true;spot.shadow.mapSize.set(1024,1024);spot.shadow.camera.near=.15;spot.shadow.camera.far=32;spot.shadow.bias=-.00025;camera.add(spot);spot.target.position.set(0,-.12,-1);camera.add(spot.target);const flashlightFill=new THREE.PointLight(0xffdfb0,.35,4,2);flashlightFill.position.set(0,-.12,-.25);camera.add(flashlightFill);const beamMat=new THREE.MeshBasicMaterial({color:0xffedcf,transparent:true,opacity:.055,depthWrite:false,side:THREE.DoubleSide});const beam=new THREE.Mesh(new THREE.ConeGeometry(2.35,17,32,1,true),beamMat);beam.rotation.x=-P/2;beam.position.set(0,-.02,-8.6);camera.add(beam);const flashlightModel=new THREE.Group();const flashlightBody=new THREE.Mesh(new THREE.CylinderGeometry(.055,.075,.34,12),new THREE.MeshLambertMaterial({color:0x17191c,metalness:.5}));flashlightBody.rotation.x=-P/2;flashlightModel.add(flashlightBody);const flashlightLens=new THREE.Mesh(new THREE.CircleGeometry(.052,16),new THREE.MeshBasicMaterial({color:0xffedc7}));flashlightLens.position.z=-.176;flashlightLens.rotation.y=P;flashlightModel.add(flashlightLens);flashlightModel.position.set(.32,-.28,-.48);flashlightModel.rotation.x=-.08;camera.add(flashlightModel);
+spot=new THREE.SpotLight(0xffe7c2,3.1,30,.29,.72,1.25);spot.position.set(0,-.08,-.12);spot.castShadow=true;spot.shadow.mapSize.set(1024,1024);spot.shadow.camera.near=.15;spot.shadow.camera.far=32;spot.shadow.bias=-.00025;camera.add(spot);spot.target.position.set(0,-.12,-1);camera.add(spot.target);const flashlightFill=new THREE.PointLight(0xffdfb0,.35,4,2);flashlightFill.position.set(0,-.12,-.25);camera.add(flashlightFill);const beamMat=new THREE.MeshBasicMaterial({color:0xffedcf,transparent:true,opacity:.055,depthWrite:false,side:THREE.DoubleSide});const beam=new THREE.Mesh(new THREE.ConeGeometry(2.35,17,32,1,true),beamMat);beam.rotation.x=-P/2;beam.position.set(0,-.02,-8.6);camera.add(beam);const flashlightModel=new THREE.Group();
+const flashlightMetal=new THREE.MeshStandardMaterial({color:0x202327,metalness:.78,roughness:.34});
+const flashlightRubber=new THREE.MeshStandardMaterial({color:0x090b0d,metalness:.08,roughness:.9});
+const flashlightTrim=new THREE.MeshStandardMaterial({color:0x777b7c,metalness:.86,roughness:.26});
+const flashlightBody=new THREE.Mesh(new THREE.CylinderGeometry(.052,.061,.34,24,1),flashlightMetal);
+flashlightBody.rotation.x=-P/2;flashlightModel.add(flashlightBody);
+const flashlightHead=new THREE.Mesh(new THREE.CylinderGeometry(.078,.058,.09,28,1),flashlightMetal);
+flashlightHead.rotation.x=-P/2;flashlightHead.position.z=-.19;flashlightModel.add(flashlightHead);
+const flashlightTail=new THREE.Mesh(new THREE.CylinderGeometry(.052,.06,.045,24),flashlightTrim);
+flashlightTail.rotation.x=-P/2;flashlightTail.position.z=.19;flashlightModel.add(flashlightTail);
+for(let i=0;i<7;i++){
+ const ring=new THREE.Mesh(new THREE.TorusGeometry(.056,.006,8,24),i%2?flashlightRubber:flashlightTrim);
+ ring.position.z=.105-i*.035;flashlightModel.add(ring);
+}
+const bezel=new THREE.Mesh(new THREE.TorusGeometry(.071,.009,10,32),flashlightTrim);
+bezel.position.z=-.238;flashlightModel.add(bezel);
+const reflector=new THREE.Mesh(new THREE.CircleGeometry(.064,32),new THREE.MeshStandardMaterial({color:0x9b9c91,metalness:.92,roughness:.2}));
+reflector.position.z=-.236;flashlightModel.add(reflector);
+const flashlightLens=new THREE.Mesh(new THREE.CircleGeometry(.048,32),new THREE.MeshBasicMaterial({color:0xffedc7}));
+flashlightLens.position.z=-.24;flashlightModel.add(flashlightLens);
+const led=new THREE.Mesh(new THREE.CircleGeometry(.012,20),new THREE.MeshBasicMaterial({color:0xffffff}));
+led.position.z=-.242;flashlightModel.add(led);
+const switchButton=new THREE.Mesh(new THREE.CylinderGeometry(.018,.02,.025,16),flashlightTrim);
+switchButton.position.set(0,.059,.055);flashlightModel.add(switchButton);
+flashlightModel.position.set(.32,-.28,-.48);flashlightModel.rotation.x=-.08;camera.add(flashlightModel);
 rs();addEventListener('resize',rs);build(0);ap();$('r1').value=S.vol;$('r2').value=S.sens;$('sensVal').textContent=(Number(S.sens)||.85).toFixed(2);$('r3').value=S.bri;$('ct').style.display=SG?'':'none';
 document.addEventListener('pointerlockchange',()=>{const l=!!document.pointerLockElement;if(!l&&locked&&state=='play'&&!modal)pause();locked=l});
 document.addEventListener('pointerlockerror',()=>drag=1);
