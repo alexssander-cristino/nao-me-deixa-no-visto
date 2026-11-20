@@ -118,6 +118,11 @@ test("manual saves include player state, collected progress and relevant setting
   assert.match(html, /SG\.settings=p\.settings/);
 });
 
+test("loading a save restores the collider transform for every open door", () => {
+  const html = read("index.html");
+  assert.match(html, /d\.pv\.rotation\.y=d\.sx\?-1\.5:1\.5;updateDoorCollider\(d\)/);
+});
+
 test("controller accelerates smoothly and respects the world collider", () => {
   require("../physics.js");
   require("../controller.js");
