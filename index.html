@@ -225,18 +225,44 @@ else if(k=='K')items.push({k:'K',x,z,m:em(0xffcc33,x,z,1,'K')});else if(k=='N')i
 else if(k=='B')items.push({k:'B',x,z,m:em(0x44ff66,x,z,1,'B')});else if(k=='X')items.push({k:'X',x,z,m:em(0xaa44ff,x,z,1,'X')});
 else if(k=='E'||k=='A'){const group=new THREE.Group(),frame=new THREE.MeshStandardMaterial({color:0x3a211b,roughness:.8}),panel=new THREE.MeshStandardMaterial({color:k=='E'?0x4c1018:0x241b2b,roughness:.55}),gold=new THREE.MeshStandardMaterial({color:0xb18a4e,metalness:.65,roughness:.3});const part=(geo,ma,px,py,pz)=>{const q=new THREE.Mesh(geo,ma);q.position.set(px,py,pz);q.castShadow=true;group.add(q)};part(new THREE.BoxGeometry(2.45,2.9,.24),frame,0,1.45,0);part(new THREE.BoxGeometry(2.15,2.62,.1),panel,0,1.45,.16);for(let yy of [.65,1.45,2.22])part(new THREE.BoxGeometry(1.72,.045,.025),frame,0,yy,.23);part(new THREE.SphereGeometry(.07,12,10),gold,.82,1.35,.29);group.position.set(x,0,z);scene.add(group);ex={x,z,m:group}}}
 decorateLevel(n);addPhysicsProps();pl.need=items.filter(i=>i.k=='K').length;pl.got=0;pl.hid=null;pl.p=0;pl.y=0;pl.st=100;pl.bat=100;pl.on=1;
-V={x:0,z:0,st:'dorm',t:n==4?12:28};vm=mkV(0);vm.visible=false;scene.add(vm);gh=mkV(1);gh.visible=false;scene.add(gh);gT=0;
+const vspawn=rc(10);V={x:vspawn[1]*4,z:vspawn[0]*4,st:'dorm',t:n==4?12:28};vm=mkV(0);vm.visible=false;scene.add(vm);gh=mkV(1);gh.visible=false;scene.add(gh);gT=0;
 camera.position.set(pl.x,1.65,pl.z)}
 // IA da Valdirene
 const cell=o=>[Math.round(o.z/4),Math.round(o.x/4)];
-function rc(far){for(let i=0;i<200;i++){const r=1+(0|R()*(rows-2)),c=1+(0|R()*(cols-2)),k=ch(r,c);if(k!='#'&&k!='H'&&(!far||Math.hypot(c*4-pl.x,r*4-pl.z)>far))return[r,c]}return[1,1]}
+function rc(far){for(let i=0;i<240;i++){const r=1+(0|R()*(rows-2)),c=1+(0|R()*(cols-2)),k=ch(r,c);if(k!='#'&&k!='H'&&(!far||Math.hypot(c*4-pl.x,r*4-pl.z)>far)&&!physics.overlapsCircle(c*4,r*4,.42))return[r,c]}return[1,1]}
 function nearP(){for(let i=0;i<30;i++){const r=Math.round(pl.z/4)+(0|R()*9)-4,c=Math.round(pl.x/4)+(0|R()*9)-4,k=ch(r,c);if(k!='#'&&k!='H')return[r,c]}return rc(0)}
 function bfs(a,b){const k=x=>x[0]+','+x[1],q=[a],seen=new Set([k(a)]),par={};while(q.length){const u=q.shift();if(u[0]==b[0]&&u[1]==b[1])break;for(const[d1,d2]of[[0,1],[1,0],[0,-1],[-1,0]]){const v=[u[0]+d1,u[1]+d2],kk=k(v),c=ch(v[0],v[1]);if(c=='#'||c=='H'||seen.has(kk))continue;seen.add(kk);par[kk]=u;q.push(v)}}
 if(!par[k(b)])return null;let c=b;while(par[k(c)]&&k(par[k(c)])!=k(a))c=par[k(c)];return c}
 function updateDoorCollider(d){if(!d||!d.physicsId)return;const a=d.pv.rotation.y,co=Math.cos(a),si=Math.sin(a);let cx,cz,hx,hz;if(d.sx){cx=d.x-2+2*co;cz=d.z-2*si;hx=2;hz=.16}else{cx=d.x+2*si;cz=d.z-2+2*co;hx=.16;hz=2}physics.updateOBB(d.physicsId,cx,cz,hx,hz,-a)}
 function odoor(d,s){d.o=s?1:0;at(d.x,d.z,q=>nz(.35,s?500:250,.8,q))}
 function updV(dt){const v=V,dx=pl.x-v.x,dz=pl.z-v.z,dist=Math.hypot(dx,dz);
-if(v.st=='dorm'){vm.visible=false;v.t-=dt;if(v.t<=0){const c=rc(22);v.x=c[1]*4;v.z=c[0]*4;v.st='pat';v.t=35+R()*25;v.tg=null;vm.visible=true;sting(.3)}return}
+if(v.st=='dorm'){
+ vm.visible=false;v.t-=dt;
+ if(v.t<=0){
+  let destination=null;
+  for(let i=0;i<48;i++){
+   const candidate=rc(12),tx=candidate[1]*4,tz=candidate[0]*4;
+   if(bfs(cell(v),candidate)&&!los(pl.x,pl.z,tx,tz)){destination=candidate;break}
+  }
+  v.route=destination||rc(8);v.st='relocate';v.bk=0;
+ }
+ return
+}
+if(v.st=='relocate'){
+ vm.visible=false;
+ const here=cell(v),dest=v.route;
+ if(!dest){v.st='dorm';v.t=4;return}
+ if(here[0]===dest[0]&&here[1]===dest[1]){
+  v.st='pat';v.t=35+R()*25;v.tg=null;vm.position.set(v.x,0,v.z);vm.visible=true;sting(.3);return
+ }
+ const next=bfs(here,dest);
+ if(!next){v.st='dorm';v.t=5;return}
+ const door=doors[next[0]+','+next[1]];
+ if(door&&!door.o){odoor(door,1);v.bk+=dt;if(v.bk<.18)return}
+ const tx=next[1]*4,tz=next[0]*4,dx2=tx-v.x,dz2=tz-v.z,d2=Math.hypot(dx2,dz2)||1;
+ const step=Math.min(d2,2.6*dt);v.x+=dx2/d2*step;v.z+=dz2/d2*step;
+ vm.position.set(v.x,0,v.z);vm.rotation.y=Math.atan2(dx2,dz2);return
+}
 const difficulty=S.diff||'normal',vision=difficulty=='easy'?15:difficulty=='hard'?29:22;const see=!pl.hid&&dist<(pl.crouch?vision*.42:(pl.on?vision:vision*.6))&&los(v.x,v.z,pl.x,pl.z);
 if(see){if(v.st!='chase'){say(pk(CH),1);sting(.5)}v.st='chase';v.last=[pl.x,pl.z];v.lost=0}
 else if(v.st=='chase'){v.lost+=dt;if(v.lost>1.5){v.st='search';v.w=0}}
