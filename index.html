@@ -176,7 +176,22 @@ function updatePhysicsProps(dt){
   physics.updateOBB(prop.collider,b.x,b.z,.19,.19,b.rotation);
  }
 }
-function build(n){physics.clear();rigidPhysics.clear();physicsProps=[];const d=L[n];g=d.g;rows=g.length;cols=g[0].length;L5=n==4;items=[];doors={};wards=[];ex=null;
+function disposeLevelScene(target){
+ if(!target)return;
+ const geometries=new Set(),materials=new Set(),textures=new Set();
+ const visit=o=>{
+  if(o===camera)return;
+  if(o.geometry)geometries.add(o.geometry);
+  const list=Array.isArray(o.material)?o.material:(o.material?[o.material]:[]);
+  for(const m of list){materials.add(m);for(const key of Object.keys(m)){const value=m[key];if(value&&value.isTexture)textures.add(value)}}
+  for(const child of o.children||[])visit(child);
+ };
+ for(const child of [...target.children])visit(child);
+ for(const geometry of geometries)geometry.dispose();
+ for(const texture of textures)texture.dispose();
+ for(const material of materials)material.dispose();
+}
+function build(n){if(scene)disposeLevelScene(scene);physics.clear();rigidPhysics.clear();physicsProps=[];const d=L[n];g=d.g;rows=g.length;cols=g[0].length;L5=n==4;items=[];doors={};wards=[];ex=null;
 scene=new THREE.Scene();scene.background=new THREE.Color(d.fg);scene.fog=new THREE.FogExp2(d.fg,n==1?.052:n==4?.06:n==2?.068:.078);scene.add(camera);
 amb=new THREE.AmbientLight(0x554466,.3);scene.add(amb);pls=[];for(let i=0;i<2;i++){const p=new THREE.PointLight(0xffa060,.5,14);scene.add(p);pls.push(p)}
 const wt=tex(d.w,'wall'),ft=tex(d.f,'floor');wt.repeat.set(1,d.h/4);ft.repeat.set(cols,rows);
