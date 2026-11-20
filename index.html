@@ -288,7 +288,7 @@ function nearP(){for(let i=0;i<30;i++){const r=Math.round(pl.z/4)+(0|R()*9)-4,c=
 function bfs(a,b){const k=x=>x[0]+','+x[1],q=[a],seen=new Set([k(a)]),par={};while(q.length){const u=q.shift();if(u[0]==b[0]&&u[1]==b[1])break;for(const[d1,d2]of[[0,1],[1,0],[0,-1],[-1,0]]){const v=[u[0]+d1,u[1]+d2],kk=k(v),c=ch(v[0],v[1]);if(c=='#'||c=='H'||seen.has(kk))continue;seen.add(kk);par[kk]=u;q.push(v)}}
 if(!par[k(b)])return null;let c=b;while(par[k(c)]&&k(par[k(c)])!=k(a))c=par[k(c)];return c}
 function updateDoorCollider(d){if(!d||!d.physicsId)return;const a=d.pv.rotation.y,co=Math.cos(a),si=Math.sin(a);let cx,cz,hx,hz;if(d.sx){cx=d.x-2+2*co;cz=d.z-2*si;hx=2*Math.abs(co)+.16*Math.abs(si);hz=2*Math.abs(si)+.16*Math.abs(co)}else{cx=d.x+2*si;cz=d.z-2+2*co;hx=.16*Math.abs(co)+2*Math.abs(si);hz=.16*Math.abs(si)+2*Math.abs(co)}physics.updateOBB(d.physicsId,cx,cz,d.sx?2:.16,d.sx?.16:2,-a);if(d.body3d){d.body3d.x=cx;d.body3d.z=cz;d.body3d.hx=hx;d.body3d.hz=hz}}
-function emitNoise(x,z,radius=8,kind='environment'){noiseEvent={id:++noiseSerial,x,z,radius,kind,expires:performance.now()/1000+3};}
+function emitNoise(x,z,radius=8,kind='environment'){noiseEvent={id:++noiseSerial,x,z,radius:radius*(powerOn?1:1.2),kind,expires:performance.now()/1000+3};}
 function odoor(d,s){d.o=s?1:0;emitNoise(d.x,d.z,s?12:8,s?'door-open':'door-close');at(d.x,d.z,q=>nz(.35,s?500:250,.8,q))}
 function updV(dt){if(attackSequence)return;const v=V,dx=pl.x-v.x,dz=pl.z-v.z,dist=Math.hypot(dx,dz);pl.fear=v.st==='chase'?Math.max(0,Math.min(1,1-dist/14)):v.st==='search'||v.st==='inv'?Math.max(0,.35-dist/24):0;
 if(v.st=='dorm'){
@@ -767,7 +767,7 @@ upd=function(dt){
   const currentDistance=tg&&tg.o?Math.hypot(pl.x-(tg.o.x||0),pl.z-(tg.o.z||0)):Infinity;
   if(!tg||bestDistance<=currentDistance+.04){
    tg={t:'mechanism',o:{id:best.id,x:p.x,z:p.z}};
-   $('pr').textContent='[E] '+(best.type==='switch'?(best.target?'desligar ':'ligar '):(best.target?'fechar ':'abrir '))+best.label.toLowerCase();
+   $('pr').textContent=best.locked?'[E] destrancar '+best.label.toLowerCase():'[E] '+(best.type==='switch'?(best.target?'desligar ':'ligar '):(best.target?'fechar ':'abrir '))+best.label.toLowerCase();
    $('reticle').style.transform='translate(-50%,-50%) scale(1.9)';$('reticle').style.borderColor='#e9bd78';
   }
  }
