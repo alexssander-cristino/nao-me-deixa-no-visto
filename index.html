@@ -28,7 +28,7 @@ label{display:flex;gap:10px;align-items:center;justify-content:space-between;wid
 <div class="ov on" id="mn"><h1>NÃO ME DEIXA NO VISTO</h1><p>Anderson acorda às 03h17 numa casa abandonada. Bateria: 2%. 47 chamadas perdidas. Valdirene já sabe que ele acordou.</p><button onclick="newG()">Novo jogo</button><button id="ct" onclick="cont()">Continuar</button><button onclick="openSlots(&quot;load&quot;)">Carregar jogo</button><button onclick="cfg(1)">Configurações</button><button onclick="showCredits()">Créditos</button><button onclick="quitGame()">Sair</button><p style="font-size:14px;opacity:.7">WASD mover · Shift correr · Ctrl agachar/silenciar · F lanterna · E interagir · I inventário · Mouse olhar · Esc pausa<br>Feche as portas atrás de você: ela demora a derrubá-las. Use fones de ouvido.</p></div>
 <div class="ov" id="slots"><h1 id="slotsTitle">SALVAMENTOS</h1><div id="slotList" style="display:flex;flex-direction:column;gap:9px;width:min(560px,94vw)"></div><button onclick="closeSlots()">Voltar</button></div>
 <div class="ov" id="pa"><h1>PAUSADO</h1><button onclick="resume()">Continuar</button><button onclick="openSlots(&quot;save&quot;)">Salvar jogo</button><button onclick="openSlots(&quot;load&quot;)">Carregar jogo</button><button onclick="cfg(1)">Configurações</button><button onclick="menu()">Menu principal</button></div>
-<div class="ov" id="cf"><h1>CONFIGURAÇÕES</h1><label>Volume <input type="range" min="0" max="1" step=".05" id="r1" oninput="S.vol=+this.value;if(mg)mg.gain.value=S.vol;sv()"></label><label>Sensibilidade horizontal <span><input type="range" min=".2" max="2.5" step=".05" id="r2" oninput="S.sensX=+this.value;S.sens=S.sensX;$('sensVal').textContent=this.value;sv()"><output id="sensVal">0.85</output></span></label><label>Sensibilidade vertical <span><input type="range" min=".2" max="2.5" step=".05" id="r2y" oninput="S.sensY=+this.value;$('sensYVal').textContent=this.value;sv()"><output id="sensYVal">0.85</output></span></label><label>Inverter eixo Y <input type="checkbox" id="invertY" onchange="S.invertY=this.checked;sv()"></label><label>Head bob <input type="checkbox" id="headBob" onchange="S.headBob=this.checked;sv()"></label><label>Reduzir efeitos de câmera <input type="checkbox" id="reduceCamera" onchange="S.reduceCameraEffects=this.checked;sv()"></label><label>Brilho <input type="range" min=".8" max="2" step=".1" id="r3" oninput="S.bri=+this.value;ap();sv()"></label><label>Tela cheia <button type="button" onclick="toggleFullscreen()" style="min-width:120px">Alternar</button></label><label>Qualidade gráfica <select id="quality"><option value="low">Desempenho</option><option value="medium">Equilibrada</option><option value="high">Alta</option></select></label><label>Campo de visão <span><input id="fov" type="range" min="65" max="100" step="1"><output id="fovVal">72°</output></span></label><label>Dificuldade <select id="diff" onchange="S.diff=this.value;sv()"><option value="easy">Tranquilo</option><option value="normal">Normal</option><option value="hard">Sem misericórdia</option></select></label><button onclick="resetSettings()">Restaurar padrões</button><button onclick="cfg(0)">Voltar</button></div>
+<div class="ov" id="cf"><h1>CONFIGURAÇÕES</h1><label>Volume <input type="range" min="0" max="1" step=".05" id="r1" oninput="S.vol=+this.value;if(mg)mg.gain.value=S.vol;sv()"></label><label>Sensibilidade horizontal <span><input type="range" min=".2" max="2.5" step=".05" id="r2" oninput="S.sensX=+this.value;S.sens=S.sensX;$('sensVal').textContent=this.value;sv()"><output id="sensVal">0.85</output></span></label><label>Sensibilidade vertical <span><input type="range" min=".2" max="2.5" step=".05" id="r2y" oninput="S.sensY=+this.value;$('sensYVal').textContent=this.value;sv()"><output id="sensYVal">0.85</output></span></label><label>Inverter eixo Y <input type="checkbox" id="invertY" onchange="S.invertY=this.checked;sv()"></label><label>Head bob <input type="checkbox" id="headBob" onchange="S.headBob=this.checked;sv()"></label><label>Reduzir efeitos de câmera <input type="checkbox" id="reduceCamera" onchange="S.reduceCameraEffects=this.checked;sv()"></label><label>Brilho <input type="range" min=".8" max="2" step=".1" id="r3" oninput="S.bri=+this.value;ap();sv()"></label><label>Resolução <select id="resolution"><option value="960x600">960 × 600</option><option value="1280x800">1280 × 800</option><option value="1600x900">1600 × 900</option><option value="1920x1080">1920 × 1080</option></select></label><label>Limite de FPS <select id="fpsLimit"><option value="0">Automático (sincronizado)</option><option value="30">30 FPS</option><option value="60">60 FPS</option><option value="120">120 FPS</option></select></label><label>Tela cheia <button type="button" onclick="toggleFullscreen()" style="min-width:120px">Alternar</button></label><label>Qualidade gráfica <select id="quality"><option value="low">Desempenho</option><option value="medium">Equilibrada</option><option value="high">Alta</option></select></label><label>Campo de visão <span><input id="fov" type="range" min="65" max="100" step="1"><output id="fovVal">72°</output></span></label><label>Dificuldade <select id="diff" onchange="S.diff=this.value;sv()"><option value="easy">Tranquilo</option><option value="normal">Normal</option><option value="hard">Sem misericórdia</option></select></label><button onclick="resetSettings()">Restaurar padrões</button><button onclick="cfg(0)">Voltar</button></div>
 <div class="ov" id="go"><h1>VALDIRENE TE ENCONTROU</h1><p id="gt"></p><button onclick="retry()">Reiniciar do último checkpoint</button><button onclick="openSlots(&quot;load&quot;)">Carregar jogo</button><button onclick="menu()">Menu principal</button></div>
 <div class="ov" id="en"><h1 id="et" style="font-size:clamp(22px,4.5vw,40px)"></h1><p id="ep"></p><button onclick="menu()">Menu principal</button></div>
 <div class="ov" id="al"><h1 style="font-size:32px">O ALTAR</h1><p>Valdirene espera de véu, a dois metros. O celular vibra: a mensagem de 13 anos atrás, ainda sem resposta.</p><button onclick="alt(1)">Responder a mensagem</button><button onclick="alt(0)">Dizer "sim" e casar</button></div>
@@ -43,7 +43,7 @@ label{display:flex;gap:10px;align-items:center;justify-content:space-between;wid
 <script src="./models.js"></script>
 <script>
 const $=i=>document.getElementById(i),R=Math.random,P=Math.PI,pk=a=>a[0|R()*a.length];
-let S={vol:.7,sens:.85,sensX:.85,sensY:.85,invertY:false,headBob:true,reduceCameraEffects:false,bri:1,diff:'normal',quality:'high',fov:76};
+let S={vol:.7,sens:.85,sensX:.85,sensY:.85,invertY:false,headBob:true,reduceCameraEffects:false,fpsLimit:0,resolution:'1280x800',bri:1,diff:'normal',quality:'high',fov:76};
 const bounded=(value,min,max,fallback)=>{const n=Number(value);return Number.isFinite(n)?Math.max(min,Math.min(max,n)):fallback};
 try{
  const saved=JSON.parse(localStorage.getItem('vs')||'null');
@@ -54,7 +54,7 @@ try{
   S.sensY=bounded(saved.sensY,.2,2.5,S.sens);
   S.invertY=!!saved.invertY;
   S.headBob=saved.headBob!==false;
-  S.reduceCameraEffects=!!saved.reduceCameraEffects;
+  S.reduceCameraEffects=!!saved.reduceCameraEffects;\n  S.fpsLimit=[0,30,60,120].includes(Number(saved.fpsLimit))?Number(saved.fpsLimit):0;\n  S.resolution=['960x600','1280x800','1600x900','1920x1080'].includes(saved.resolution)?saved.resolution:'1280x800';
   S.bri=bounded(saved.bri,.8,2,S.bri);
   S.fov=bounded(saved.fov,65,100,S.fov);
   if(['easy','normal','hard'].includes(saved.diff))S.diff=saved.diff;
@@ -359,7 +359,7 @@ const sh=(i,o)=>$(i).classList.toggle('on',!!o);
 function cfg(o){if(o)$('diff').value=S.diff||'normal';sh('cf',o)}
 function ap(){cv.style.filter='brightness('+S.bri+')'}
 function toggleFullscreen(){if(window.gameWindowBridge){window.gameWindowBridge.toggleFullscreen();return}if(!document.fullscreenElement&&document.documentElement.requestFullscreen)document.documentElement.requestFullscreen();else if(document.exitFullscreen)document.exitFullscreen()}
-function resetSettings(){S={vol:.7,sens:.85,sensX:.85,sensY:.85,invertY:false,headBob:true,reduceCameraEffects:false,bri:1,diff:'normal',quality:'high',fov:76};sv();if(mg)mg.gain.value=S.vol;if(camera){camera.fov=S.fov;camera.updateProjectionMatrix()}ap();applyGraphics();createDust();$('r1').value=S.vol;$('r3').value=S.bri;$('diff').value=S.diff;cfg(1)}
+function resetSettings(){S={vol:.7,sens:.85,sensX:.85,sensY:.85,invertY:false,headBob:true,reduceCameraEffects:false,fpsLimit:0,resolution:"1280x800",bri:1,diff:'normal',quality:'high',fov:76};sv();if(mg)mg.gain.value=S.vol;if(camera){camera.fov=S.fov;camera.updateProjectionMatrix()}ap();applyGraphics();createDust();$('r1').value=S.vol;$('r3').value=S.bri;$('diff').value=S.diff;$('fpsLimit').value=String(S.fpsLimit);$('resolution').value=S.resolution;cfg(1)}
 function newG(){if(SG&&!confirm('Começar um novo jogo? Os salvamentos existentes serão mantidos.'))return;const freeSlot=GameSaveSystem.readAll().find(slot=>!slot.occupied);if(freeSlot)activeSaveSlot=freeSlot.slot;else if(SG&&!confirm('Todos os slots estão ocupados. O slot 1 será substituído pelo novo autosave. Continuar?'))return;else activeSaveSlot=1;try{localStorage.setItem('ndmvv.activeSaveSlot',String(activeSaveSlot))}catch(e){}ai();lore=0;sec=0;elapsedGameSeconds=0;resumeCheckpoint=0;SG=null;try{localStorage.removeItem('sg')}catch(e){}sh('mn',0);$('hud').style.display='block';paused=0;go(0);lock()}
 function cont(){if(!SG)return;ai();lore=SG.lore||0;sec=SG.sec||0;resumeCheckpoint=1;sh('mn',0);$('hud').style.display='block';paused=0;go(SG.lv);lock()}
 function menu(){state='menu';paused=0;modal=0;document.exitPointerLock&&document.exitPointerLock();['pa','go','en','al','cf','iv','slots'].forEach(i=>sh(i,0));modal=0;sh('mn',1);$('hud').style.display='none';$('ct').style.display=SG?'':'none';$('dg').style.opacity=0;try{speechSynthesis.cancel()}catch(e){}}
@@ -440,7 +440,7 @@ if(e.code=='KeyE'&&!e.repeat&&!paused&&!modal)act();if(e.code=='KeyI'&&!e.repeat
 if(e.code=='KeyF'&&!e.repeat&&!paused&&!modal){pl.on=pl.bat>0?!pl.on:0;th(pl.on?900:240,.06,.2);sub(pl.on?'Lanterna ligada.':'Lanterna desligada.',1200)}
 if(e.code=='Escape')pause();if(e.code=='KeyP')paused?resume():pause()});
 addEventListener('keyup',e=>keys[e.code]=0);addEventListener('blur',()=>keys={});
-let last=0;(function loop(t){
+let last=0,lastFrame=0;(function loop(t){
  requestAnimationFrame(loop);
  if(document.hidden){last=t;mouseLook.clear();return;}
  const dt=Math.min((t-last)/1000||0,.05);last=t;
@@ -453,7 +453,7 @@ let last=0;(function loop(t){
  rd.render(scene,camera);
 })(0);
 document.addEventListener('visibilitychange',()=>{
- mouseLook.clear();keys={};last=performance.now();
+ mouseLook.clear();keys={};last=performance.now();lastFrame=last;
 });
 
 /* PATCH 1.2 — atmosfera, qualidade escalável e controles refinados */
@@ -557,6 +557,8 @@ $("quality").addEventListener("change",e=>{
   createDust();
   sv();
 });
+$("fpsLimit").addEventListener("change",e=>{S.fpsLimit=Number(e.target.value)||0;sv()});
+$("resolution").addEventListener("change",e=>{S.resolution=e.target.value;sv();if(window.gameWindowBridge)window.gameWindowBridge.setResolution(S.resolution)});
 $("fov").addEventListener("input",e=>{
   S.fov=Math.max(65,Math.min(100,Number(e.target.value)||76));
   $("fovVal").textContent=Math.round(S.fov)+"°";
