@@ -80,3 +80,49 @@ test("rigid body collides with static environment geometry", () => {
   for (let i = 0; i < 30; i++) world.step(1 / 60);
   assert.ok(body.x <= -0.349);
 });
+
+
+test("axis blocking preserves tangential movement while sliding along a wall", () => {
+  const world = new PhysicsWorld({ maxSubstep: 0.08 });
+  world.addAABB(0, 0, 0.2, 5, "wall");
+  const player = { x: -1, z: -3 };
+  const result = world.moveCircle(player, 2, 1, 0.38);
+  assert.equal(result.blockedX, true);
+  assert.equal(result.blockedZ, false);
+  assert.ok(player.x <= -0.579);
+  assert.ok(player.z > -2.05);
+});
+
+test("swept broadphase detects a rotated collider during a fast diagonal move", () => {
+  const world = new PhysicsWorld({ maxSubstep: 0.08 });
+  world.addOBB(0, 0, 2.2, 0.12, Math.PI / 4, "door", true);
+  const player = { x: -4, z: -4 };
+  const result = world.moveCircle(player, 8, 8, 0.35);
+  assert.equal(result.blockedX, true);
+  assert.equal(result.blockedZ, true);
+  assert.ok(Math.hypot(player.x, player.z) < 3.5);
+});
+
+test("rigid bodies settle without residual jitter and wake on impulse", () => {
+  const world = new globalThis.GamePhysics.RigidBodyWorld({ sleepDelay: 0.4 });
+  const body = world.addBody({
+    position: { x: 0, y: 1, z: 0 },
+    halfExtents: { x: 0.15, y: 0.15, z: 0.15 },
+    mass: 1
+  });
+  for (let i = 0; i < 180; i++) world.step(1 / 60);
+  assert.equal(body.sleeping, true);
+  assert.equal(body.vy, 0);
+  assert.equal(world.applyImpulse(body, { x: 2, y: 0, z: 0 }), true);
+  assert.equal(body.sleeping, false);
+  assert.ok(body.vx > 1.9);
+});
+
+test("invalid and oversized frame deltas are bounded by the fixed-step accumulator", () => {
+  const world = new globalThis.GamePhysics.RigidBodyWorld({ fixedStep: 1 / 60, maxSubSteps: 4 });
+  const body = world.addBody({ position: { x: 0, y: 3, z: 0 } });
+  const steps = world.step(10);
+  assert.equal(steps, 4);
+  assert.ok(Number.isFinite(body.y));
+  assert.ok(world.accumulator < 1 / 60);
+});
