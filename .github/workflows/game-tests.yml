@@ -43,7 +43,7 @@ jobs:
       - name: Package Electron application on Linux
         if: runner.os == 'Linux'
         run: npm run package
-      - name: Build Windows application and installers
+      - name: Build portable Windows application (.exe + zip)
         if: runner.os == 'Windows'
         run: npm run make
       - name: Upload platform build artifacts
