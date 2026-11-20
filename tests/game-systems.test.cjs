@@ -456,3 +456,10 @@ test("static wall geometry is instanced and movable props switch to a distance L
   assert.match(html, /new THREE\.LOD\(\),highDetail/);
   assert.match(html, /group\.addLevel\(lowDetail,16\)/);
 });
+
+test("Valdirene opens an unlocked wardrobe when searching for a hidden player", () => {
+  const html = read("index.html");
+  assert.match(html, /__updVWithCabinetInvestigation/);
+  assert.match(html, /enemy-cabinet-search/);
+  assert.match(html, /mechanismSystem\.toggle\(door\.id,mechanismInventory\)/);
+});
