@@ -31,6 +31,7 @@ label{display:flex;gap:10px;align-items:center;justify-content:space-between;wid
 <div class="ov" id="go"><h1>VALDIRENE TE ENCONTROU</h1><p id="gt"></p><button onclick="retry()">Tentar de novo</button><button onclick="menu()">Menu principal</button></div>
 <div class="ov" id="en"><h1 id="et" style="font-size:clamp(22px,4.5vw,40px)"></h1><p id="ep"></p><button onclick="menu()">Menu principal</button></div>
 <div class="ov" id="al"><h1 style="font-size:32px">O ALTAR</h1><p>Valdirene espera de véu, a dois metros. O celular vibra: a mensagem de 13 anos atrás, ainda sem resposta.</p><button onclick="alt(1)">Responder a mensagem</button><button onclick="alt(0)">Dizer "sim" e casar</button></div>
+<div class="ov" id="iv"><h1>INVENTÁRIO</h1><p id="ivContent" style="white-space:pre-line"></p><button onclick="inventory(0)">Fechar [I]</button></div>
 <div id="fd"></div>
 <script src="./node_modules/three/build/three.min.js"></script>
 <script src="./physics.js"></script>
@@ -296,6 +297,7 @@ if(it.k=='K'){pl.got++;note(L[lv].t[(pl.got-1)%3]+'  ('+pl.got+'/'+pl.need+')');
 else if(it.k=='N'){lore++;note(NT[lv],9000)}else if(it.k=='X'){sec=1;note(XT,9000)}else{pl.bat=Math.min(100,pl.bat+40);note("Pilhas. Na embalagem, escrito à mão: 'pro meu amor'.")}saveProgress(it,true)}
 function hide(w){pl.hid=w;pl.px=pl.x;pl.pz=pl.z;pl.x=w.x;pl.z=w.z;w.m.visible=false;$('hd').style.display='block';th(120,.2,.4)}
 function unhide(){const w=pl.hid;w.m.visible=true;pl.hid=null;pl.x=pl.px;pl.z=pl.pz;$('hd').style.display='none'}
+function inventory(open){if(state!=="play")return;const panel=$("iv");if(open){modal=1;const lines=["OBJETIVO: "+pl.got+"/"+pl.need+" "+L[lv].o,"PISTAS LIDAS: "+lore,"BATERIA: "+Math.ceil(pl.bat)+"%","LANTERNA: "+(pl.on&&pl.bat>0?"ligada":"desligada"),"SEGREDO: "+(sec?"encontrado":"não encontrado"),"","As pistas ficam registradas aqui. Continue explorando."];$("ivContent").textContent=lines.join("\n");sh("iv",1);document.exitPointerLock&&document.exitPointerLock()}else{sh("iv",0);modal=0;if(!paused)lock()}}
 function act(){if(pl.hid)return unhide();if(!tg)return;if(tg.t=='i')pick(tg.o);else if(tg.t=='h')hide(tg.o);else odoor(tg.o,tg.o.o?0:1)}
 function saveProgress(item,keep){const prev=keep&&SG&&SG.lv===lv?SG:{},collected=new Set(prev.collected||[]);if(item)collected.add(item.k+':'+item.x+':'+item.z);SG={lv,lore,sec,got:pl.got,bat:pl.bat,st:pl.st,on:pl.on,x:pl.x,z:pl.z,y:pl.y,p:pl.p,collected:[...collected],openDoors:Object.keys(doors).filter(k=>doors[k].o)};baseL=lore;baseS=sec;try{localStorage.setItem('sg',JSON.stringify(SG))}catch(e){}}
 function load(n){lv=n;build(n);const resumed=!!(resumeCheckpoint&&SG&&SG.lv===n);if(resumed){const totalNeed=pl.need,collected=new Set(SG.collected||[]);items=items.filter(it=>{const key=it.k+':'+it.x+':'+it.z;if(collected.has(key)){scene.remove(it.m);return false}return true});pl.got=Number(SG.got)||0;pl.need=totalNeed;pl.bat=Number.isFinite(SG.bat)?SG.bat:100;pl.st=Number.isFinite(SG.st)?SG.st:100;pl.on=SG.on===0?0:1;pl.x=Number.isFinite(SG.x)?SG.x:pl.x;pl.z=Number.isFinite(SG.z)?SG.z:pl.z;pl.y=Number.isFinite(SG.y)?SG.y:pl.y;pl.p=Number.isFinite(SG.p)?SG.p:pl.p;(SG.openDoors||[]).forEach(k=>{const d=doors[k];if(d){d.o=1;d.pv.rotation.y=d.sx?-1.5:1.5}});camera.position.set(pl.x,1.65,pl.z);camera.rotation.set(pl.p,pl.y,0)}resumeCheckpoint=0;saveProgress(null,resumed);evT=30+R()*20;$('hd').style.display='none'}
@@ -306,8 +308,8 @@ function cfg(o){if(o)$('diff').value=S.diff||'normal';sh('cf',o)}
 function ap(){cv.style.filter='brightness('+S.bri+')'}
 function newG(){ai();lore=0;sec=0;resumeCheckpoint=0;SG=null;try{localStorage.removeItem('sg')}catch(e){}sh('mn',0);$('hud').style.display='block';paused=0;lock();go(0)}
 function cont(){if(!SG)return;ai();lore=SG.lore||0;sec=SG.sec||0;resumeCheckpoint=1;sh('mn',0);$('hud').style.display='block';paused=0;lock();go(SG.lv)}
-function menu(){state='menu';paused=0;modal=0;document.exitPointerLock&&document.exitPointerLock();['pa','go','en','al','cf'].forEach(i=>sh(i,0));sh('mn',1);$('hud').style.display='none';$('ct').style.display=SG?'':'none';$('dg').style.opacity=0;try{speechSynthesis.cancel()}catch(e){}}
-function pause(){if(state!='play'||paused)return;paused=1;sh('pa',1);document.exitPointerLock&&document.exitPointerLock()}
+function menu(){state='menu';paused=0;modal=0;document.exitPointerLock&&document.exitPointerLock();['pa','go','en','al','cf','iv'].forEach(i=>sh(i,0));modal=0;sh('mn',1);$('hud').style.display='none';$('ct').style.display=SG?'':'none';$('dg').style.opacity=0;try{speechSynthesis.cancel()}catch(e){}}
+function pause(){if(state!='play'||paused)return;if($('iv').classList.contains('on')){sh('iv',0);modal=0}paused=1;sh('pa',1);document.exitPointerLock&&document.exitPointerLock()}
 function resume(){paused=0;sh('pa',0);sh('cf',0);lock()}
 function retry(){sh('go',0);lore=baseL;sec=baseS;resumeCheckpoint=0;lock();go(lv)}
 function die(){if(state!='play')return;state='over';document.exitPointerLock&&document.exitPointerLock();sting(.8);if(lv==4){fin('bad');return}$('gt').textContent='Valdirene: '+pk(GT);sh('go',1)}
@@ -369,7 +371,7 @@ document.addEventListener('pointerlockerror',()=>drag=1);
 cv.addEventListener('mousedown',()=>mdown=1);addEventListener('mouseup',()=>mdown=0);
 addEventListener('mousemove',e=>{if(state!='play'||paused||modal)return;if(locked||mdown){const sens=Math.max(.2,Math.min(2.5,Number(S.sens)||.85));pl.y-=(e.movementX||0)*.00185*sens;pl.p=Math.max(-1.28,Math.min(1.28,pl.p-(e.movementY||0)*.00165*sens))}});
 addEventListener('keydown',e=>{keys[e.code]=1;if(['Space','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.code))e.preventDefault();if(state!='play')return;
-if(e.code=='KeyE'&&!e.repeat&&!paused&&!modal)act();
+if(e.code=='KeyE'&&!e.repeat&&!paused&&!modal)act();if(e.code=='KeyI'&&!e.repeat&&!paused)inventory(!$('iv').classList.contains('on'));
 if(e.code=='KeyF'&&!e.repeat&&!paused&&!modal){pl.on=pl.bat>0?!pl.on:0;th(pl.on?900:240,.06,.2);sub(pl.on?'Lanterna ligada.':'Lanterna desligada.',1200)}
 if(e.code=='Escape')pause();if(e.code=='KeyP')paused?resume():pause()});
 addEventListener('keyup',e=>keys[e.code]=0);addEventListener('blur',()=>keys={});
