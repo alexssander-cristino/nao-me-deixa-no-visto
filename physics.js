@@ -368,5 +368,6 @@
       return {grounded,blockedX,blockedY,blockedZ,actual:{x:position.x-start.x,y:position.y-start.y,z:position.z-start.z}};
     }
   }
-\n  root.GamePhysics={PhysicsWorld,RigidBodyWorld,CharacterPhysicsWorld};
+
+  root.GamePhysics={PhysicsWorld,RigidBodyWorld,CharacterPhysicsWorld};
 })(typeof window!=="undefined"?window:globalThis);
