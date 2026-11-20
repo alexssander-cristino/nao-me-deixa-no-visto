@@ -539,6 +539,9 @@ const __cfgAtmosphere = cfg;
 cfg = function(open){
   __cfgAtmosphere(open);
   if(open){
+    $("r2").value=S.sensX;$("sensVal").textContent=S.sensX.toFixed(2);
+    $("r2y").value=S.sensY;$("sensYVal").textContent=S.sensY.toFixed(2);
+    $("invertY").checked=!!S.invertY;
     $("quality").value=S.quality||"high";
     $("fov").value=String(S.fov);
     $("fovVal").textContent=Math.round(S.fov)+"°";
