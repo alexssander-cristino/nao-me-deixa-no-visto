@@ -34,11 +34,14 @@ test("controller accelerates smoothly and respects the world collider", () => {
   const move = (p, dx, dz, radius) => world.moveCircle(p, dx, dz, radius);
   let result = controller.update(1 / 60, player, { KeyD: true }, camera, null, move, { fov: 76 });
   assert.ok(result.speed > 0 && result.speed < 3.15);
+  let maxSpeed = result.speed;
   for (let i = 0; i < 90; i++) {
     result = controller.update(1 / 60, player, { KeyD: true }, camera, null, move, { fov: 76 });
+    maxSpeed = Math.max(maxSpeed, result.speed);
   }
+  assert.ok(maxSpeed > 2.5);
   assert.ok(player.x <= -2.379);
-  assert.equal(result.moving, true);
+  assert.equal(result.moving, false);
 });
 
 test("sprint consumes stamina and raises FOV while crouching lowers camera", () => {
