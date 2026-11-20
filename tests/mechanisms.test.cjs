@@ -45,6 +45,8 @@ test("keyed locks cannot be forged open by an inconsistent save snapshot",()=>{
  assert.equal(lock.locked,true);
  assert.equal(lock.progress,0);
  assert.equal(lock.target,0);
+ system.restore([{id:"lock:mission",progress:1,target:1}]);
+ assert.equal(system.get("lock:mission").locked,true);
 });
 
 test("breaker switches persist circuit state and restore their visual callback",()=>{
