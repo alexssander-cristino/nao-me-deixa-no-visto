@@ -13,7 +13,7 @@ test("all browser scripts parse and local modules are wired into the game", () =
     .map((match) => match[1]).filter((source) => source.trim());
   assert.equal(scripts.length, 1);
   for (const source of scripts) new vm.Script(source);
-  for (const file of ["input.js", "rendering.js", "physics.js", "controller.js", "models.js", "player-model.js"]) {
+  for (const file of ["input.js", "rendering.js", "physics.js", "controller.js", "models.js"]) {
     new vm.Script(read(file), { filename: file });
     assert.ok(html.includes('src="./' + file + '"'));
   }
@@ -114,29 +114,52 @@ test("graphics profiles cap pixel ratio and scale shadow and atmosphere budgets"
 });
 
 
-test("player visual rig builds a hidden first-person head and animates with movement", () => {
-  require("../player-model.js");
-  class Node {
-    constructor(){this.children=[];this.position={x:0,y:0,z:0,set(x,y,z){this.x=x;this.y=y;this.z=z}};this.rotation={x:0,y:0,z:0};this.userData={};this.visible=true;}
-    add(child){this.children.push(child);child.parent=this;}
-    traverse(fn){fn(this);for(const child of this.children)child.traverse(fn);}
-  }
-  class Geometry {}
-  class Material { constructor(options){Object.assign(this,options)} }
-  class Mesh extends Node { constructor(geometry,material){super();this.geometry=geometry;this.material=material;this.isMesh=true;} }
-  const THREE={
-    Group:Node,Mesh,MeshStandardMaterial:Material,
-    SphereGeometry:Geometry,CylinderGeometry:Geometry,BoxGeometry:Geometry
-  };
-  const rig=globalThis.GamePlayerModel.create(THREE,{firstPerson:true});
-  assert.equal(rig.userData.head.visible,false);
-  const leftLeg=rig.userData.legs[0].hip.rotation.x;
-  globalThis.GamePlayerModel.update(rig,{x:4,z:7,yaw:.5,speed:4.5,running:true},1/30);
-  assert.equal(rig.position.x,4);
-  assert.equal(rig.position.z,7);
-  assert.equal(rig.rotation.y,.5+Math.PI);
-  assert.notEqual(rig.userData.legs[0].hip.rotation.x,leftLeg);
-  assert.equal(rig.visible,true);
-  globalThis.GamePlayerModel.update(rig,{visible:false},1/60);
-  assert.equal(rig.visible,false);
+test("3D character capsule collides with walls and remains grounded", () => {
+  require("../physics.js");
+  const world = new globalThis.GamePhysics.CharacterPhysicsWorld({gravity:18});
+  const wall = {x:1,y:1.5,z:0,hx:.2,hy:1.5,hz:2};
+  const position = {x:0,y:0,z:0};
+  const velocity = {x:4,y:0,z:0};
+  const result = world.moveCapsule(position,velocity,{x:2,y:0,z:0},{radius:.34,height:1.72},[wall]);
+  assert.ok(position.x < .47 && position.x > .44);
+  assert.equal(result.grounded,true);
+  assert.equal(velocity.x,0);
+  assert.equal(position.y,0);
+});
+
+test("3D capsule falls under gravity and lands on a raised platform", () => {
+  require("../physics.js");
+  const world = new globalThis.GamePhysics.CharacterPhysicsWorld({gravity:18});
+  const platform = {x:0,y:.2,z:0,hx:2,hy:.2,hz:2};
+  const position = {x:0,y:2,z:0};
+  const velocity = {x:0,y:-8,z:0};
+  let result;
+  for(let i=0;i<30;i++) result=world.moveCapsule(position,velocity,{x:0,y:velocity.y/60,z:0},{radius:.34,height:1.72},[platform]);
+  assert.equal(result.grounded,true);
+  assert.ok(Math.abs(position.y-.4)<.02);
+  assert.equal(velocity.y,0);
+});
+
+test("3D capsule respects ceiling clearance and crouch can fit", () => {
+  require("../physics.js");
+  const world = new globalThis.GamePhysics.CharacterPhysicsWorld({gravity:18});
+  const ceiling = {x:0,y:2.1,z:0,hx:2,hy:.1,hz:2};
+  const position = {x:0,y:0,z:0};
+  assert.equal(world.canFit(position,{radius:.34,height:1.72},[ceiling]),false);
+  assert.equal(world.canFit(position,{radius:.34,height:1.18},[ceiling]),true);
+});
+
+test("3D controller applies gravity, camera height and crouch clearance", () => {
+  require("../controller.js");
+  const controller = new globalThis.GameController.FirstPersonController();
+  const player = {x:0,z:0,y:0,p:0,feetY:0,grounded:false,capsuleHeight:1.72,velocity3D:{x:0,y:0,z:0},st:100};
+  const camera = {position:{set(x,y,z){this.x=x;this.y=y;this.z=z}},rotation:{set(){}},fov:76,updateProjectionMatrix(){}};
+  const move = (p,v,d,shape) => {p.feetY=Math.max(0,p.feetY+d.y);if(p.feetY===0){v.y=0;return {grounded:true,blockedY:true}}return {grounded:false}};
+  move.canFit=(_p,shape)=>shape.height<1.3;
+  let result=controller.update3D(1/60,player,{},camera,null,move,{fov:76});
+  assert.ok(player.velocity3D.y<0);
+  assert.equal(result.grounded,false);
+  controller.update3D(1/60,player,{ControlLeft:true},camera,null,move,{fov:76});
+  assert.equal(player.crouch,true);
+  assert.ok(camera.position.y<1.3);
 });
