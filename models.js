@@ -128,7 +128,7 @@
       part.position.set(0,0,0);b.add(part);b.userData.knee=part.userData.knee;return b;
     });
     const bones=[rootBone,pelvisBone,spineBone,neckBone,headBone,...shoulderBones,...hipBones];
-    const skeleton=new THREE.Skeleton(bones);skeleton.calculateInverses();rootBone.updateMatrixWorld(true);
+    rootBone.updateMatrixWorld(true);const skeleton=new THREE.Skeleton(bones);skeleton.calculateInverses();
     rootMesh.add(rootBone);
     rootMesh.arms=shoulderBones;rootMesh.legs=hipBones;rootMesh.head=headBone;rootMesh.torso=spineBone;
     rootMesh.userData={model:"valdirene-procedural-v3",height:2.42,ghost:!!ghost,rig:{root:rootBone,pelvis:pelvisBone,spine:spineBone,neck:neckBone,head:headBone,shoulders:shoulderBones,hips:hipBones,bones,skeleton}};
