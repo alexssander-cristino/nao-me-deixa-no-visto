@@ -30,16 +30,19 @@ O instalador do Windows (Squirrel) normalmente fica em:
 ## Controles do jogo
 - WASD: mover
 - Shift: correr
+- Ctrl: agachar e reduzir o ruído
 - F: lanterna
 - E: interagir
-- Mouse: olhar
+- Mouse: olhar (sensibilidade ajustável nas configurações)
+- Lanterna: feixe direcional, bateria e oscilação quando está fraca
 - Esc: pausar
 - F11: alternar tela cheia da janela
 - Dificuldade: ajuste nas configurações (Tranquilo, Normal ou Sem misericórdia)
 
 ## Observações
-- O HTML e a lógica original do jogo foram preservados, exceto pela troca
-  da URL do Three.js para o caminho local.
+- O jogo usa Three.js local e inclui modelo humanoide procedural para Valdirene,
+  iluminação e feixe da lanterna aprimorados, decoração procedural dos cenários,
+  controles ajustados, agachamento e áudio de passos.
 - A primeira execução de `npm install` precisa baixar Electron, Forge e Three.js.
 - O instalador gerado não é assinado digitalmente; o Windows pode exibir um
   aviso do SmartScreen ao executar.
