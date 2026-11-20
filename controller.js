@@ -5,7 +5,7 @@
   const approach=(value,target,rate,dt)=>value+(target-value)*(1-Math.exp(-rate*dt));
   class FirstPersonController{
     constructor(options={}){
-      this.radius=options.radius||.34;
+      this.radius=options.radius||.38;
       this.walkSpeed=options.walkSpeed||3.15;
       this.runSpeed=options.runSpeed||5.7;
       this.crouchSpeed=options.crouchSpeed||1.65;
