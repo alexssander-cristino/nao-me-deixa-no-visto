@@ -412,6 +412,7 @@ test("mission progression integrates collectible keys, a locked cabinet and a po
   assert.match(html, /function spawnDrawerKey\(/);
   assert.match(html, /keyInventory\.add\(it\.keyId/);
   assert.match(html, /id:'breaker:'\+lv,type:'switch'/);
+  assert.match(html, /tag:'breaker-panel'/);
   assert.match(html, /A saída está sem energia/);
   assert.match(html, /powerOn\?\.3:\.075/);
   assert.match(html, /keys:keyInventory\.serialize\(\)/);
