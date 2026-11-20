@@ -47,3 +47,36 @@ test("dynamic collider can be moved and removed", () => {
   assert.equal(world.remove(id), true);
   assert.equal(world.byId.has(id), false);
 });
+
+
+test("rigid body falls under gravity and settles on the floor", () => {
+  const world = new globalThis.GamePhysics.RigidBodyWorld();
+  const body = world.addBody({
+    position: { x: 0, y: 2, z: 0 },
+    halfExtents: { x: 0.15, y: 0.15, z: 0.15 },
+    mass: 1
+  });
+  for (let i = 0; i < 240; i++) world.step(1 / 60);
+  assert.ok(body.y >= 0.149 && body.y <= 0.18);
+  assert.equal(body.grounded, true);
+});
+
+test("impulse changes velocity according to body mass", () => {
+  const world = new globalThis.GamePhysics.RigidBodyWorld();
+  const body = world.addBody({ position: { x: 0, y: 1, z: 0 }, mass: 2 });
+  world.applyImpulse(body, { x: 4, y: 0, z: 0 });
+  assert.equal(body.vx, 2);
+});
+
+test("rigid body collides with static environment geometry", () => {
+  const world = new globalThis.GamePhysics.RigidBodyWorld();
+  world.addStaticBox({ x: 0, y: 1, z: 0, hx: 0.2, hy: 1, hz: 1 });
+  const body = world.addBody({
+    position: { x: -1, y: 0.3, z: 0 },
+    halfExtents: { x: 0.15, y: 0.15, z: 0.15 },
+    mass: 1
+  });
+  body.vx = 5;
+  for (let i = 0; i < 30; i++) world.step(1 / 60);
+  assert.ok(body.x <= -0.349);
+});
