@@ -69,13 +69,20 @@
       leg.knee.rotation.x=Math.max(0,-swing)*(running?.9:.48)*amount;
       leg.foot.rotation.x=-leg.knee.rotation.x*.55-leg.hip.rotation.x*.22;
     });
+    const actionProgress=clamp(1-(player.actionTime||0)/.46,0,1);
+    const reach=Math.sin(actionProgress*Math.PI);
+    const fear=clamp(player.fear||0,0,1);
+    if(player.actionTime>0)player.actionTime=Math.max(0,player.actionTime-delta);
     data.arms.forEach((arm,index)=>{
       const swing=index===0?opposite:gait;
-      arm.shoulder.rotation.x=(moving?swing*(running?.58:.32)*amount:0)+(running?-.12:0);
-      arm.shoulder.rotation.z=arm.side*(crouched?-.12:0);
-      arm.elbow.rotation.x=running?.55:crouched?.28:.12;
-      arm.hand.rotation.x=Math.sin(data.phase+index)*.035*amount;
+      const useReach=index===1?reach:reach*.12;
+      arm.shoulder.rotation.x=(moving?swing*(running?.58:.32)*amount:0)+(running?-.12:0)-useReach*.92+Math.sin(data.phase*2+index)*fear*.045;
+      arm.shoulder.rotation.z=arm.side*(crouched?-.12:0)+arm.side*useReach*.2;
+      arm.elbow.rotation.x=(running?.55:crouched?.28:.12)+useReach*.82+fear*.08;
+      arm.hand.rotation.x=Math.sin(data.phase+index)*.035*amount+useReach*.16;
     });
+    data.torso.rotation.z=Math.sin(data.phase*1.7)*fear*.018;
+    data.torso.rotation.x+=(fear*.025);
   }
   root.GamePlayerAnimation=Object.freeze({create,update});
 })(typeof window!=="undefined"?window:globalThis);
