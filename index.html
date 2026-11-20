@@ -381,4 +381,86 @@ camera.updateProjectionMatrix();
 applyGraphics();
 createDust();
 
+
+/* PATCH 1.3 — audição da entidade, observação sobrenatural e áudio HRTF */
+let soundMemory = null;
+let entityLookTime = 0;
+let lastListenerSync = 0;
+const __entityUpdate = updV;
+updV = function(dt){
+  if(V && V.st==="pat" && soundMemory && soundMemory.time>0){
+    const d=Math.hypot(V.x-soundMemory.x,V.z-soundMemory.z);
+    if(d<soundMemory.radius){
+      V.st="inv";
+      V.last=[soundMemory.x,soundMemory.z];
+      V.lost=0;
+      V.tg=null;
+      soundMemory.time=0;
+    }
+  }
+  if(V && vm && vm.visible && V.st==="pat" && !pl.hid && pl.on){
+    const dx=V.x-pl.x,dz=V.z-pl.z,dist=Math.hypot(dx,dz)||1;
+    const fx=-Math.sin(pl.y),fz=-Math.cos(pl.y);
+    const facing=(fx*dx+fz*dz)/dist;
+    if(dist<17 && facing>.965 && los(pl.x,pl.z,V.x,V.z)) entityLookTime+=dt;
+    else entityLookTime=Math.max(0,entityLookTime-dt*1.8);
+    if(entityLookTime>1.35){
+      entityLookTime=0;
+      V.st="dorm";
+      V.t=2.2+Math.random()*1.2;
+      vm.visible=false;
+      sting(.22);
+      sub("Quando você olha diretamente, ela não está mais lá.",2600);
+    }
+  } else entityLookTime=Math.max(0,entityLookTime-dt*1.5);
+  if(soundMemory) soundMemory.time=Math.max(0,soundMemory.time-dt);
+  __entityUpdate(dt);
+};
+const __oldAt = at;
+at = function(x,z,fn){
+  if(!AC || !mg){return __oldAt(x,z,fn)}
+  try{
+    const p=AC.createPanner();
+    p.panningModel="HRTF";
+    p.distanceModel="inverse";
+    p.refDistance=1;
+    p.maxDistance=34;
+    p.rolloffFactor=1.25;
+    p.coneInnerAngle=70;
+    p.coneOuterAngle=180;
+    p.coneOuterGain=.28;
+    if(p.positionX){
+      p.positionX.value=x;p.positionY.value=.8;p.positionZ.value=z;
+    } else p.setPosition(x,.8,z);
+    p.connect(mg);
+    fn(p);
+  }catch(e){__oldAt(x,z,fn)}
+};
+function syncAudioListener(){
+  if(!AC || !AC.listener) return;
+  const l=AC.listener;
+  const fx=-Math.sin(pl.y),fz=-Math.cos(pl.y);
+  if(l.positionX){
+    l.positionX.value=pl.x;l.positionY.value=1.6;l.positionZ.value=pl.z;
+    l.forwardX.value=fx;l.forwardY.value=0;l.forwardZ.value=fz;
+    l.upX.value=0;l.upY.value=1;l.upZ.value=0;
+  }else{
+    l.setPosition(pl.x,1.6,pl.z);
+    l.setOrientation(fx,0,fz,0,1,0);
+  }
+}
+const __updateSpatial = upd;
+upd = function(dt){
+  __updateSpatial(dt);
+  syncAudioListener();
+  const moving=Math.abs(pl.mx||0)+Math.abs(pl.mz||0)>.35;
+  if(moving){
+    soundMemory={
+      x:pl.x,z:pl.z,
+      radius:pl.crouch?2.8:pl.run?19:9,
+      time:pl.run?.7:.42
+    };
+  }
+};
+
 </script></body></html>
