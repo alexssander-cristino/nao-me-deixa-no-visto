@@ -50,7 +50,7 @@ https://github.com/alexssander-cristino/nao-me-deixa-no-visto/actions/runs/44821
 
 - Ubuntu: **38 testes aprovados, 0 falhas**; empacotamento Electron Linux aprovado.
 - Windows: **38 testes aprovados, 0 falhas**.
-- Build portátil Windows: estava em execução no momento da atualização deste relatório; o resultado final e o artefato precisam ser confirmados no workflow.
+- Build portátil Windows: **aprovado**; executável e ZIP gerados e artefato publicado.
 - `npm audit`: 0 vulnerabilidades reportadas no último pipeline concluído.
 - O pipeline anterior identificou que o maker Squirrel falhava no runner Windows. Ele foi removido; a distribuição configurada agora é ZIP portátil contendo o executável.
 
