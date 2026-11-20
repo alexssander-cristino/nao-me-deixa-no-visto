@@ -263,5 +263,94 @@
       return n;
     }
   }
-  root.GamePhysics={PhysicsWorld,RigidBodyWorld};
+
+  /* Character collision in world space. Position is the capsule feet, not camera. */
+  class CharacterPhysicsWorld{
+    constructor(options={}){
+      this.gravity=finite(options.gravity,18);
+      this.groundY=finite(options.groundY,0);
+      this.maxSubstep=Math.max(.025,finite(options.maxSubstep,.08));
+      this.iterations=Math.max(1,Math.floor(finite(options.iterations,5)));
+      this.stepHeight=clamp(finite(options.stepHeight,.28),0,.6);
+      this.skin=Math.max(.001,finite(options.skin,.012));
+      this.stats={tests:0,contacts:0,substeps:0};
+    }
+    _overlapY(feet,height,b){
+      return feet < b.y+b.hy-this.skin && feet+height > b.y-b.hy+this.skin;
+    }
+    _circleAabb(x,z,r,b){
+      const qx=clamp(x,b.x-b.hx,b.x+b.hx),qz=clamp(z,b.z-b.hz,b.z+b.hz);
+      let dx=x-qx,dz=z-qz,d=Math.hypot(dx,dz);
+      if(d>=r-this.skin)return null;
+      if(d>EPS)return {nx:dx/d,nz:dz/d,depth:r-d};
+      const px=b.hx-Math.abs(x-b.x),pz=b.hz-Math.abs(z-b.z);
+      return px<pz?{nx:x<b.x?-1:1,nz:0,depth:r+px}:{nx:0,nz:z<b.z?-1:1,depth:r+pz};
+    }
+    moveCapsule(position,velocity,displacement,shape,statics=[]){
+      const radius=Math.max(.08,finite(shape.radius,.34));
+      const height=Math.max(radius*2,finite(shape.height,1.7));
+      const dx=finite(displacement.x),dy=finite(displacement.y),dz=finite(displacement.z);
+      const start={x:position.x,y:position.y,z:position.z};
+      const steps=Math.max(1,Math.ceil(Math.hypot(dx,dy,dz)/this.maxSubstep));
+      let grounded=false,blockedX=false,blockedY=false,blockedZ=false;
+      for(let step=0;step<steps;step++){
+        const sx=dx/steps,sy=dy/steps,sz=dz/steps;
+        position.y+=sy;
+        if(position.y<this.groundY){position.y=this.groundY;velocity.y=0;grounded=true;blockedY=sy<0}
+        for(let pass=0;pass<this.iterations;pass++){
+          let changed=false;
+          for(const b of statics){
+            if(!b||b.active===false||!this._overlapY(position.y,height,b))continue;
+            this.stats.tests++;
+            const hit=this._circleAabb(position.x,position.z,radius,b);
+            if(!hit)continue;
+            const top=b.y+b.hy;
+            // Step onto low obstacles only while grounded/downward and with headroom.
+            if((grounded||velocity.y<=0)&&top>position.y+this.skin&&top-position.y<=this.stepHeight){
+              const canStand=top+height<=b.y+b.hy+height+this.skin;
+              if(canStand){position.y=top+this.skin;velocity.y=0;grounded=true;changed=true;continue}
+            }
+            position.x+=hit.nx*(hit.depth+this.skin);
+            position.z+=hit.nz*(hit.depth+this.skin);
+            const vn=velocity.x*hit.nx+velocity.z*hit.nz;
+            if(vn<0){velocity.x-=vn*hit.nx;velocity.z-=vn*hit.nz}
+            blockedX=true;blockedZ=true;changed=true;this.stats.contacts++;
+          }
+          if(!changed)break;
+        }
+        position.x+=sx;position.z+=sz;
+        // Resolve horizontal overlap after each substep.
+        for(let pass=0;pass<this.iterations;pass++){
+          let changed=false;
+          for(const b of statics){
+            if(!b||b.active===false||!this._overlapY(position.y,height,b))continue;
+            this.stats.tests++;
+            const hit=this._circleAabb(position.x,position.z,radius,b);
+            if(!hit)continue;
+            position.x+=hit.nx*(hit.depth+this.skin);
+            position.z+=hit.nz*(hit.depth+this.skin);
+            const vn=velocity.x*hit.nx+velocity.z*hit.nz;
+            if(vn<0){velocity.x-=vn*hit.nx;velocity.z-=vn*hit.nz}
+            blockedX=true;blockedZ=true;changed=true;this.stats.contacts++;
+          }
+          if(!changed)break;
+        }
+        this.stats.substeps++;
+      }
+      // Ground probe catches standing still and descending onto a surface.
+      let support=this.groundY;
+      for(const b of statics){
+        if(!b||b.active===false)continue;
+        const horizontal=this._circleAabb(position.x,position.z,radius,b);
+        const top=b.y+b.hy;
+        if(horizontal&&position.y>=top-this.stepHeight-this.skin&&position.y<=top+this.skin&&top>support)support=top;
+      }
+      if(position.y<=support+this.skin&&velocity.y<=0){
+        position.y=support;velocity.y=0;grounded=true;
+      }
+      if(dy!==0&&Math.abs(position.y-start.y-dy)>this.skin)blockedY=true;
+      return {grounded,blockedX,blockedY,blockedZ,actual:{x:position.x-start.x,y:position.y-start.y,z:position.z-start.z}};
+    }
+  }
+\n  root.GamePhysics={PhysicsWorld,RigidBodyWorld,CharacterPhysicsWorld};
 })(typeof window!=="undefined"?window:globalThis);
