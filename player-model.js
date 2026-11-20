@@ -31,7 +31,7 @@
     const pelvis=new THREE.Group();pelvis.position.y=.91;body.add(pelvis);
     mesh(pelvis,new THREE.BoxGeometry(.39,.25,.23),materials.pants,[0,0,0],[1,1,1]);
     const torso=new THREE.Group();torso.position.set(0,.2,0);pelvis.add(torso);
-    mesh(torso,new THREE.CapsuleGeometry(.235,.48,4,10),materials.shirt,[0,.22,0],[1,.88,.72]);
+    sphere(torso,materials.shirt,[0,.22,0],[.235,.37,.17]);
     mesh(torso,new THREE.BoxGeometry(.46,.13,.28),materials.shirtEdge,[0,.49,0]);
     const neck=sphere(torso,materials.skin,[0,.58,0],[.075,.12,.075]);
     const head=new THREE.Group();head.position.set(0,.76,0);torso.add(head);
