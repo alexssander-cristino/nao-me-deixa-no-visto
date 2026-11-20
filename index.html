@@ -728,14 +728,14 @@ function setupWardrobeMechanisms(){
   }
  }
  // Painel elétrico com circuitos independentes de iluminação e saída.
- breakerPoint={x:pl.x+1.04,z:pl.z+.7};exitBreakerPoint={x:pl.x+1.4,z:pl.z+.7};
+ breakerPoint={x:pl.x+1.02,z:pl.z+.59};exitBreakerPoint={x:pl.x+1.42,z:pl.z+.59};
  const panel=new THREE.Group(),panelMetal=new THREE.MeshStandardMaterial({color:0x303238,metalness:.68,roughness:.48}),panelDark=new THREE.MeshStandardMaterial({color:0x111316,metalness:.25,roughness:.8}),lampLight=new THREE.MeshStandardMaterial({color:0x6c1717,emissive:0x260000,emissiveIntensity:.35}),lampExit=new THREE.MeshStandardMaterial({color:0x6c1717,emissive:0x260000,emissiveIntensity:.35}),leverMat=new THREE.MeshStandardMaterial({color:0x8d2525,roughness:.48});
  const plate=new THREE.Mesh(new THREE.BoxGeometry(.82,.72,.13),panelMetal);panel.add(plate);
  const inset=new THREE.Mesh(new THREE.BoxGeometry(.68,.52,.025),panelDark);inset.position.z=.078;panel.add(inset);
  const lampA=new THREE.Mesh(new THREE.SphereGeometry(.045,12,10),lampLight);lampA.position.set(-.2,.19,.105);panel.add(lampA);
  const lampB=new THREE.Mesh(new THREE.SphereGeometry(.045,12,10),lampExit);lampB.position.set(.2,.19,.105);panel.add(lampB);
  const makeLever=x=>{const lever=new THREE.Group();lever.position.set(x,-.04,.11);panel.add(lever);const stem=new THREE.Mesh(new THREE.CylinderGeometry(.025,.03,.22,10),panelMetal);stem.position.y=.09;lever.add(stem);const grip=new THREE.Mesh(new THREE.SphereGeometry(.055,12,10),leverMat);grip.position.y=.2;lever.add(grip);return lever;};
- const lightLever=makeLever(-.2),exitLever=makeLever(.2);
+ const lightLever=makeLever(.2),exitLever=makeLever(-.2);
  panel.position.set(pl.x+1.22,1.48,pl.z+.7);panel.rotation.y=Math.PI;panel.traverse(mesh=>{if(mesh.isMesh){mesh.castShadow=true;mesh.receiveShadow=true}});scene.add(panel);rigidPhysics.addStaticBox({x:pl.x+1.22,y:1.48,z:pl.z+.7,hx:.41,hy:.36,hz:.08,tag:'breaker-panel'});
  mechanismSystem.register({id:'breaker:'+lv,type:'switch',label:'Disjuntor da iluminação',object:lightLever,axis:'rotation',component:'x',closed:.48,open:-.48,duration:.24,onUpdate:(_item,progress)=>{powerOn=progress>=.5;lampLight.color.set(powerOn?0x42b86a:0x6c1717);lampLight.emissive.set(powerOn?0x124d25:0x260000);lampLight.emissiveIntensity=powerOn?1.2:.35;},onToggle:(_item,on)=>{emitNoise(breakerPoint.x,breakerPoint.z,11,on?'breaker-lights-on':'breaker-lights-off');at(breakerPoint.x,breakerPoint.z,g=>nz(.32,on?620:180,.6,g,'lowpass'));th(on?720:170,.18,.22);sub(on?'Iluminação restabelecida.':'Circuito de iluminação desligado.',2400);}});
  mechanismSystem.register({id:'breaker-exit:'+lv,type:'switch',label:'Disjuntor da saída',object:exitLever,axis:'rotation',component:'x',closed:.48,open:-.48,duration:.24,onUpdate:(_item,progress)=>{exitPowerOn=progress>=.5;lampExit.color.set(exitPowerOn?0x42b86a:0x6c1717);lampExit.emissive.set(exitPowerOn?0x124d25:0x260000);lampExit.emissiveIntensity=exitPowerOn?1.2:.35;},onToggle:(_item,on)=>{emitNoise(exitBreakerPoint.x,exitBreakerPoint.z,11,on?'breaker-exit-on':'breaker-exit-off');at(exitBreakerPoint.x,exitBreakerPoint.z,g=>nz(.32,on?520:160,.6,g,'lowpass'));th(on?680:150,.18,.22);sub(on?'Circuito da saída restabelecido.':'Circuito da saída desligado.',2400);}});
