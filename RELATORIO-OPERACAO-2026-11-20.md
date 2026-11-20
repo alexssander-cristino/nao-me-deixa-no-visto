@@ -112,3 +112,54 @@ O ZIP e os arquivos empacotados são gerados em `out/`. Extraia o ZIP e execute 
 ## Critério de conclusão
 
 Esta entrega melhora e integra sistemas reais, mas não declara o jogo completo. A conclusão exige a validação manual acima e a implementação dos sistemas ainda parciais, especialmente gavetas/mecanismos, física avançada, assets visuais finais e testes de desempenho em hardware-alvo.
+
+
+---
+
+## Aditivo — etapa de mecanismos interativos (20/11/2026)
+
+### Auditoria confrontada com o código
+A leitura deste relatório e dos módulos atuais confirmou que o jogo ainda usa:
+- portas de passagem com rotação e collider atualizados;
+- esconderijos de armário sem portas individuais;
+- props dinâmicos por solver AABB 3D;
+- salvamento de portas, itens e jogador, mas sem estado individual de mecanismos;
+- personagens procedurais, sem esqueleto/mocap externo;
+- cenário procedural, sem pipeline de assets PBR/LOD completo.
+
+### Implementações desta etapa
+
+| Item | Classificação | Resultado |
+|---|---|---|
+| Motor genérico de mecanismos | **PARCIAL** | Registro por ID, tipos hinge/drawer/switch/lever/button/lock, limites, animação temporal, chave opcional e serialização |
+| Portas de armário | **PARCIAL** | Duas portas articuladas por armário, animação suave, geometria própria, colisores OBB atualizados e áudio posicional |
+| Gavetas | **PARCIAL** | Duas gavetas por armário, deslocamento linear, limites, colisores atualizados e áudio posicional |
+| Seleção individual | **PARCIAL** | Alvo de interação calculado por posição para cada porta/gaveta |
+| Persistência | **PARCIAL** | Progresso, destino, bloqueio e habilitação de cada mecanismo entram no payload de salvamento; IDs são reconstruídos de coordenadas estáveis do cenário |
+| Itens dentro de gavetas | **PENDENTE** | Gavetas ainda não possuem loot individual coletável nem integração de chave/cadeado no cenário |
+| Disjuntores, interruptores e alavancas no cenário | **PENDENTE** | Tipos suportados pelo motor, mas não existem objetivos/malhas/efeitos de gameplay integrados |
+| Física de objetos | **PARCIAL** | Solver AABB 3D existente preservado; não foi convertido em solver 6DOF nem recebeu rampas/escadas físicas |
+| Rig humano esquelético | **PENDENTE** | Rig atual continua procedural por pivôs; não há esqueleto externo, skinning completo ou mocap |
+| Valdirene e animações | **PARCIAL** | Blending procedural existente preservado; não há nova animação de busca específica de armário nem mocap |
+| Modelos e ambientes PBR/LOD | **PENDENTE** | Esta etapa acrescentou detalhes funcionais às portas/gavetas; não substitui o pipeline de arte final |
+| Salvamentos antigos | **PARCIAL** | Campos novos são opcionais; saves anteriores sem `mechanisms` continuam carregando sem restaurar estados inexistentes |
+| Testes automatizados | **NÃO VALIDADO** | Foram adicionados quatro testes unitários de mecanismos; execução do workflow correspondente ainda precisa terminar |
+| Teste visual prolongado no Windows | **NÃO VALIDADO** | Não foi executado nesta sessão |
+| Benchmark RTX 3050 Laptop 6 GB | **NÃO VALIDADO** | Nenhum FPS, frame time, RAM ou VRAM foi medido; não há números estimados apresentados como medição |
+
+### Arquivos desta etapa
+- Criado `mechanisms.js`: motor de estados, animação, travas opcionais e snapshot/restore.
+- Criado `tests/mechanisms.test.cjs`: testes de gaveta, dobradiça, chave, ID único, restauração e limites.
+- Modificado `index.html`: criação de portas e gavetas nos armários existentes, interação por proximidade, áudio, colisores e persistência.
+- Este relatório atualizado com o estado real, sem elevar itens parciais a concluídos.
+
+### Limitações e riscos ainda abertos
+1. As portas e gavetas foram integradas aos armários existentes, mas não há itens coletáveis gerados dentro delas.
+2. O inventário atual do jogo não possui uma coleção de chaves; por isso, a capacidade de cadeado do motor é testada isoladamente, não usada numa missão.
+3. O sistema não cria automaticamente mecanismos de história, disjuntores ou alavancas: esses elementos exigem objetivos e efeitos narrativos específicos por capítulo.
+4. A colisão das portas/gavetas usa OBB 2D no plano do cenário, coerente com a arquitetura atual; não é colisão rígida 6DOF.
+5. A qualidade visual geral, rig esquelético, física de rampas/escadas e otimização GPU continuam sem implementação/validação suficientes.
+6. Os novos estados de mecanismo só podem ser considerados validados após CI e playtest no executável Windows.
+
+### Estado da operação
+**A operação permanece aberta.** A integração de portas e gavetas é um avanço funcional, não a conclusão absoluta solicitada. CI, validação visual real no Windows e benchmark físico da RTX 3050 ainda são critérios bloqueadores.
