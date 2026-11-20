@@ -7,7 +7,7 @@ function createWindow() {
     height: 800,
     minWidth: 960,
     minHeight: 600,
-    title: "Ela Não Aceita o Fim",
+    title: "Não Me Deixa no Visto",
     backgroundColor: "#000000",
     autoHideMenuBar: true,
     show: false,
