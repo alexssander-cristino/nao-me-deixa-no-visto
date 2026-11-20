@@ -1,99 +1,119 @@
-/* Não Me Deixa no Visto — colisão 2.5D determinística.
- * Círculo de jogador contra caixas orientadas, substeps e resolução de penetração.
- * O jogo mantém o eixo vertical fixo; gravidade de cenário não é simulada nesta camada.
+/* Não Me Deixa no Visto — física determinística de colisão e corpos rígidos.
+ * O player usa colisão circular 2.5D contra OBBs; props usam solver AABB 3D
+ * com passo fixo, amortecimento, fricção, restituição e sono de corpos.
+ * Não é um solver 6DOF: as limitações são explícitas para evitar falsa precisão.
  */
 (function(root){
   "use strict";
   const EPS=1e-7;
+  const finite=(v,f=0)=>Number.isFinite(v)?v:f;
+  const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
+
   class PhysicsWorld{
     constructor(options={}){
       this.cellSize=options.cellSize||4;
-      this.colliders=[];
-      this.byId=new Map();
-      this.nextId=1;
-      this.maxSubstep=options.maxSubstep||.16;
-      this.iterations=options.iterations||5;
+      this.colliders=[];this.byId=new Map();this.nextId=1;
+      this.maxSubstep=Math.max(.025,finite(options.maxSubstep,.12));
+      this.iterations=Math.max(1,Math.floor(finite(options.iterations,6)));
       this.stats={tests:0,resolutions:0,substeps:0};
     }
-    clear(){this.colliders.length=0;this.byId.clear();this.stats.tests=0;this.stats.resolutions=0;this.stats.substeps=0;}
+    clear(){
+      this.colliders.length=0;this.byId.clear();this.nextId=1;
+      this.stats.tests=0;this.stats.resolutions=0;this.stats.substeps=0;
+    }
     addOBB(x,z,hx,hz,angle=0,tag="solid",dynamic=false){
-      const c={id:this.nextId++,x,z,hx:Math.max(.01,hx),hz:Math.max(.01,hz),angle,tag,dynamic,active:true};
+      const c={id:this.nextId++,x:finite(x),z:finite(z),hx:Math.max(.01,finite(hx,.01)),
+        hz:Math.max(.01,finite(hz,.01)),angle:finite(angle),tag,dynamic:!!dynamic,active:true};
       this.colliders.push(c);this.byId.set(c.id,c);return c.id;
     }
-    addAABB(x,z,hx,hz,tag="solid"){
-      return this.addOBB(x,z,hx,hz,0,tag,false);
-    }
+    addAABB(x,z,hx,hz,tag="solid"){return this.addOBB(x,z,hx,hz,0,tag,false)}
     updateOBB(id,x,z,hx,hz,angle){
       const c=this.byId.get(id);if(!c)return false;
-      c.x=x;c.z=z;if(hx!=null)c.hx=Math.max(.01,hx);if(hz!=null)c.hz=Math.max(.01,hz);if(angle!=null)c.angle=angle;
+      c.x=finite(x,c.x);c.z=finite(z,c.z);
+      if(hx!=null)c.hx=Math.max(.01,finite(hx,c.hx));
+      if(hz!=null)c.hz=Math.max(.01,finite(hz,c.hz));
+      if(angle!=null)c.angle=finite(angle,c.angle);
       return true;
     }
-    remove(id){const c=this.byId.get(id);if(!c)return false;c.active=false;this.byId.delete(id);return true;}
+    remove(id){
+      const c=this.byId.get(id);if(!c)return false;
+      c.active=false;this.byId.delete(id);return true;
+    }
     _local(c,x,z){
       const dx=x-c.x,dz=z-c.z,co=Math.cos(c.angle),si=Math.sin(c.angle);
       return {x:dx*co+dz*si,z:-dx*si+dz*co};
     }
-    _world(c,x,z){
-      const co=Math.cos(c.angle),si=Math.sin(c.angle);
-      return {x:c.x+x*co-z*si,z:c.z+x*si+z*co};
-    }
     _resolveCircle(pos,r,c){
       this.stats.tests++;
       const p=this._local(c,pos.x,pos.z);
-      const qx=Math.max(-c.hx,Math.min(c.hx,p.x));
-      const qz=Math.max(-c.hz,Math.min(c.hz,p.z));
-      let dx=p.x-qx,dz=p.z-qz,d2=dx*dx+dz*dz;
+      const qx=clamp(p.x,-c.hx,c.hx),qz=clamp(p.z,-c.hz,c.hz);
+      const dx=p.x-qx,dz=p.z-qz,d2=dx*dx+dz*dz;
       if(d2>=r*r-EPS)return false;
       let nx,nz,depth;
       if(d2>EPS){
         const d=Math.sqrt(d2);nx=dx/d;nz=dz/d;depth=r-d;
       }else{
         const px=c.hx-Math.abs(p.x),pz=c.hz-Math.abs(p.z);
-        if(px<pz){nx=p.x<0?-1:1;nz=0;depth=r+px;}
-        else{nx=0;nz=p.z<0?-1:1;depth=r+pz;}
+        if(px<pz){nx=p.x<0?-1:1;nz=0;depth=r+px}
+        else{nx=0;nz=p.z<0?-1:1;depth=r+pz}
       }
       const co=Math.cos(c.angle),si=Math.sin(c.angle);
       pos.x+=(nx*co-nz*si)*(depth+1e-4);
       pos.z+=(nx*si+nz*co)*(depth+1e-4);
-      this.stats.resolutions++;
-      return true;
+      this.stats.resolutions++;return true;
     }
     _nearby(x,z,r){
-      const reach=r+5;
-      return this.colliders.filter(c=>c.active&&Math.abs(c.x-x)<reach+c.hx+c.hz&&Math.abs(c.z-z)<reach+c.hx+c.hz);
+      const candidates=[];
+      for(const c of this.colliders){
+        if(!c.active)continue;
+        // AABB conservador do OBB rotacionado: evita perder portas diagonais.
+        const co=Math.abs(Math.cos(c.angle)),si=Math.abs(Math.sin(c.angle));
+        const ex=c.hx*co+c.hz*si,ez=c.hx*si+c.hz*co;
+        if(Math.abs(c.x-x)<=r+ex&&Math.abs(c.z-z)<=r+ez)candidates.push(c);
+      }
+      return candidates;
     }
     moveCircle(pos,dx,dz,r=.38,options={}){
-      const startX=pos.x,startZ=pos.z;
+      const startX=finite(pos.x),startZ=finite(pos.z);
+      dx=finite(dx);dz=finite(dz);r=Math.max(.01,finite(r,.38));
       const length=Math.hypot(dx,dz);
       const steps=Math.max(1,Math.ceil(length/this.maxSubstep));
       const sx=dx/steps,sz=dz/steps;
-      const candidates=this._nearby(pos.x+dx*.5,pos.z+dz*.5,r+length*.5);
+      // O swept bounds cobre todo o deslocamento; candidatos permanecem estáveis
+      // durante os substeps, evitando tunneling em movimentos rápidos.
+      const midX=startX+dx*.5,midZ=startZ+dz*.5;
+      const candidates=this._nearby(midX,midZ,Math.hypot(dx,dz)*.5+r);
       for(let step=0;step<steps;step++){
         pos.x+=sx;pos.z+=sz;this.stats.substeps++;
         for(let pass=0;pass<this.iterations;pass++){
           let changed=false;
           for(const c of candidates){
             if(options.ignoreTag&&c.tag===options.ignoreTag)continue;
+            if(options.ignoreTags&&options.ignoreTags.includes(c.tag))continue;
             if(this._resolveCircle(pos,r,c))changed=true;
           }
           if(!changed)break;
         }
       }
-      return {x:pos.x-startX,z:pos.z-startZ,blockedX:Math.abs(dx-(pos.x-startX))>.005,blockedZ:Math.abs(dz-(pos.z-startZ))>.005};
+      const actualX=pos.x-startX,actualZ=pos.z-startZ;
+      // Bloqueio por eixo, não "qualquer colisão": o controlador pode zerar
+      // apenas a componente impedida e preservar o deslizamento tangencial.
+      return {x:actualX,z:actualZ,blockedX:Math.abs(dx-actualX)>.005,
+        blockedZ:Math.abs(dz-actualZ)>.005};
     }
     overlapsCircle(x,z,r=.38,tag){
       const p={x,z};
       for(const c of this._nearby(x,z,r)){
         if(tag&&c.tag!==tag)continue;
         const beforeX=p.x,beforeZ=p.z;
-        if(this._resolveCircle(p,r,c)){p.x=beforeX;p.z=beforeZ;return true;}
+        if(this._resolveCircle(p,r,c)){p.x=beforeX;p.z=beforeZ;return true}
       }
       return false;
     }
     raycast(x1,z1,x2,z2,options={}){
       const dx=x2-x1,dz=z2-z1,len=Math.hypot(dx,dz);
-      const step=Math.max(.08,options.step||.16),n=Math.ceil(len/step);
-      const radius=options.radius||.035;
+      const step=Math.max(.04,options.step||.12),n=Math.max(1,Math.ceil(len/step));
+      const radius=Math.max(.005,options.radius||.035);
       const p={x:x1,z:z1};
       for(let i=1;i<=n;i++){
         p.x=x1+dx*i/n;p.z=z1+dz*i/n;
@@ -106,33 +126,49 @@
       return {hit:false,t:1,x:x2,z:z2};
     }
   }
+
   class RigidBodyWorld{
     constructor(options={}){
-      this.gravity=options.gravity||9.81;
-      this.fixedStep=options.fixedStep||1/60;
-      this.maxSubSteps=options.maxSubSteps||8;
+      this.gravity=finite(options.gravity,9.81);
+      this.fixedStep=Math.max(1/240,finite(options.fixedStep,1/60));
+      this.maxSubSteps=Math.max(1,Math.floor(finite(options.maxSubSteps,8)));
+      this.maxFrameDelta=Math.max(this.fixedStep,finite(options.maxFrameDelta,.1));
+      this.sleepDelay=Math.max(.1,finite(options.sleepDelay,.65));
+      this.sleepSpeed=Math.max(.001,finite(options.sleepSpeed,.045));
       this.accumulator=0;this.bodies=[];this.statics=[];this.nextBodyId=1;
-      this.stats={steps:0,contacts:0};
+      this.stats={steps:0,contacts:0,sleeping:0};
     }
-    clear(){this.accumulator=0;this.bodies.length=0;this.statics.length=0;this.stats.steps=0;this.stats.contacts=0;}
-    addStaticBox(box){
-      const b={x:box.x||0,y:box.y||0,z:box.z||0,hx:box.hx,hy:box.hy,hz:box.hz,tag:box.tag||"static"};
+    clear(){
+      this.accumulator=0;this.bodies.length=0;this.statics.length=0;this.nextBodyId=1;
+      this.stats.steps=0;this.stats.contacts=0;this.stats.sleeping=0;
+    }
+    addStaticBox(box={}){
+      const b={x:finite(box.x),y:finite(box.y),z:finite(box.z),
+        hx:Math.max(.001,finite(box.hx,.5)),hy:Math.max(.001,finite(box.hy,.5)),
+        hz:Math.max(.001,finite(box.hz,.5)),tag:box.tag||"static"};
       this.statics.push(b);return b;
     }
     addBody(options={}){
-      const mass=Math.max(.01,options.mass||1),p=options.position||{};
-      const b={id:this.nextBodyId++,x:p.x||0,y:p.y||0,z:p.z||0,
-        vx:0,vy:0,vz:0,rotation:options.rotation||0,angularVelocity:0,
-        hx:options.halfExtents?.x||.15,hy:options.halfExtents?.y||.15,hz:options.halfExtents?.z||.15,
-        mass,invMass:1/mass,restitution:options.restitution??.12,friction:options.friction??.72,
-        grounded:false,active:true,userData:options.userData||null};
+      const p=options.position||{},h=options.halfExtents||{};
+      const mass=Math.max(.01,finite(options.mass,1));
+      const b={id:this.nextBodyId++,x:finite(p.x),y:finite(p.y),z:finite(p.z),
+        vx:0,vy:0,vz:0,rotation:finite(options.rotation),angularVelocity:0,
+        hx:Math.max(.025,finite(h.x,.15)),hy:Math.max(.025,finite(h.y,.15)),hz:Math.max(.025,finite(h.z,.15)),
+        mass,invMass:1/mass,restitution:clamp(finite(options.restitution,.12),0,1),
+        friction:clamp(finite(options.friction,.72),0,1.5),
+        linearDamping:Math.max(0,finite(options.linearDamping,.12)),
+        angularDamping:Math.max(0,finite(options.angularDamping,.3)),
+        grounded:false,active:true,sleeping:false,sleepTime:0,userData:options.userData||null};
       this.bodies.push(b);return b;
     }
-    applyImpulse(bodyOrId,impulse){
+    _wake(b){b.sleeping=false;b.sleepTime=0}
+    applyImpulse(bodyOrId,impulse={}){
       const b=typeof bodyOrId==="object"?bodyOrId:this.bodies.find(v=>v.id===bodyOrId);
       if(!b||!b.active)return false;
-      b.vx+=(impulse.x||0)*b.invMass;b.vy+=(impulse.y||0)*b.invMass;b.vz+=(impulse.z||0)*b.invMass;
-      if(impulse.angular)b.angularVelocity+=impulse.angular*b.invMass;
+      this._wake(b);
+      b.vx+=finite(impulse.x)*b.invMass;b.vy+=finite(impulse.y)*b.invMass;
+      b.vz+=finite(impulse.z)*b.invMass;
+      if(impulse.angular)b.angularVelocity+=finite(impulse.angular)*b.invMass;
       b.grounded=false;return true;
     }
     removeBody(bodyOrId){
@@ -144,54 +180,86 @@
       const oy=body.hy+box.hy-Math.abs(body.y-box.y);
       const oz=body.hz+box.hz-Math.abs(body.z-box.z);
       if(ox<=0||oy<=0||oz<=0)return false;
-      let axis="x",depth=ox;if(oy<depth){axis="y";depth=oy}if(oz<depth){axis="z";depth=oz}
+      let axis="x",depth=ox;
+      if(oy<depth){axis="y";depth=oy}
+      if(oz<depth){axis="z";depth=oz}
       const sign=body[axis]>=box[axis]?1:-1;
       body[axis]+=sign*(depth+1e-4);
-      const velocity="v"+axis;
-      if(body[velocity]*sign<0)body[velocity]=-body[velocity]*body.restitution;
+      const velocity="v"+axis,normalSpeed=body[velocity]*sign;
+      if(normalSpeed<0){
+        const restitution=Math.abs(normalSpeed)>.35?body.restitution:0;
+        body[velocity]-=(1+restitution)*normalSpeed;
+      }
       if(axis==="y"&&sign>0){
         body.grounded=true;
-        body.vx*=Math.max(0,1-body.friction*this.fixedStep*8);
-        body.vz*=Math.max(0,1-body.friction*this.fixedStep*8);
+        const damp=Math.max(0,1-body.friction*this.fixedStep*8);
+        body.vx*=damp;body.vz*=damp;
       }
-      this.stats.contacts++;return true;
+      this._wake(body);this.stats.contacts++;return true;
     }
     _pair(a,b){
       const ox=a.hx+b.hx-Math.abs(a.x-b.x),oy=a.hy+b.hy-Math.abs(a.y-b.y),oz=a.hz+b.hz-Math.abs(a.z-b.z);
       if(ox<=0||oy<=0||oz<=0)return;
-      let axis="x",depth=ox;if(oy<depth){axis="y";depth=oy}if(oz<depth){axis="z";depth=oz}
-      const sign=a[axis]>=b[axis]?1:-1,inv=a.invMass+b.invMass;
-      a[axis]+=sign*(depth*a.invMass/inv);
-      b[axis]-=sign*(depth*b.invMass/inv);
+      let axis="x",depth=ox;
+      if(oy<depth){axis="y";depth=oy}
+      if(oz<depth){axis="z";depth=oz}
+      const inv=a.invMass+b.invMass;if(inv<=0)return;
+      const sign=a[axis]>=b[axis]?1:-1;
+      const correction=Math.max(0,depth-.001)*.82/inv;
+      a[axis]+=sign*correction*a.invMass;b[axis]-=sign*correction*b.invMass;
       const va="v"+axis,rel=(a[va]-b[va])*sign;
-      if(rel<0){const impulse=-(1+Math.min(a.restitution,b.restitution))*rel/inv;a[va]+=sign*impulse*a.invMass;b[va]-=sign*impulse*b.invMass}
-      this.stats.contacts++;
+      if(rel<0){
+        const e=Math.abs(rel)>.35?Math.min(a.restitution,b.restitution):0;
+        const impulse=-(1+e)*rel/inv;
+        a[va]+=sign*impulse*a.invMass;b[va]-=sign*impulse*b.invMass;
+      }
+      this._wake(a);this._wake(b);this.stats.contacts++;
     }
     _tick(dt){
       for(const b of this.bodies){
-        if(!b.active)continue;
+        if(!b.active||b.sleeping)continue;
         b.grounded=false;b.vy-=this.gravity*dt;
         b.x+=b.vx*dt;b.y+=b.vy*dt;b.z+=b.vz*dt;
         b.rotation+=b.angularVelocity*dt;
-        if(b.y-b.hy<0){b.y=b.hy;if(b.vy<0)b.vy=-b.vy*b.restitution;b.grounded=true;b.vx*=Math.max(0,1-b.friction*dt*8);b.vz*=Math.max(0,1-b.friction*dt*8)}
-        for(let pass=0;pass<3;pass++){
+        const linear=Math.exp(-b.linearDamping*dt),angular=Math.exp(-b.angularDamping*dt);
+        b.vx*=linear;b.vy*=linear;b.vz*=linear;b.angularVelocity*=angular;
+        if(b.y-b.hy<0){
+          b.y=b.hy;
+          if(b.vy<0){const e=Math.abs(b.vy)>.35?b.restitution:0;b.vy=-b.vy*e}
+          b.grounded=true;
+          const friction=Math.max(0,1-b.friction*dt*8);
+          b.vx*=friction;b.vz*=friction;
+        }
+        for(let pass=0;pass<4;pass++){
           let changed=false;
           for(const wall of this.statics)if(this._contact(b,wall))changed=true;
           if(!changed)break;
         }
       }
       for(let i=0;i<this.bodies.length;i++)for(let j=i+1;j<this.bodies.length;j++){
-        const a=this.bodies[i],b=this.bodies[j];if(a.active&&b.active)this._pair(a,b);
+        const a=this.bodies[i],b=this.bodies[j];
+        if(a.active&&b.active&&!a.sleeping&&!b.sleeping)this._pair(a,b);
+        else if(a.active&&b.active&&a.sleeping!==b.sleeping)this._pair(a,b);
+      }
+      for(const b of this.bodies){
+        if(!b.active)continue;
+        const speed=Math.hypot(b.vx,b.vy,b.vz)+Math.abs(b.angularVelocity)*.25;
+        if(b.grounded&&speed<this.sleepSpeed){
+          b.sleepTime+=dt;
+          if(b.sleepTime>=this.sleepDelay){
+            b.sleeping=true;b.vx=b.vy=b.vz=b.angularVelocity=0;this.stats.sleeping++;
+          }
+        }else{b.sleepTime=0;b.sleeping=false}
       }
       this.stats.steps++;
     }
     step(dt){
-      this.accumulator+=Math.min(.1,Math.max(0,dt||0));
+      this.accumulator+=clamp(finite(dt),0,this.maxFrameDelta);
       let n=0;
       while(this.accumulator>=this.fixedStep&&n<this.maxSubSteps){
         this._tick(this.fixedStep);this.accumulator-=this.fixedStep;n++;
       }
-      if(n===this.maxSubSteps)this.accumulator=0;
+      if(n===this.maxSubSteps&&this.accumulator>=this.fixedStep)this.accumulator=0;
       return n;
     }
   }
