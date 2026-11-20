@@ -46,6 +46,7 @@ label{display:flex;gap:10px;align-items:center;justify-content:space-between;wid
 <script src="./enemy-animation.js"></script>
 <script src="./enemy-ai.js"></script>
 <script src="./loading-manager.js"></script>
+<script src="./mechanisms.js"></script>
 <script>
 const $=i=>document.getElementById(i),R=Math.random,P=Math.PI,pk=a=>a[0|R()*a.length];
 let S={vol:.7,sens:.85,sensX:.85,sensY:.85,invertY:false,headBob:true,reduceCameraEffects:false,fpsLimit:0,resolution:'1280x800',bri:1,diff:'normal',quality:'high',fov:76};
@@ -356,19 +357,19 @@ else if(it.k=='N'){lore++;note(NT[lv],9000)}else if(it.k=='X'){sec=1;note(XT,900
 function hide(w){pl.hid=w;pl.px=pl.x;pl.pz=pl.z;pl.x=w.x;pl.z=w.z;w.m.visible=false;$('hd').style.display='block';th(120,.2,.4)}
 function unhide(){const w=pl.hid;w.m.visible=true;pl.hid=null;pl.x=pl.px;pl.z=pl.pz;$('hd').style.display='none'}
 function inventory(open){if(state!=="play")return;const panel=$("iv");if(open){modal=1;const lines=["OBJETIVO: "+pl.got+"/"+pl.need+" "+L[lv].o,"PISTAS LIDAS: "+lore,"BATERIA: "+Math.ceil(pl.bat)+"%","LANTERNA: "+(pl.on&&pl.bat>0?"ligada":"desligada"),"SEGREDO: "+(sec?"encontrado":"não encontrado"),"","As pistas ficam registradas aqui. Continue explorando."];$("ivContent").textContent=lines.join("\n");sh("iv",1);document.exitPointerLock&&document.exitPointerLock()}else{sh("iv",0);modal=0;if(!paused)lock()}}
-function act(){if(pl.hid)return unhide();if(!tg)return;pl.actionTime=.46;pl.actionType=tg.t;if(tg.t=='i')pick(tg.o);else if(tg.t=='h')hide(tg.o);else odoor(tg.o,tg.o.o?0:1)}
+function act(){if(pl.hid)return unhide();if(!tg)return;pl.actionTime=.46;pl.actionType=tg.t;if(tg.t==='mechanism'){const result=mechanismSystem.toggle(tg.o.id,mechanismInventory);if(!result.ok){sub(result.reason==='locked'?'Está trancado. Falta a chave.':'Não é possível usar agora.',2200);return}emitNoise(tg.o.x,tg.o.z,8,'mechanism');saveProgress(null,true);return}if(tg.t=='i')pick(tg.o);else if(tg.t=='h')hide(tg.o);else odoor(tg.o,tg.o.o?0:1)}
 
-function captureSavePayload(){return {schema:3,chapter:lv,lore:lore,secret:sec,player:{x:pl.x,z:pl.z,feetY:pl.feetY||0,yaw:pl.y,pitch:pl.p,stamina:pl.st,battery:pl.bat,flashlight:pl.on,got:pl.got,crouch:!!pl.crouch},settings:{difficulty:S.diff,quality:S.quality,fov:S.fov,sensX:S.sensX,sensY:S.sensY,invertY:S.invertY,headBob:S.headBob,reduceCameraEffects:S.reduceCameraEffects,fpsLimit:S.fpsLimit},collected:(SG&&SG.collected)||[],openDoors:Object.keys(doors).filter(k=>doors[k].o),elapsed:elapsedGameSeconds,entity:V?{x:V.x,z:V.z,st:V.st,t:V.t,lost:V.lost,last:Array.isArray(V.last)?V.last.slice(0,2):null,route:Array.isArray(V.route)?V.route.slice(0,2):null,heard:V.heard}:null};}
+function captureSavePayload(){return {schema:4,mechanisms:mechanismSystem.serialize(),chapter:lv,lore:lore,secret:sec,player:{x:pl.x,z:pl.z,feetY:pl.feetY||0,yaw:pl.y,pitch:pl.p,stamina:pl.st,battery:pl.bat,flashlight:pl.on,got:pl.got,crouch:!!pl.crouch},settings:{difficulty:S.diff,quality:S.quality,fov:S.fov,sensX:S.sensX,sensY:S.sensY,invertY:S.invertY,headBob:S.headBob,reduceCameraEffects:S.reduceCameraEffects,fpsLimit:S.fpsLimit},collected:(SG&&SG.collected)||[],openDoors:Object.keys(doors).filter(k=>doors[k].o),elapsed:elapsedGameSeconds,entity:V?{x:V.x,z:V.z,st:V.st,t:V.t,lost:V.lost,last:Array.isArray(V.last)?V.last.slice(0,2):null,route:Array.isArray(V.route)?V.route.slice(0,2):null,heard:V.heard}:null};}
 function writeSaveSlot(slot){const result=GameSaveSystem.write(slot,captureSavePayload(),{chapter:L[lv].n,objective:pl.got+"/"+pl.need,elapsed:Math.floor(elapsedGameSeconds)});if(!result.ok){sub("Falha ao salvar: "+result.error,4500);return false}activeSaveSlot=slot;try{localStorage.setItem('ndmvv.activeSaveSlot',String(slot))}catch(e){}return true;}
 function openSlots(mode){slotReturn=paused?"pause":state==="play"?"play":"menu";modal=1;renderSaveSlots(mode);sh("slots",1);if(document.pointerLockElement)document.exitPointerLock();}
 function closeSlots(){sh("slots",0);modal=0;if(slotReturn==="pause")sh("pa",1);else if(slotReturn==="play"&&state==="play"&&!paused)lock();}
 function renderSaveSlots(mode){$("slotsTitle").textContent=mode==="save"?"SALVAR JOGO":"CARREGAR JOGO";const list=$("slotList");list.replaceChildren();for(const slot of GameSaveSystem.readAll()){const row=document.createElement("div");row.style.cssText="border:1px solid #5d2528;background:#100909;padding:12px;text-align:left;display:flex;align-items:center;gap:10px;flex-wrap:wrap";const info=document.createElement("span");info.style.cssText="flex:1;min-width:180px;font-size:14px";info.textContent=slot.occupied?"SLOT "+slot.slot+" · "+((slot.metadata&&slot.metadata.chapter)||"Capítulo")+" · "+new Date(slot.savedAt).toLocaleString("pt-BR"):"SLOT "+slot.slot+" · "+(slot.corrupted?"Corrompido":"Vazio");row.append(info);if(mode==="load"&&slot.occupied){const load=document.createElement("button");load.textContent="Carregar";load.style.minWidth="100px";load.onclick=()=>loadSaveSlot(slot.slot);row.append(load)}if(mode==="save"){const save=document.createElement("button");save.textContent=slot.occupied?"Sobrescrever":"Salvar";save.style.minWidth="100px";save.onclick=()=>{if(slot.occupied&&!confirm("Sobrescrever o slot "+slot.slot+"?"))return;if(writeSaveSlot(slot.slot)){renderSaveSlots(mode);sub("Jogo salvo no slot "+slot.slot,2500)}};row.append(save)}if(slot.occupied||slot.corrupted){const del=document.createElement("button");del.textContent="Excluir";del.style.minWidth="85px";del.onclick=()=>{if(!confirm("Excluir o slot "+slot.slot+"?"))return;const result=GameSaveSystem.remove(slot.slot);if(!result.ok){sub("Falha ao excluir: "+result.error,4000);return}if(slot.slot===activeSaveSlot){SG=null;try{localStorage.removeItem("sg")}catch(e){}$("ct").style.display="none"}renderSaveSlots(mode)};row.append(del)}list.append(row)}}
-function loadSaveSlot(slot){const result=GameSaveSystem.read(slot);if(!result.ok){sub(result.error||"Salvamento indisponível",4000);return}const p=result.payload,u=p.player||{};const migrated=sanitizeSave({lv:p.chapter,lore:p.lore,sec:p.secret,got:u.got,bat:u.battery,st:u.stamina,on:u.flashlight,x:u.x,z:u.z,y:u.yaw,p:u.pitch,collected:p.collected,openDoors:p.openDoors,entity:p.entity});if(!migrated){sub("O salvamento está corrompido ou incompatível.",4500);return}SG=migrated;SG.settings=p.settings&&typeof p.settings==='object'?p.settings:null;SG.playerState={feetY:Number.isFinite(u.feetY)?Math.max(0,Math.min(20,u.feetY)):0,crouch:!!u.crouch};elapsedGameSeconds=Number(p.elapsed)||0;activeSaveSlot=slot;try{localStorage.setItem('ndmvv.activeSaveSlot',String(slot))}catch(e){}resumeCheckpoint=1;sh("slots",0);sh("mn",0);sh("pa",0);sh("go",0);$("hud").style.display="block";paused=0;modal=0;ai();go(SG.lv);lock();}
+function loadSaveSlot(slot){const result=GameSaveSystem.read(slot);if(!result.ok){sub(result.error||"Salvamento indisponível",4000);return}const p=result.payload,u=p.player||{};const migrated=sanitizeSave({lv:p.chapter,lore:p.lore,sec:p.secret,got:u.got,bat:u.battery,st:u.stamina,on:u.flashlight,x:u.x,z:u.z,y:u.yaw,p:u.pitch,collected:p.collected,openDoors:p.openDoors,entity:p.entity});if(!migrated){sub("O salvamento está corrompido ou incompatível.",4500);return}SG=migrated;SG.settings=p.settings&&typeof p.settings==='object'?p.settings:null;SG.mechanisms=Array.isArray(p.mechanisms)?p.mechanisms:[];SG.playerState={feetY:Number.isFinite(u.feetY)?Math.max(0,Math.min(20,u.feetY)):0,crouch:!!u.crouch};elapsedGameSeconds=Number(p.elapsed)||0;activeSaveSlot=slot;try{localStorage.setItem('ndmvv.activeSaveSlot',String(slot))}catch(e){}resumeCheckpoint=1;sh("slots",0);sh("mn",0);sh("pa",0);sh("go",0);$("hud").style.display="block";paused=0;modal=0;ai();go(SG.lv);lock();}
 function showCredits(){alert("NÃO ME DEIXA NO VISTO\n\nDesenvolvimento independente.\nEngine: Three.js · Electron.");}
 function quitGame(){window.close();}
 
-function saveProgress(item,keep){const prev=keep&&SG&&SG.lv===lv?SG:{},collected=new Set(prev.collected||[]);if(item)collected.add(item.k+':'+item.x+':'+item.z);SG={lv,lore,sec,got:pl.got,bat:pl.bat,st:pl.st,on:pl.on,x:pl.x,z:pl.z,y:pl.y,p:pl.p,collected:[...collected],openDoors:Object.keys(doors).filter(k=>doors[k].o),entity:V?{x:V.x,z:V.z,st:V.st,t:V.t,lost:V.lost,last:V.last}:null};baseL=lore;baseS=sec;try{localStorage.setItem('sg',JSON.stringify(SG))}catch(e){}writeSaveSlot(activeSaveSlot);}
-function load(n){lv=n;const resumed=!!(resumeCheckpoint&&SG&&SG.lv===n);if(resumed&&SG.settings){const saved=SG.settings;S.diff=['easy','normal','hard'].includes(saved.difficulty)?saved.difficulty:S.diff;S.quality=['low','medium','high'].includes(saved.quality)?saved.quality:S.quality;S.fov=Number.isFinite(saved.fov)?Math.max(60,Math.min(110,saved.fov)):S.fov;S.sensX=Number.isFinite(saved.sensX)?Math.max(.2,Math.min(2.5,saved.sensX)):S.sensX;S.sensY=Number.isFinite(saved.sensY)?Math.max(.2,Math.min(2.5,saved.sensY)):S.sensY;S.invertY=!!saved.invertY;S.headBob=saved.headBob!==false;S.reduceCameraEffects=!!saved.reduceCameraEffects;S.fpsLimit=[0,30,60,90,120].includes(saved.fpsLimit)?saved.fpsLimit:0;if($('diff'))$('diff').value=S.diff;if($('quality'))$('quality').value=S.quality;if($('fov'))$('fov').value=String(S.fov);applyGraphics()}build(n);if(resumed){const totalNeed=pl.need,collected=new Set(SG.collected||[]);items=items.filter(it=>{const key=it.k+':'+it.x+':'+it.z;if(collected.has(key)){scene.remove(it.m);return false}return true});pl.got=Number(SG.got)||0;pl.need=totalNeed;pl.bat=Number.isFinite(SG.bat)?SG.bat:100;pl.st=Number.isFinite(SG.st)?SG.st:100;pl.on=SG.on===0?0:1;pl.x=Number.isFinite(SG.x)?SG.x:pl.x;pl.z=Number.isFinite(SG.z)?SG.z:pl.z;pl.y=Number.isFinite(SG.y)?SG.y:pl.y;pl.p=Number.isFinite(SG.p)?SG.p:pl.p;(SG.openDoors||[]).forEach(k=>{const d=doors[k];if(d){d.o=1;d.pv.rotation.y=d.sx?-1.5:1.5;updateDoorCollider(d)}});pl.feetY=SG.playerState?SG.playerState.feetY:0;pl.grounded=true;pl.velocity3D={x:0,y:0,z:0};pl.capsuleHeight=SG.playerState&&SG.playerState.crouch?1.18:1.72;pl.crouch=!!(SG.playerState&&SG.playerState.crouch);camera.position.set(pl.x,pl.feetY+(pl.capsuleHeight-.12),pl.z);camera.rotation.set(pl.p,pl.y,0);if(SG.entity&&V){V.x=SG.entity.x;V.z=SG.entity.z;V.st=SG.entity.st;V.t=SG.entity.t;V.lost=SG.entity.lost;V.last=SG.entity.last;if(vm){vm.position.set(V.x,0,V.z);vm.visible=!['dorm','relocate'].includes(V.st)}}}resumeCheckpoint=0;saveProgress(null,resumed);evT=30+R()*20;$('hd').style.display='none'}
+function saveProgress(item,keep){const prev=keep&&SG&&SG.lv===lv?SG:{},collected=new Set(prev.collected||[]);if(item)collected.add(item.k+':'+item.x+':'+item.z);SG={lv,lore,sec,got:pl.got,bat:pl.bat,st:pl.st,on:pl.on,x:pl.x,z:pl.z,y:pl.y,p:pl.p,collected:[...collected],openDoors:Object.keys(doors).filter(k=>doors[k].o),mechanisms:mechanismSystem.serialize(),entity:V?{x:V.x,z:V.z,st:V.st,t:V.t,lost:V.lost,last:V.last}:null};baseL=lore;baseS=sec;try{localStorage.setItem('sg',JSON.stringify(SG))}catch(e){}writeSaveSlot(activeSaveSlot);}
+function load(n){lv=n;const resumed=!!(resumeCheckpoint&&SG&&SG.lv===n);if(resumed&&SG.settings){const saved=SG.settings;S.diff=['easy','normal','hard'].includes(saved.difficulty)?saved.difficulty:S.diff;S.quality=['low','medium','high'].includes(saved.quality)?saved.quality:S.quality;S.fov=Number.isFinite(saved.fov)?Math.max(60,Math.min(110,saved.fov)):S.fov;S.sensX=Number.isFinite(saved.sensX)?Math.max(.2,Math.min(2.5,saved.sensX)):S.sensX;S.sensY=Number.isFinite(saved.sensY)?Math.max(.2,Math.min(2.5,saved.sensY)):S.sensY;S.invertY=!!saved.invertY;S.headBob=saved.headBob!==false;S.reduceCameraEffects=!!saved.reduceCameraEffects;S.fpsLimit=[0,30,60,90,120].includes(saved.fpsLimit)?saved.fpsLimit:0;if($('diff'))$('diff').value=S.diff;if($('quality'))$('quality').value=S.quality;if($('fov'))$('fov').value=String(S.fov);applyGraphics()}build(n);if(resumed&&Array.isArray(SG.mechanisms))mechanismSystem.restore(SG.mechanisms);if(resumed){const totalNeed=pl.need,collected=new Set(SG.collected||[]);items=items.filter(it=>{const key=it.k+':'+it.x+':'+it.z;if(collected.has(key)){scene.remove(it.m);return false}return true});pl.got=Number(SG.got)||0;pl.need=totalNeed;pl.bat=Number.isFinite(SG.bat)?SG.bat:100;pl.st=Number.isFinite(SG.st)?SG.st:100;pl.on=SG.on===0?0:1;pl.x=Number.isFinite(SG.x)?SG.x:pl.x;pl.z=Number.isFinite(SG.z)?SG.z:pl.z;pl.y=Number.isFinite(SG.y)?SG.y:pl.y;pl.p=Number.isFinite(SG.p)?SG.p:pl.p;(SG.openDoors||[]).forEach(k=>{const d=doors[k];if(d){d.o=1;d.pv.rotation.y=d.sx?-1.5:1.5;updateDoorCollider(d)}});pl.feetY=SG.playerState?SG.playerState.feetY:0;pl.grounded=true;pl.velocity3D={x:0,y:0,z:0};pl.capsuleHeight=SG.playerState&&SG.playerState.crouch?1.18:1.72;pl.crouch=!!(SG.playerState&&SG.playerState.crouch);camera.position.set(pl.x,pl.feetY+(pl.capsuleHeight-.12),pl.z);camera.rotation.set(pl.p,pl.y,0);if(SG.entity&&V){V.x=SG.entity.x;V.z=SG.entity.z;V.st=SG.entity.st;V.t=SG.entity.t;V.lost=SG.entity.lost;V.last=SG.entity.last;if(vm){vm.position.set(V.x,0,V.z);vm.visible=!['dorm','relocate'].includes(V.st)}}}resumeCheckpoint=0;saveProgress(null,resumed);evT=30+R()*20;$('hd').style.display='none'}
 function go(n){if(!Number.isInteger(n)||n<0||n>=L.length){sub('Capítulo inválido.',3000);return}state='tr';$('fd').style.opacity=1;const wrap=document.createElement('div'),spinner=document.createElement('div'),title=document.createElement('h1'),desc=document.createElement('p'),bar=document.createElement('div'),fill=document.createElement('i'),meta=document.createElement('div');spinner.className='loader';title.style.fontSize='32px';title.textContent=(n+1)+'. '+L[n].n;desc.textContent='Preparando cenário…';bar.className='loadbar';bar.append(fill);meta.className='loadmeta';meta.textContent='0% · 0/3';wrap.append(spinner,title,desc,bar,meta);$('fd').replaceChildren(wrap);const manager=new GameLoadingManager.LoadingManager();manager.run([{label:'Construindo cenário, modelos e colisões…',weight:4,run:()=>load(n)},{label:'Compilando materiais e iluminação…',weight:2,run:()=>{if(rd.compile)rd.compile(scene,camera)}},{label:'Renderizando o primeiro quadro…',weight:1,run:()=>rd.render(scene,camera)}],progress=>{desc.textContent=progress.error?'Falha ao carregar':progress.label;fill.style.width=progress.percent+'%';meta.textContent=progress.percent+'% · '+progress.completed+'/'+progress.total}).then(()=>{state='play';$('fd').style.opacity=0}).catch(error=>{state='menu';$('fd').style.opacity=1;desc.textContent='Falha ao carregar: '+(error&&error.message||'erro desconhecido');sub('Não foi possível carregar esta fase.',5000);console.error('Falha no carregamento da fase',error)})}
 function lock(){drag=0;mdown=0;try{if(!cv.requestPointerLock)throw new Error('Pointer Lock indisponível');const r=cv.requestPointerLock();if(r&&r.catch)r.catch(()=>{drag=1;mouseLook.setEnabled(false)})}catch(e){drag=1;mouseLook.setEnabled(false)}}
 const sh=(i,o)=>$(i).classList.toggle('on',!!o);
@@ -665,6 +666,62 @@ function syncAudioListener(){
     l.setOrientation(fx,0,fz,0,1,0);
   }
 }
+
+/* Mecanismos de cenário: portas articuladas e gavetas individuais por armário. */
+let mechanismSystem=new GameMechanisms.MechanismSystem();
+const mechanismInventory=[];
+function mechanismCoordinates(id){const m=/^wardrobe:([-0-9]+):([-0-9]+):/.exec(id);return m?{x:Number(m[1])/100,z:Number(m[2])/100}:{x:pl.x,z:pl.z};}
+function setupWardrobeMechanisms(){
+ mechanismSystem=new GameMechanisms.MechanismSystem();
+ for(const wardrobe of wards){
+  const base='wardrobe:'+Math.round(wardrobe.x*100)+':'+Math.round(wardrobe.z*100),group=wardrobe.m;
+  const wood=new THREE.MeshStandardMaterial({color:0x291b17,roughness:.88}),edge=new THREE.MeshStandardMaterial({color:0x76513a,roughness:.7}),brass=new THREE.MeshStandardMaterial({color:0x9a7748,metalness:.68,roughness:.32});
+  const add=(parent,geometry,material,x,y,z)=>{const mesh=new THREE.Mesh(geometry,material);mesh.position.set(x,y,z);mesh.castShadow=true;mesh.receiveShadow=true;parent.add(mesh);return mesh;};
+  for(const side of [-1,1]){
+   const pivot=new THREE.Group();pivot.position.set(side<0?-.55:.55,1.82,.79);group.add(pivot);
+   const offset=side<0?.54:-.54;
+   add(pivot,new THREE.BoxGeometry(1.08,1.35,.075),wood,offset,0,0);
+   add(pivot,new THREE.BoxGeometry(.91,1.17,.025),edge,offset,0,.052);
+   add(pivot,new THREE.SphereGeometry(.045,12,10),brass,side<0?1:-1,-.03,.095);
+   const collider=physics.addOBB(wardrobe.x,wardrobe.z+.84,.54,.055,0,'cabinet-door',true);
+   const update=()=>{const a=pivot.rotation.y,co=Math.cos(a),si=Math.sin(a),cx=wardrobe.x+(side<0?-.55:.55)+offset*co+.04*si,cz=wardrobe.z+.79-offset*si+.04*co;physics.updateOBB(collider,cx,cz,.54,.055,-a);};
+   mechanismSystem.register({id:base+':door:'+(side<0?'left':'right'),type:'hinge',label:'Porta do armário',object:pivot,axis:'rotation',component:'y',closed:0,open:side<0?1.02:-1.02,duration:.42,onUpdate:update,onToggle:(_item,open)=>{emitNoise(wardrobe.x,wardrobe.z,8,open?'cabinet-open':'cabinet-close');at(wardrobe.x,wardrobe.z,g=>nz(.2,open?190:125,.42,g,'lowpass'));}});
+  }
+  for(let row=0;row<2;row++){
+   const drawer=new THREE.Group();drawer.position.set(0,.43+row*.48,.82);group.add(drawer);
+   add(drawer,new THREE.BoxGeometry(1.72,.34,.34),wood,0,0,.12);
+   add(drawer,new THREE.BoxGeometry(1.62,.26,.035),edge,0,0,.30);
+   add(drawer,new THREE.BoxGeometry(.3,.045,.035),brass,0,.015,.33);
+   const collider=physics.addOBB(wardrobe.x,wardrobe.z+1,.86,.18,0,'cabinet-drawer',true);
+   const update=(_item,progress)=>physics.updateOBB(collider,wardrobe.x,wardrobe.z+.82+progress*.34,.86,.18,0);
+   mechanismSystem.register({id:base+':drawer:'+row,type:'drawer',label:row===0?'Gaveta inferior':'Gaveta superior',object:drawer,axis:'position',component:'z',closed:.82,open:1.16,duration:.3,onUpdate:update,onToggle:(_item,open)=>{emitNoise(wardrobe.x,wardrobe.z,7,open?'drawer-open':'drawer-close');at(wardrobe.x,wardrobe.z,g=>nz(.16,open?260:175,.35,g,'lowpass'));}});
+  }
+ }
+}
+const __buildWithMechanisms=build;
+build=function(n){__buildWithMechanisms(n);setupWardrobeMechanisms();};
+const __updateWithMechanisms=upd;
+upd=function(dt){
+ __updateWithMechanisms(dt);
+ mechanismSystem.update(dt);
+ if(pl.hid)return;
+ let best=null,bestDistance=2.65;
+ for(const item of mechanismSystem.items.values()){
+  const p=mechanismCoordinates(item.id),distance=Math.hypot(pl.x-p.x,pl.z-p.z);
+  if(distance<bestDistance){bestDistance=distance;best=item;}
+ }
+ if(best){
+  const p=mechanismCoordinates(best.id);
+  const currentDistance=tg&&tg.o?Math.hypot(pl.x-(tg.o.x||0),pl.z-(tg.o.z||0)):Infinity;
+  if(!tg||bestDistance<currentDistance){
+   tg={t:'mechanism',o:{id:best.id,x:p.x,z:p.z}};
+   $('pr').textContent='[E] '+(best.target?'fechar ':'abrir ')+best.label.toLowerCase();
+   $('reticle').style.transform='translate(-50%,-50%) scale(1.9)';$('reticle').style.borderColor='#e9bd78';
+  }
+ }
+};
+setupWardrobeMechanisms();
+
 const __updateSpatial = upd;
 upd = function(dt){
   __updateSpatial(dt);
