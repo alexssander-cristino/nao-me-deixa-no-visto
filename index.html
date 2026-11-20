@@ -88,7 +88,7 @@ function sanitizeSave(value){
 }
 let SG=null;try{SG=sanitizeSave(JSON.parse(localStorage.getItem('sg')||'null'))}catch(e){SG=null}
 let activeSaveSlot=1,elapsedGameSeconds=0,slotReturn='menu';try{activeSaveSlot=Math.max(1,Math.min(5,Number(localStorage.getItem('ndmvv.activeSaveSlot'))||1))}catch(e){}
-try{const initialSlot=GameSaveSystem.read(activeSaveSlot);if(initialSlot.ok){const p=initialSlot.payload,u=p.player||{};SG=sanitizeSave({lv:p.chapter,lore:p.lore,sec:p.secret,got:u.got,bat:u.battery,st:u.stamina,on:u.flashlight,x:u.x,z:u.z,y:u.yaw,p:u.pitch,collected:p.collected,openDoors:p.openDoors,entity:p.entity});elapsedGameSeconds=Number(p.elapsed)||0}}catch(e){}
+try{const initialSlot=GameSaveSystem.read(activeSaveSlot);if(initialSlot.ok){const p=initialSlot.payload,u=p.player||{};SG=sanitizeSave({lv:p.chapter,lore:p.lore,sec:p.secret,got:u.got,bat:u.battery,st:u.stamina,on:u.flashlight,x:u.x,z:u.z,y:u.yaw,p:u.pitch,collected:p.collected,openDoors:p.openDoors,entity:p.entity,keys:p.keys,mechanisms:p.mechanisms});SG.keys=Array.isArray(p.keys)?p.keys:[];SG.mechanisms=Array.isArray(p.mechanisms)?p.mechanisms:[];SG.settings=p.settings&&typeof p.settings==='object'?p.settings:null;SG.playerState={feetY:Number.isFinite(u.feetY)?Math.max(0,Math.min(20,u.feetY)):0,crouch:!!u.crouch};elapsedGameSeconds=Number(p.elapsed)||0}}catch(e){}
 const L=[
 {n:'A CASA',h:3.2,w:'#5a4636',f:'#2a2018',fg:0x060404,o:'peças da chave',i:'03h17. Bateria: 2%.\n47 chamadas perdidas de Valdirene.',
 g:['###############','#S..#.....#K..#','#...D.....D...#','#...#..H..#...#','##D####D###D###','#K..#.....#...#','#...D..N..D.B.#','#...#.....#...#','###D###D###D###','#H..D..E..D.K.#','###############'],
