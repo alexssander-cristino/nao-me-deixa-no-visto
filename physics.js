@@ -306,9 +306,8 @@
             if(!hit)continue;
             const top=b.y+b.hy;
             // Step onto low obstacles only while grounded/downward and with headroom.
-            if((grounded||velocity.y<=0)&&top>position.y+this.skin&&top-position.y<=this.stepHeight){
-              const canStand=top+height<=b.y+b.hy+height+this.skin;
-              if(canStand){position.y=top+this.skin;velocity.y=0;grounded=true;changed=true;continue}
+            if((grounded||velocity.y<=0)&&top>position.y+this.skin&&top-position.y<=this.stepHeight&&this.canFit({x:position.x,y:top+this.skin,z:position.z},{radius,height},statics)){
+              position.y=top+this.skin;velocity.y=0;grounded=true;changed=true;continue
             }
             position.x+=hit.nx*(hit.depth+this.skin);
             position.z+=hit.nz*(hit.depth+this.skin);
