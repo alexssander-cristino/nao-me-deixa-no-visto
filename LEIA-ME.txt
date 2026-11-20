@@ -55,3 +55,22 @@ O instalador do Windows (Squirrel) normalmente fica em:
 - Áudio espacial HRTF com posicionamento de fontes sonoras.
 - Valdirene reage aos ruídos de passos e corrida; agachar reduz o alcance de detecção.
 - A entidade pode desaparecer quando observada diretamente durante a patrulha.
+
+
+## Reconstrução técnica 2.0.0
+
+A versão 2.0 inicia a separação dos sistemas que antes estavam concentrados no HTML:
+
+- \`physics.js\`: colisão contínua 2.5D, círculos contra caixas orientadas, resolução de penetração, obstáculos móveis e raycast.
+- \`controller.js\`: controlador FPS reutilizável com aceleração, desaceleração, corrida, agachamento, altura de câmera amortecida e resposta às colisões.
+- \`models.js\`: modelo procedural de Valdirene com vestido em malha de revolução, cabelo em mechas, véu, detalhes faciais e pivôs de animação.
+- Materiais do cenário: texturas procedurais de 512 × 512, bump mapping e materiais PBR de alta rugosidade.
+- Portas: painéis com molduras, relevos, dobradiças e ferragens; seus colisores acompanham a rotação da folha.
+
+### Testes de física
+
+Execute \`npm test\` para rodar os testes de regressão da camada de colisão.
+
+### Limites desta etapa
+
+A física implementada é um controlador de colisão 2.5D para personagem e cenário, não um solver completo de corpos rígidos 3D. Objetos dinâmicos com massa, impulso, gravidade vertical, gavetas com trilhos e dobradiças simuladas ainda precisam de uma camada de corpos rígidos. A IA e a progressão narrativa originais foram preservadas nesta etapa. O jogo ainda precisa ser validado em execução no Electron e em diferentes GPUs.
