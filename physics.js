@@ -79,7 +79,7 @@
           if(!changed)break;
         }
       }
-      return {x:pos.x-startX,z:pos.z-startZ,blockedX:Math.abs(dx-(pos.x-startX))>.025,blockedZ:Math.abs(dz-(pos.z-startZ))>.025};
+      return {x:pos.x-startX,z:pos.z-startZ,blockedX:Math.abs(dx-(pos.x-startX))>.005,blockedZ:Math.abs(dz-(pos.z-startZ))>.005};
     }
     overlapsCircle(x,z,r=.38,tag){
       const p={x,z};
