@@ -702,6 +702,7 @@ const mechanismInventory=keyInventory.items;
 let breakerPoint={x:0,z:0},exitBreakerPoint={x:0,z:0},powerOn=false,exitPowerOn=false;
 function mechanismCoordinates(id){if(id.indexOf('breaker-exit:')===0)return exitBreakerPoint;if(id.indexOf('breaker:')===0)return breakerPoint;const m=/^wardrobe:([-0-9]+):([-0-9]+):(.+)$/.exec(id);if(!m)return{x:pl.x,z:pl.z};const x=Number(m[1])/100,z=Number(m[2])/100,kind=m[3];if(kind==='door:left')return{x:x-.55,z:z+.8};if(kind==='door:right')return{x:x+.55,z:z+.8};if(kind==='drawer:0')return{x:x-.3,z:z+1.12};if(kind==='drawer:1')return{x:x+.3,z:z+1.12};if(id.indexOf('breaker:')===0)return breakerPoint;return{x,z};}
 function setupWardrobeMechanisms(){
+ if(!scene||!Array.isArray(wards)||!wards.length)return;
  mechanismSystem=new GameMechanisms.MechanismSystem();powerOn=false;exitPowerOn=false;
  for(const wardrobe of wards){
   const base='wardrobe:'+Math.round(wardrobe.x*100)+':'+Math.round(wardrobe.z*100),group=wardrobe.m;
@@ -812,8 +813,6 @@ upd=function(dt){
   }
  }
 };
-setupWardrobeMechanisms();
-
 const __updateSpatial = upd;
 upd = function(dt){
   __updateSpatial(dt);
