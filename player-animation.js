@@ -30,7 +30,7 @@
       sphere(hand,skin,0,-.015,-.015,.065,.085,.045);
       for(let finger=0;finger<4;finger++){
         const x=(finger-1.5)*.027;
-        const f=add(hand,new THREE.CapsuleGeometry?.(0.01,0.04,3,6)||new THREE.SphereGeometry(.012,8,6),skin,x,-.075,-.018,.8,1.8,.8);
+        const f=add(hand,new THREE.SphereGeometry(.012,8,6),skin,x,-.075,-.018,.8,1.8,.8);
         f.rotation.x=-.12;
       }
       sphere(hand,skin,side*.055,-.035,.005,.022,.052,.025).rotation.z=side*.5;
