@@ -199,3 +199,14 @@ test("Electron main and preload scripts parse and use isolated IPC", () => {
   assert.match(preload, /contextBridge\.exposeInMainWorld/);
   assert.doesNotMatch(preload, /require\(["']node:|require\(["']fs/);
 });
+
+
+test("horizontal and vertical mouse settings are independently applied", () => {
+  const html = read("index.html");
+  assert.match(html, /id="r2y"/);
+  assert.match(html, /id="invertY"/);
+  assert.match(html, /mouseLook\.consume\(1\)/);
+  assert.match(html, /look\.x\*\.00185\*S\.sensX/);
+  assert.match(html, /look\.y\*\.00165\*S\.sensY/);
+  assert.match(html, /S\.invertY\?-1:1/);
+});
