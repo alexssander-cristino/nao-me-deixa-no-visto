@@ -54,7 +54,9 @@ try{
   S.sensY=bounded(saved.sensY,.2,2.5,S.sens);
   S.invertY=!!saved.invertY;
   S.headBob=saved.headBob!==false;
-  S.reduceCameraEffects=!!saved.reduceCameraEffects;\n  S.fpsLimit=[0,30,60,120].includes(Number(saved.fpsLimit))?Number(saved.fpsLimit):0;\n  S.resolution=['960x600','1280x800','1600x900','1920x1080'].includes(saved.resolution)?saved.resolution:'1280x800';
+  S.reduceCameraEffects=!!saved.reduceCameraEffects;
+  S.fpsLimit=[0,30,60,120].includes(Number(saved.fpsLimit))?Number(saved.fpsLimit):0;
+  S.resolution=['960x600','1280x800','1600x900','1920x1080'].includes(saved.resolution)?saved.resolution:'1280x800';
   S.bri=bounded(saved.bri,.8,2,S.bri);
   S.fov=bounded(saved.fov,65,100,S.fov);
   if(['easy','normal','hard'].includes(saved.diff))S.diff=saved.diff;
@@ -543,6 +545,7 @@ const __cfgAtmosphere = cfg;
 cfg = function(open){
   __cfgAtmosphere(open);
   if(open){
+    $("fpsLimit").value=String(S.fpsLimit);$("resolution").value=S.resolution;
     $("r2").value=S.sensX;$("sensVal").textContent=S.sensX.toFixed(2);
     $("r2y").value=S.sensY;$("sensYVal").textContent=S.sensY.toFixed(2);
     $("invertY").checked=!!S.invertY;$("headBob").checked=S.headBob!==false;$("reduceCamera").checked=!!S.reduceCameraEffects;
