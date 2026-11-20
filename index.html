@@ -693,7 +693,7 @@ function setupWardrobeMechanisms(){
    add(pivot,new THREE.SphereGeometry(.045,12,10),brass,side<0?1:-1,-.03,.095);
    const collider=physics.addOBB(wardrobe.x,wardrobe.z+.84,.54,.055,0,'cabinet-door',true);
    const update=()=>{const a=pivot.rotation.y,co=Math.cos(a),si=Math.sin(a),cx=wardrobe.x+(side<0?-.55:.55)+offset*co+.04*si,cz=wardrobe.z+.79-offset*si+.04*co;physics.updateOBB(collider,cx,cz,.54,.055,-a);};
-   mechanismSystem.register({id:base+':door:'+(side<0?'left':'right'),type:'hinge',label:'Porta do armário',object:pivot,axis:'rotation',component:'y',closed:0,open:side<0?1.02:-1.02,duration:.42,locked:side>0,key:'wardrobe-key:'+lv,consumable:true,onUpdate:update,onToggle:(_item,open)=>{emitNoise(wardrobe.x,wardrobe.z,8,open?'cabinet-open':'cabinet-close');at(wardrobe.x,wardrobe.z,g=>nz(.2,open?190:125,.42,g,'lowpass'));}});
+   mechanismSystem.register({id:base+':door:'+(side<0?'left':'right'),type:'hinge',label:'Porta do armário',object:pivot,axis:'rotation',component:'y',closed:0,open:side<0?1.02:-1.02,duration:.42,locked:side>0&&wardrobe===wards[0],key:'wardrobe-key:'+lv,consumable:true,onUpdate:update,onToggle:(_item,open)=>{emitNoise(wardrobe.x,wardrobe.z,8,open?'cabinet-open':'cabinet-close');at(wardrobe.x,wardrobe.z,g=>nz(.2,open?190:125,.42,g,'lowpass'));}});
   }
   for(let row=0;row<2;row++){
    const drawer=new THREE.Group();drawer.position.set(0,.43+row*.48,.82);group.add(drawer);
