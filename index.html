@@ -197,19 +197,20 @@ function addPhysicsProps(){
   if(ch(r,c)!=='.')continue;
   const x=c*4+(R()-.5)*1.4,z=r*4+(R()-.5)*1.4;
   if(Math.hypot(x-pl.x,z-pl.z)<6)continue;
-  const group=new THREE.Group();
+  const group=new THREE.LOD(),highDetail=new THREE.Group();group.addLevel(highDetail,0);
   const wood=new THREE.MeshStandardMaterial({color:0x49372b,roughness:.94});
   const edge=new THREE.MeshStandardMaterial({color:0x201714,roughness:.9});
-  const base=new THREE.Mesh(new THREE.BoxGeometry(.34,.24,.34),wood);base.castShadow=true;base.receiveShadow=true;group.add(base);
+  const base=new THREE.Mesh(new THREE.BoxGeometry(.34,.24,.34),wood);base.castShadow=true;base.receiveShadow=true;highDetail.add(base);
   for(let k=0;k<4;k++){
    const slat=new THREE.Mesh(new THREE.BoxGeometry(.37,.035,.035),edge);
-   slat.position.set(0,-.075+k*.05,.175);slat.castShadow=true;group.add(slat);
+   slat.position.set(0,-.075+k*.05,.175);slat.castShadow=true;highDetail.add(slat);
   }
   const nailMat=new THREE.MeshStandardMaterial({color:0x8a7659,metalness:.55,roughness:.5});
   for(const sx of [-1,1])for(const sz of [-1,1]){
    const nail=new THREE.Mesh(new THREE.SphereGeometry(.012,8,6),nailMat);
-   nail.position.set(sx*.13,.065,sz*.13);group.add(nail);
+   nail.position.set(sx*.13,.065,sz*.13);highDetail.add(nail);
   }
+  const lowDetail=new THREE.Mesh(new THREE.BoxGeometry(.34,.24,.34),wood);lowDetail.castShadow=true;lowDetail.receiveShadow=true;group.addLevel(lowDetail,16);
   group.position.set(x,.18,z);scene.add(group);
   const body=rigidPhysics.addBody({position:{x,y:.8,z},halfExtents:{x:.18,y:.14,z:.18},mass:.85,restitution:.12,friction:.82,userData:{mesh:group}});
   const collider=physics.addOBB(x,z,.19,.19,0,"prop",true);
