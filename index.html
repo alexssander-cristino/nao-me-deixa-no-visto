@@ -494,7 +494,7 @@ build = function(n){
 const __updateAtmosphere = upd;
 upd = function(dt){
   __updateAtmosphere(dt);
-  if(camera){camera.fov=S.fov+(pl.run?4:0);camera.updateProjectionMatrix()}
+  // O controlador já interpola o FOV; não sobrescrever a transição com um salto por frame.
   animateDust(dt);
   const moving = Math.abs(pl.mx||0)+Math.abs(pl.mz||0)>.35;
   if(moving){
