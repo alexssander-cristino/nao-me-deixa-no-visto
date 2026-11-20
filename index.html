@@ -52,7 +52,9 @@ try{
   S.sens=bounded(saved.sens,.2,2.5,S.sens);
   S.sensX=bounded(saved.sensX,.2,2.5,S.sens);
   S.sensY=bounded(saved.sensY,.2,2.5,S.sens);
-  S.invertY=!!saved.invertY;\n  S.headBob=saved.headBob!==false;\n  S.reduceCameraEffects=!!saved.reduceCameraEffects;
+  S.invertY=!!saved.invertY;
+  S.headBob=saved.headBob!==false;
+  S.reduceCameraEffects=!!saved.reduceCameraEffects;
   S.bri=bounded(saved.bri,.8,2,S.bri);
   S.fov=bounded(saved.fov,65,100,S.fov);
   if(['easy','normal','hard'].includes(saved.diff))S.diff=saved.diff;
@@ -541,7 +543,7 @@ cfg = function(open){
   if(open){
     $("r2").value=S.sensX;$("sensVal").textContent=S.sensX.toFixed(2);
     $("r2y").value=S.sensY;$("sensYVal").textContent=S.sensY.toFixed(2);
-    $("invertY").checked=!!S.invertY;
+    $("invertY").checked=!!S.invertY;$("headBob").checked=S.headBob!==false;$("reduceCamera").checked=!!S.reduceCameraEffects;
     $("quality").value=S.quality||"high";
     $("fov").value=String(S.fov);
     $("fovVal").textContent=Math.round(S.fov)+"°";
