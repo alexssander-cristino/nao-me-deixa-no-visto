@@ -295,8 +295,20 @@
       let grounded=false,blockedX=false,blockedY=false,blockedZ=false;
       for(let step=0;step<steps;step++){
         const sx=dx/steps,sy=dy/steps,sz=dz/steps;
+        const previousFeet=position.y;
         position.y+=sy;
         if(position.y<this.groundY){position.y=this.groundY;velocity.y=0;grounded=true;blockedY=sy<0}
+        for(const b of statics){
+          if(!b||b.active===false)continue;
+          const horizontal=this._circleAabb(position.x,position.z,radius,b);
+          if(!horizontal)continue;
+          const bottom=b.y-b.hy,top=b.y+b.hy;
+          if(sy>0&&previousFeet+height<=bottom+this.skin&&position.y+height>bottom){
+            position.y=bottom-height-this.skin;velocity.y=0;blockedY=true;this.stats.contacts++;
+          }else if(sy<0&&previousFeet>=top-this.skin&&position.y<top){
+            position.y=top+this.skin;velocity.y=0;grounded=true;blockedY=true;this.stats.contacts++;
+          }
+        }
         for(let pass=0;pass<this.iterations;pass++){
           let changed=false;
           for(const b of statics){
@@ -305,9 +317,8 @@
             const hit=this._circleAabb(position.x,position.z,radius,b);
             if(!hit)continue;
             const top=b.y+b.hy;
-            // Step onto low obstacles only while grounded/downward and with headroom.
             if((grounded||velocity.y<=0)&&top>position.y+this.skin&&top-position.y<=this.stepHeight&&this.canFit({x:position.x,y:top+this.skin,z:position.z},{radius,height},statics)){
-              position.y=top+this.skin;velocity.y=0;grounded=true;changed=true;continue
+              position.y=top+this.skin;velocity.y=0;grounded=true;changed=true;continue;
             }
             position.x+=hit.nx*(hit.depth+this.skin);
             position.z+=hit.nz*(hit.depth+this.skin);
