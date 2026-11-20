@@ -136,15 +136,15 @@ A leitura deste relatório e dos módulos atuais confirmou que o jogo ainda usa:
 | Gavetas | **PARCIAL** | Duas gavetas por armário, deslocamento linear, limites, colisores atualizados e áudio posicional |
 | Seleção individual | **PARCIAL** | Alvo de interação calculado por posição para cada porta/gaveta |
 | Persistência | **PARCIAL** | Progresso, destino, bloqueio e habilitação de cada mecanismo entram no payload de salvamento; IDs são reconstruídos de coordenadas estáveis do cenário |
-| Itens dentro de gavetas | **PENDENTE** | Gavetas ainda não possuem loot individual coletável nem integração de chave/cadeado no cenário |
+| Itens dentro de gavetas | **PARCIAL** | Primeira gaveta inferior do primeiro armário do capítulo contém uma bateria coletável; demais gavetas sem loot individual | Gavetas ainda não possuem loot individual coletável nem integração de chave/cadeado no cenário |
 | Disjuntores, interruptores e alavancas no cenário | **PENDENTE** | Tipos suportados pelo motor, mas não existem objetivos/malhas/efeitos de gameplay integrados |
 | Física de objetos | **PARCIAL** | Solver AABB 3D existente preservado; não foi convertido em solver 6DOF nem recebeu rampas/escadas físicas |
 | Rig humano esquelético | **PENDENTE** | Rig atual continua procedural por pivôs; não há esqueleto externo, skinning completo ou mocap |
 | Valdirene e animações | **PARCIAL** | Blending procedural existente preservado; não há nova animação de busca específica de armário nem mocap |
 | Modelos e ambientes PBR/LOD | **PENDENTE** | Esta etapa acrescentou detalhes funcionais às portas/gavetas; não substitui o pipeline de arte final |
 | Salvamentos antigos | **PARCIAL** | Campos novos são opcionais; saves anteriores sem `mechanisms` continuam carregando sem restaurar estados inexistentes |
-| Testes automatizados | **NÃO VALIDADO** | Foram adicionados quatro testes unitários de mecanismos; execução do workflow correspondente ainda precisa terminar |
-| Teste visual prolongado no Windows | **NÃO VALIDADO** | Não foi executado nesta sessão |
+| Testes automatizados | **CONCLUÍDO** | 43 testes aprovados em Linux e Windows no workflow 44824993583 |
+| Teste visual prolongado no Windows | **NÃO VALIDADO** | Não foi executado nesta sessão; CI não substitui playtest visual |
 | Benchmark RTX 3050 Laptop 6 GB | **NÃO VALIDADO** | Nenhum FPS, frame time, RAM ou VRAM foi medido; não há números estimados apresentados como medição |
 
 ### Arquivos desta etapa
