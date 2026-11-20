@@ -406,6 +406,13 @@ test("wardrobe drawers spawn a collectible battery and restore it without duplic
   assert.match(html, /Array\.isArray\(SG\.collected\)&&SG\.collected\.includes\(key\)/);
 });
 
+test("wardrobe mechanism setup is deferred until a scene with wardrobes exists", () => {
+  const html = read("index.html");
+  assert.match(html, /function setupWardrobeMechanisms\(\)\{\s*if\(!scene\|\|!Array\.isArray\(wards\)\|\|!wards\.length\)return;/);
+  assert.match(html, /build=function\(n\)\{__buildWithMechanisms\(n\);setupWardrobeMechanisms\(\);\}/);
+  assert.doesNotMatch(html, /\nsetupWardrobeMechanisms\(\);\n\nconst __updateSpatial/);
+});
+
 test("mission progression integrates collectible keys, a locked cabinet and a powered exit", () => {
   const html = read("index.html");
   assert.match(html, /locked:side>0&&wardrobe===wards\[0\],key:'wardrobe-key:'\+lv/);
