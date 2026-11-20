@@ -222,3 +222,15 @@ test("accessibility settings reduce head bob and jumpscare camera shake", () => 
   assert.match(controller, /!settings\.reduceCameraEffects/);
   assert.match(html, /const shake=S\.reduceCameraEffects\?0:1/);
 });
+
+
+test("fullscreen and reset-settings controls are connected to real behavior", () => {
+  const html = read("index.html");
+  const main = read("main.cjs");
+  const preload = read("preload.cjs");
+  assert.match(html, /function toggleFullscreen/);
+  assert.match(html, /function resetSettings/);
+  assert.match(main, /game-window:toggle-fullscreen/);
+  assert.match(main, /setFullScreen\(!win\.isFullScreen\(\)\)/);
+  assert.match(preload, /toggleFullscreen: \(\) => ipcRenderer\.send/);
+});
