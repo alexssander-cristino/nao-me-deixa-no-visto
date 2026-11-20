@@ -633,27 +633,4 @@ upd = function(dt){
   }
 };
 
-/* PLAYER 3D — rig visual articulado separado do colisor e da câmera FPS. */
-let playerVisual=null;
-const __buildWithPlayerVisual=build;
-build=function(n){
-  __buildWithPlayerVisual(n);
-  if(playerVisual&&playerVisual.parent)playerVisual.parent.remove(playerVisual);
-  playerVisual=GamePlayerModel.create(THREE,{firstPerson:true});
-  playerVisual.name="PlayerBody";
-  scene.add(playerVisual);
-  GamePlayerModel.update(playerVisual,{x:pl.x,z:pl.z,yaw:pl.y,visible:false},0);
-};
-const __updateWithPlayerVisual=upd;
-upd=function(dt){
-  __updateWithPlayerVisual(dt);
-  if(!playerVisual)return;
-  const speed=Math.hypot(pl.mx||0,pl.mz||0);
-  GamePlayerModel.update(playerVisual,{
-    x:pl.x,z:pl.z,yaw:pl.y,speed,
-    running:!!pl.run,crouching:!!pl.crouch,
-    visible:state==="play"&&!pl.hid
-  },dt);
-};
-
 </script></body></html>
