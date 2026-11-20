@@ -36,3 +36,28 @@ test("disabled mechanisms cannot be toggled and state remains bounded",()=>{
  system.set("lever:1",true);for(let i=0;i<100;i++)system.update(.05);
  assert.equal(system.get("lever:1").progress,1);
 });
+
+test("keyed locks cannot be forged open by an inconsistent save snapshot",()=>{
+ const system=new globalThis.GameMechanisms.MechanismSystem();
+ system.register({id:"lock:mission",type:"lock",locked:true,key:"mission-key"});
+ system.restore([{id:"lock:mission",progress:1,target:1,locked:false,usedKey:false}]);
+ const lock=system.get("lock:mission");
+ assert.equal(lock.locked,true);
+ assert.equal(lock.progress,0);
+ assert.equal(lock.target,0);
+});
+
+test("breaker switches persist circuit state and restore their visual callback",()=>{
+ const first=new globalThis.GameMechanisms.MechanismSystem();
+ let powered=false;
+ first.register({id:"breaker:chapter-1",type:"switch",onUpdate:(_item,progress)=>{powered=progress>=.5;}});
+ first.toggle("breaker:chapter-1");
+ for(let i=0;i<10;i++)first.update(.05);
+ assert.equal(powered,true);
+ const snapshot=first.serialize();
+ const second=new globalThis.GameMechanisms.MechanismSystem();
+ let restoredPower=false;
+ second.register({id:"breaker:chapter-1",type:"switch",onUpdate:(_item,progress)=>{restoredPower=progress>=.5;}});
+ second.restore(snapshot);
+ assert.equal(restoredPower,true);
+});
