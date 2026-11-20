@@ -17,7 +17,7 @@ ipcMain.on("game-window:toggle-fullscreen", event => { const win = BrowserWindow
 ipcMain.on("game-window:set-resolution", (event, size) => {
   const win = BrowserWindow.fromWebContents(event.sender);
   const allowed = { "960x600": [960, 600], "1280x800": [1280, 800], "1600x900": [1600, 900], "1920x1080": [1920, 1080] };
-  if (win && !win.isDestroyed() && allowed[size] && !win.isFullScreen()) { win.setSize(allowed[size][0], allowed[size][1], true); win.center(); }
+  if (win && !win.isDestroyed() && allowed[size]) { if (win.isFullScreen()) win.setFullScreen(false); win.setSize(allowed[size][0], allowed[size][1], true); win.center(); }
 });
 ipcMain.on("game-saves:list", event => { event.returnValue = readSlots().map(({ payload, ...slot }) => slot); });
 ipcMain.on("game-saves:read", (event, slot) => { if (!validSaveSlot(slot)) { event.returnValue = { ok: false, error: "Slot inválido" }; return; } const item = readSlots()[slot - 1]; event.returnValue = item.occupied ? { ok: true, ...item } : { ok: false, error: item.corrupted ? "Salvamento corrompido" : "Slot vazio" }; });
