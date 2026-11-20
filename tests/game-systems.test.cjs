@@ -98,6 +98,26 @@ test("loading manager rejects invalid tasks and always releases its running lock
   await assert.rejects(manager.run([{}]), /Tarefa de carregamento inválida/);
 });
 
+test("gameplay wires audible investigation and an animated lethal Valdirene attack", () => {
+  const html = read("index.html");
+  assert.match(html, /function emitNoise\(/);
+  assert.match(html, /noiseEvent\.radius/);
+  assert.match(html, /emitNoise\(pl\.x,pl\.z,pl\.run\?16/);
+  assert.match(html, /function startAttack\(/);
+  assert.match(html, /if\(attackSequence\)\{/);
+  assert.match(html, /GameEnemyAnimation\.update\(vm,v,dt,dist\)/);
+  assert.match(html, /if\(!pl\.hid&&dist<1\.2\)startAttack\(\)/);
+});
+
+test("manual saves include player state, collected progress and relevant settings", () => {
+  const html = read("index.html");
+  assert.match(html, /schema:3,chapter:lv/);
+  assert.match(html, /feetY:pl\.feetY\|\|0/);
+  assert.match(html, /difficulty:S\.diff,quality:S\.quality/);
+  assert.match(html, /openDoors:Object\.keys\(doors\)\.filter/);
+  assert.match(html, /SG\.settings=p\.settings/);
+});
+
 test("controller accelerates smoothly and respects the world collider", () => {
   require("../physics.js");
   require("../controller.js");
