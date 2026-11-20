@@ -28,6 +28,26 @@ test("all browser scripts parse and local modules are wired into the game", () =
   assert.doesNotMatch(html, /Object\.assign\(S/);
 });
 
+test("articulated first-person body follows movement, crouch and hiding", () => {
+  require("../player-animation.js");
+  const THREE = require("three");
+  const avatar = globalThis.GamePlayerAnimation.create(THREE);
+  const player = {x:2,z:3,y:1.2,feetY:.4,mx:2,mz:0,run:1,crouch:false,hid:null};
+  globalThis.GamePlayerAnimation.update(avatar,player,1/60);
+  assert.equal(avatar.position.x,2);
+  assert.equal(avatar.position.y,.4);
+  assert.equal(avatar.position.z,3);
+  assert.equal(avatar.rotation.y,1.2);
+  assert.equal(avatar.visible,true);
+  assert.equal(avatar.userData.arms.length,2);
+  assert.equal(avatar.userData.legs.length,2);
+  player.crouch=true;
+  player.hid={};
+  globalThis.GamePlayerAnimation.update(avatar,player,1/60);
+  assert.equal(avatar.visible,false);
+  assert.ok(avatar.userData.torso.position.y<.9);
+});
+
 test("controller accelerates smoothly and respects the world collider", () => {
   require("../physics.js");
   require("../controller.js");
