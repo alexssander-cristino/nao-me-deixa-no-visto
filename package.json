@@ -14,10 +14,10 @@
     "three": "0.128.0"
   },
   "devDependencies": {
-    "@electron-forge/cli": "^7.10.0",
-    "@electron-forge/maker-squirrel": "^7.10.0",
-    "@electron-forge/maker-zip": "^7.10.0",
-    "electron": "^39.0.0"
+    "@electron-forge/cli": "^8.0.1",
+    "@electron-forge/maker-squirrel": "^8.0.1",
+    "@electron-forge/maker-zip": "^8.0.1",
+    "electron": "^45.4.1"
   },
   "config": {
     "forge": {
