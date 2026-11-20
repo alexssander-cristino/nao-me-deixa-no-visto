@@ -110,8 +110,28 @@
     });
     // Pingente e aliança: pequenos detalhes metálicos captam a lanterna.
     const pendant=add(torso,new THREE.TorusGeometry(.045,.009,8,20),metal,0,.22,.19);pendant.rotation.x=Math.PI/2;
-    rootMesh.arms=arms;rootMesh.legs=legs;rootMesh.head=head;rootMesh.torso=torso;
-    rootMesh.userData={model:"valdirene-procedural-v2",height:2.42,ghost:!!ghost};
+    // Rig hierárquico: os grupos de malha existentes passam a ser conduzidos por ossos nomeados.
+    const bone=(name,parent,position)=>{const b=new THREE.Bone();b.name=name;b.position.set(position[0],position[1],position[2]);if(parent)parent.add(b);return b;};
+    const rootBone=bone("root",null,[0,0,0]);
+    const pelvisBone=bone("pelvis",rootBone,[0,.95,0]);
+    const spineBone=bone("spine",pelvisBone,[0,.21,0]);
+    const neckBone=bone("neck",spineBone,[0,.42,0]);
+    const headBone=bone("head",neckBone,[0,.24,.02]);
+    torso.position.set(0,0,0);spineBone.add(torso);
+    head.position.set(0,0,0);headBone.add(head);
+    const shoulderBones=arms.map((part,index)=>{
+      const side=index===0?-1:1,b=bone(side<0?"shoulder.L":"shoulder.R",spineBone,[side*.245,.32,.005]);
+      part.position.set(0,0,0);b.add(part);b.userData.fore=part.userData.fore;return b;
+    });
+    const hipBones=legs.map((part,index)=>{
+      const side=index===0?-1:1,b=bone(side<0?"hip.L":"hip.R",pelvisBone,[side*.125,-.38,0]);
+      part.position.set(0,0,0);b.add(part);b.userData.knee=part.userData.knee;return b;
+    });
+    const bones=[rootBone,pelvisBone,spineBone,neckBone,headBone,...shoulderBones,...hipBones];
+    const skeleton=new THREE.Skeleton(bones);skeleton.calculateInverses();rootBone.updateMatrixWorld(true);
+    rootMesh.add(rootBone);
+    rootMesh.arms=shoulderBones;rootMesh.legs=hipBones;rootMesh.head=headBone;rootMesh.torso=spineBone;
+    rootMesh.userData={model:"valdirene-procedural-v3",height:2.42,ghost:!!ghost,rig:{root:rootBone,pelvis:pelvisBone,spine:spineBone,neck:neckBone,head:headBone,shoulders:shoulderBones,hips:hipBones,bones,skeleton}};
     if(ghost){
       rootMesh.traverse(o=>{
         if(o.isMesh){o.material=o.material.clone();o.material.transparent=true;o.material.opacity=Math.min(o.material.opacity??1,.48);o.material.depthWrite=false}
