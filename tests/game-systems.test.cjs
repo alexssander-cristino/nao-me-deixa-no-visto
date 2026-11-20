@@ -143,7 +143,7 @@ test("3D capsule falls under gravity and lands on a raised platform", () => {
 test("3D capsule respects ceiling clearance and crouch can fit", () => {
   require("../physics.js");
   const world = new globalThis.GamePhysics.CharacterPhysicsWorld({gravity:18});
-  const ceiling = {x:0,y:2.1,z:0,hx:2,hy:.1,hz:2};
+  const ceiling = {x:0,y:1.75,z:0,hx:2,hy:.1,hz:2};
   const position = {x:0,y:0,z:0};
   assert.equal(world.canFit(position,{radius:.34,height:1.72},[ceiling]),false);
   assert.equal(world.canFit(position,{radius:.34,height:1.18},[ceiling]),true);
