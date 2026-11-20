@@ -13,8 +13,12 @@ on:
       - main
 
 jobs:
-  physics:
-    runs-on: ubuntu-latest
+  game:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -36,11 +40,21 @@ jobs:
           curl -sS 'https://sonarcloud.io/api/issues/search?componentKeys=alexssander-cristino_nao-me-deixa-no-visto&pullRequest=${{ github.event.pull_request.number }}&issueStatuses=OPEN,CONFIRMED&sinceLeakPeriod=true&ps=100' -o sonar-issues.json || true
           node -e "try{const a=require('./sonar-issues.json');console.log('Sonar issues returned: '+a.total);for(const i of a.issues||[])console.log(i.type+' '+i.rule+' '+i.severity+' '+i.component+':'+i.line+' '+i.message)}catch(e){console.log('SonarCloud issue API not available anonymously')}"
       - run: npm test
-      - name: Package Electron application
+      - name: Package Electron application on Linux
+        if: runner.os == 'Linux'
         run: npm run package
-
+      - name: Build Windows application and installers
+        if: runner.os == 'Windows'
+        run: npm run make
+      - name: Upload platform build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: game-build-${{ runner.os }}
+          path: out/
+          if-no-files-found: error
+          retention-days: 14
       - name: Commit refreshed lockfile
-        if: github.event_name == 'push'
+        if: github.event_name == 'push' && runner.os == 'Linux'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
