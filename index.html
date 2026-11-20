@@ -736,7 +736,7 @@ function setupWardrobeMechanisms(){
  const lever=new THREE.Group();lever.position.set(.08,-.04,.11);panel.add(lever);
  const stem=new THREE.Mesh(new THREE.CylinderGeometry(.025,.03,.22,10),panelMetal);stem.position.y=.09;lever.add(stem);
  const grip=new THREE.Mesh(new THREE.SphereGeometry(.055,12,10),leverMat);grip.position.y=.2;lever.add(grip);
- panel.position.set(breakerPoint.x,1.48,breakerPoint.z);panel.rotation.y=Math.PI;panel.traverse(mesh=>{if(mesh.isMesh){mesh.castShadow=true;mesh.receiveShadow=true}});scene.add(panel);
+ panel.position.set(breakerPoint.x,1.48,breakerPoint.z);panel.rotation.y=Math.PI;panel.traverse(mesh=>{if(mesh.isMesh){mesh.castShadow=true;mesh.receiveShadow=true}});scene.add(panel);rigidPhysics.addStaticBox({x:breakerPoint.x,y:1.48,z:breakerPoint.z,hx:.27,hy:.36,hz:.08,tag:'breaker-panel'});
  mechanismSystem.register({id:'breaker:'+lv,type:'switch',label:'Disjuntor geral',object:lever,axis:'rotation',component:'x',closed:.48,open:-.48,duration:.24,onUpdate:(_item,progress)=>{powerOn=progress>=.5;indicator.color.set(powerOn?0x42b86a:0x6c1717);indicator.emissive.set(powerOn?0x124d25:0x260000);indicator.emissiveIntensity=powerOn?1.2:.35;},onToggle:(_item,on)=>{emitNoise(breakerPoint.x,breakerPoint.z,11,on?'breaker-on':'breaker-off');at(breakerPoint.x,breakerPoint.z,g=>nz(.32,on?620:180,.6,g,'lowpass'));th(on?720:170,.18,.22);sub(on?'Circuito restabelecido. A iluminação voltou.':'Energia desligada. A lanterna continua funcionando.',2800);}});
 }
 
