@@ -39,7 +39,6 @@ label{display:flex;gap:10px;align-items:center;justify-content:space-between;wid
 <script src="./physics.js"></script>
 <script src="./controller.js"></script>
 <script src="./models.js"></script>
-<script src="./player-model.js"></script>
 <script>
 const $=i=>document.getElementById(i),R=Math.random,P=Math.PI,pk=a=>a[0|R()*a.length];
 let S={vol:.7,sens:.85,bri:1,diff:'normal',quality:'high',fov:76};
@@ -107,13 +106,16 @@ function say(t,c){sub(t);try{speechSynthesis.cancel();const u=new SpeechSynthesi
 // mundo
 const physics=new GamePhysics.PhysicsWorld({maxSubstep:.14,iterations:6});
 const rigidPhysics=new GamePhysics.RigidBodyWorld({gravity:9.81,fixedStep:1/60,maxSubSteps:8});
+const characterPhysics=new GamePhysics.CharacterPhysicsWorld({gravity:18,stepHeight:.28,maxSubstep:.07});
 let physicsProps=[];
 const controller=new GameController.FirstPersonController({radius:.38,walkSpeed:3.15,runSpeed:5.7,crouchSpeed:1.75});
 let cv,rd,camera,scene,spot,amb,pls=[],g,rows,cols,lv=0,items=[],doors={},wards=[],ex,V,vm,gh,gT=0,L5=0,tg,state='menu',paused=0,modal=0,keys={},lore=0,sec=0,baseL=0,baseS=0,locked=0,drag=0,mdown=0,evT=30,flick=0,hb=0,resumeCheckpoint=0;
-const pl={x:0,z:0,y:0,p:0,st:100,ex:0,bat:100,hid:null,on:1,got:0,need:0,bob:0,sa:0,run:0,vx:0,vz:0};
+const pl={x:0,z:0,y:0,p:0,feetY:0,grounded:true,capsuleHeight:1.72,velocity3D:{x:0,y:0,z:0},st:100,ex:0,bat:100,hid:null,on:1,got:0,need:0,bob:0,sa:0,run:0,vx:0,vz:0,mx:0,mz:0};
 const ch=(r,c)=>(g[r]||'')[c]||'#';
 const sol=(x,z)=>{const r=Math.round(z/4),c=Math.round(x/4),k=ch(r,c),d=doors[r+','+c];return k=='#'||k=='H'||(k=='D'&&(!d||!d.o))};
 function mv(o,dx,dz,r){return physics.moveCircle(o,dx,dz,r)}
+function moveCharacter(o,v,delta,shape){return characterPhysics.moveCapsule(o,v,delta,shape,rigidPhysics.statics)}
+moveCharacter.canFit=(o,shape)=>characterPhysics.canFit(o,shape,rigidPhysics.statics);
 function los(ax,az,bx,bz){return !physics.raycast(ax,az,bx,bz,{step:.18,radius:.04}).hit}
 function tex(c,kind='wall'){
  const size=512,k=document.createElement('canvas');k.width=k.height=size;
@@ -248,7 +250,7 @@ if(sx){
  detail(new THREE.SphereGeometry(.055,14,10),brass,.22,1.18,1.46);
  detail(new THREE.CylinderGeometry(.018,.018,.14,10),brass,.2,1.08,1.46);
 }
-pv.add(m);scene.add(pv);doors[r+','+c]={o:0,pv,sx,x,z,physicsId:physics.addOBB(sx?x-2:x,z-2,2,.16,0,'door',true)};updateDoorCollider(doors[r+','+c])}
+pv.add(m);scene.add(pv);doors[r+','+c]={o:0,pv,sx,x,z,physicsId:physics.addOBB(sx?x-2:x,z-2,2,.16,0,'door',true),body3d:rigidPhysics.addStaticBox({x:sx?x-2:x,y:d.h*.46,z:sx?z:z-2,hx:sx?2:.16,hy:d.h*.46,hz:sx?.16:2,tag:'door'})};updateDoorCollider(doors[r+','+c])}
 else if(k=='H'){const group=new THREE.Group(),wood=new THREE.MeshStandardMaterial({color:0x38271f,roughness:.88}),edge=new THREE.MeshStandardMaterial({color:0x74513a,roughness:.72}),dark=new THREE.MeshStandardMaterial({color:0x100d0b}),gold=new THREE.MeshStandardMaterial({color:0xb18a4e,metalness:.65,roughness:.3});const part=(geo,ma,px,py,pz)=>{const q=new THREE.Mesh(geo,ma);q.position.set(px,py,pz);q.castShadow=true;q.receiveShadow=true;group.add(q)};part(new THREE.BoxGeometry(2.25,2.55,1.45),wood,0,1.28,0);part(new THREE.BoxGeometry(2.32,.12,1.52),edge,0,2.58,0);part(new THREE.BoxGeometry(2.32,.12,1.52),edge,0,.04,0);part(new THREE.BoxGeometry(.12,2.42,1.5),edge,-1.12,1.28,0);part(new THREE.BoxGeometry(.12,2.42,1.5),edge,1.12,1.28,0);part(new THREE.BoxGeometry(1.02,2.35,.08),edge,-.54,1.28,.77);part(new THREE.BoxGeometry(1.02,2.35,.08),edge,.54,1.28,.77);part(new THREE.BoxGeometry(.04,2.15,.025),dark,0,1.28,.83);part(new THREE.SphereGeometry(.055,10,8),gold,-.12,1.28,.86);group.position.set(x,0,z);scene.add(group);wards.push({x,z,m:group});physics.addOBB(x,z,1.18,.78,0,"wardrobe");rigidPhysics.addStaticBox({x,y:1.28,z,hx:1.16,hy:1.28,hz:.75,tag:"wardrobe"})}
 else if(k=='K')items.push({k:'K',x,z,m:em(0xffcc33,x,z,1,'K')});else if(k=='N')items.push({k:'N',x,z,m:em(0xffffff,x,z,1,'N')});
 else if(k=='B')items.push({k:'B',x,z,m:em(0x44ff66,x,z,1,'B')});else if(k=='X')items.push({k:'X',x,z,m:em(0xaa44ff,x,z,1,'X')});
@@ -262,7 +264,7 @@ function rc(far){for(let i=0;i<240;i++){const r=1+(0|R()*(rows-2)),c=1+(0|R()*(c
 function nearP(){for(let i=0;i<30;i++){const r=Math.round(pl.z/4)+(0|R()*9)-4,c=Math.round(pl.x/4)+(0|R()*9)-4,k=ch(r,c);if(k!='#'&&k!='H')return[r,c]}return rc(0)}
 function bfs(a,b){const k=x=>x[0]+','+x[1],q=[a],seen=new Set([k(a)]),par={};while(q.length){const u=q.shift();if(u[0]==b[0]&&u[1]==b[1])break;for(const[d1,d2]of[[0,1],[1,0],[0,-1],[-1,0]]){const v=[u[0]+d1,u[1]+d2],kk=k(v),c=ch(v[0],v[1]);if(c=='#'||c=='H'||seen.has(kk))continue;seen.add(kk);par[kk]=u;q.push(v)}}
 if(!par[k(b)])return null;let c=b;while(par[k(c)]&&k(par[k(c)])!=k(a))c=par[k(c)];return c}
-function updateDoorCollider(d){if(!d||!d.physicsId)return;const a=d.pv.rotation.y,co=Math.cos(a),si=Math.sin(a);let cx,cz,hx,hz;if(d.sx){cx=d.x-2+2*co;cz=d.z-2*si;hx=2;hz=.16}else{cx=d.x+2*si;cz=d.z-2+2*co;hx=.16;hz=2}physics.updateOBB(d.physicsId,cx,cz,hx,hz,-a)}
+function updateDoorCollider(d){if(!d||!d.physicsId)return;const a=d.pv.rotation.y,co=Math.cos(a),si=Math.sin(a);let cx,cz,hx,hz;if(d.sx){cx=d.x-2+2*co;cz=d.z-2*si;hx=2*Math.abs(co)+.16*Math.abs(si);hz=2*Math.abs(si)+.16*Math.abs(co)}else{cx=d.x+2*si;cz=d.z-2+2*co;hx=.16*Math.abs(co)+2*Math.abs(si);hz=.16*Math.abs(si)+2*Math.abs(co)}physics.updateOBB(d.physicsId,cx,cz,d.sx?2:.16,d.sx?.16:2,-a);if(d.body3d){d.body3d.x=cx;d.body3d.z=cz;d.body3d.hx=hx;d.body3d.hz=hz}}
 function odoor(d,s){d.o=s?1:0;at(d.x,d.z,q=>nz(.35,s?500:250,.8,q))}
 function updV(dt){const v=V,dx=pl.x-v.x,dz=pl.z-v.z,dist=Math.hypot(dx,dz);
 if(v.st=='dorm'){
@@ -328,7 +330,7 @@ function unhide(){const w=pl.hid;w.m.visible=true;pl.hid=null;pl.x=pl.px;pl.z=pl
 function inventory(open){if(state!=="play")return;const panel=$("iv");if(open){modal=1;const lines=["OBJETIVO: "+pl.got+"/"+pl.need+" "+L[lv].o,"PISTAS LIDAS: "+lore,"BATERIA: "+Math.ceil(pl.bat)+"%","LANTERNA: "+(pl.on&&pl.bat>0?"ligada":"desligada"),"SEGREDO: "+(sec?"encontrado":"não encontrado"),"","As pistas ficam registradas aqui. Continue explorando."];$("ivContent").textContent=lines.join("\n");sh("iv",1);document.exitPointerLock&&document.exitPointerLock()}else{sh("iv",0);modal=0;if(!paused)lock()}}
 function act(){if(pl.hid)return unhide();if(!tg)return;if(tg.t=='i')pick(tg.o);else if(tg.t=='h')hide(tg.o);else odoor(tg.o,tg.o.o?0:1)}
 function saveProgress(item,keep){const prev=keep&&SG&&SG.lv===lv?SG:{},collected=new Set(prev.collected||[]);if(item)collected.add(item.k+':'+item.x+':'+item.z);SG={lv,lore,sec,got:pl.got,bat:pl.bat,st:pl.st,on:pl.on,x:pl.x,z:pl.z,y:pl.y,p:pl.p,collected:[...collected],openDoors:Object.keys(doors).filter(k=>doors[k].o)};baseL=lore;baseS=sec;try{localStorage.setItem('sg',JSON.stringify(SG))}catch(e){}}
-function load(n){lv=n;build(n);const resumed=!!(resumeCheckpoint&&SG&&SG.lv===n);if(resumed){const totalNeed=pl.need,collected=new Set(SG.collected||[]);items=items.filter(it=>{const key=it.k+':'+it.x+':'+it.z;if(collected.has(key)){scene.remove(it.m);return false}return true});pl.got=Number(SG.got)||0;pl.need=totalNeed;pl.bat=Number.isFinite(SG.bat)?SG.bat:100;pl.st=Number.isFinite(SG.st)?SG.st:100;pl.on=SG.on===0?0:1;pl.x=Number.isFinite(SG.x)?SG.x:pl.x;pl.z=Number.isFinite(SG.z)?SG.z:pl.z;pl.y=Number.isFinite(SG.y)?SG.y:pl.y;pl.p=Number.isFinite(SG.p)?SG.p:pl.p;(SG.openDoors||[]).forEach(k=>{const d=doors[k];if(d){d.o=1;d.pv.rotation.y=d.sx?-1.5:1.5}});camera.position.set(pl.x,1.65,pl.z);camera.rotation.set(pl.p,pl.y,0)}resumeCheckpoint=0;saveProgress(null,resumed);evT=30+R()*20;$('hd').style.display='none'}
+function load(n){lv=n;build(n);const resumed=!!(resumeCheckpoint&&SG&&SG.lv===n);if(resumed){const totalNeed=pl.need,collected=new Set(SG.collected||[]);items=items.filter(it=>{const key=it.k+':'+it.x+':'+it.z;if(collected.has(key)){scene.remove(it.m);return false}return true});pl.got=Number(SG.got)||0;pl.need=totalNeed;pl.bat=Number.isFinite(SG.bat)?SG.bat:100;pl.st=Number.isFinite(SG.st)?SG.st:100;pl.on=SG.on===0?0:1;pl.x=Number.isFinite(SG.x)?SG.x:pl.x;pl.z=Number.isFinite(SG.z)?SG.z:pl.z;pl.y=Number.isFinite(SG.y)?SG.y:pl.y;pl.p=Number.isFinite(SG.p)?SG.p:pl.p;(SG.openDoors||[]).forEach(k=>{const d=doors[k];if(d){d.o=1;d.pv.rotation.y=d.sx?-1.5:1.5}});pl.feetY=0;pl.grounded=true;pl.velocity3D={x:0,y:0,z:0};pl.capsuleHeight=1.72;camera.position.set(pl.x,1.6,pl.z);camera.rotation.set(pl.p,pl.y,0)}resumeCheckpoint=0;saveProgress(null,resumed);evT=30+R()*20;$('hd').style.display='none'}
 function go(n){state='tr';$('fd').style.opacity=1;const wrap=document.createElement('div'),title=document.createElement('h1'),desc=document.createElement('p');title.style.fontSize='32px';title.textContent=(n+1)+'. '+L[n].n;desc.textContent=L[n].i;wrap.append(title,desc);$('fd').replaceChildren(wrap);setTimeout(()=>{load(n);$('fd').style.opacity=0;state='play'},3200)}
 function lock(){drag=0;mdown=0;try{if(!cv.requestPointerLock)throw new Error('Pointer Lock indisponível');const r=cv.requestPointerLock();if(r&&r.catch)r.catch(()=>{drag=1;mouseLook.setEnabled(false)})}catch(e){drag=1;mouseLook.setEnabled(false)}}
 const sh=(i,o)=>$(i).classList.toggle('on',!!o);
@@ -344,7 +346,7 @@ function die(){if(state!='play')return;state='over';document.exitPointerLock&&do
 function fin(t,x){state='end';modal=0;document.exitPointerLock&&document.exitPointerLock();$('et').textContent=E[t][0];$('ep').textContent=(x?'Você tenta responder, mas não sabe o que ela passou. O "digitando..." aparece e some. Ela viu. ':'')+E[t][1];sh('en',1);$('hud').style.display='none';$('dg').style.opacity=0}
 function alt(c){sh('al',0);if(!c)fin('bad');else if(lore>=4)fin(sec?'sec':'good');else fin('bad',1)}
 function upd(dt){
-controller.update(dt,pl,keys,camera,flashlightModel,mv,{fov:S.fov});updatePhysicsProps(dt);
+controller.update3D(dt,pl,keys,camera,flashlightModel,moveCharacter,{fov:S.fov});updatePhysicsProps(dt);
  // interação
 tg=null;let md=9,txt='';
 if(pl.hid)txt='[E] sair do armário';else{
