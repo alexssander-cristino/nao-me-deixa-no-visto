@@ -73,4 +73,4 @@ Execute \`npm test\` para rodar os testes de regressão da camada de colisão.
 
 ### Limites desta etapa
 
-A física implementada é um controlador de colisão 2.5D para personagem e cenário, não um solver completo de corpos rígidos 3D. Objetos dinâmicos com massa, impulso, gravidade vertical, gavetas com trilhos e dobradiças simuladas ainda precisam de uma camada de corpos rígidos. A IA e a progressão narrativa originais foram preservadas nesta etapa. O jogo ainda precisa ser validado em execução no Electron e em diferentes GPUs.
+A física do personagem usa colisão contínua 2.5D contra paredes, móveis, portas e props. Há também um solver 3D simplificado de corpos rígidos AABB com gravidade, massa, impulso, contatos com o cenário e atrito, usado nos caixotes empurráveis. Ele não substitui um solver industrial com rotação completa, juntas articuladas, CCD 3D geral ou simulação de gavetas; essas interações continuam sendo uma etapa futura. A IA e a progressão narrativa originais foram preservadas nesta etapa. O jogo ainda precisa ser validado em execução no Electron e em diferentes GPUs.
