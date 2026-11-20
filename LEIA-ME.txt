@@ -74,3 +74,10 @@ Execute \`npm test\` para rodar os testes de regressão da camada de colisão.
 ### Limites desta etapa
 
 A física do personagem usa colisão contínua 2.5D contra paredes, móveis, portas e props. Há também um solver 3D simplificado de corpos rígidos AABB com gravidade, massa, impulso, contatos com o cenário e atrito, usado nos caixotes empurráveis. Ele não substitui um solver industrial com rotação completa, juntas articuladas, CCD 3D geral ou simulação de gavetas; essas interações continuam sendo uma etapa futura. A IA e a progressão narrativa originais foram preservadas nesta etapa. O jogo ainda precisa ser validado em execução no Electron e em diferentes GPUs.
+
+
+## Toolchain 2.0.0
+- Electron 45.4.1.
+- Electron Forge 8.0.1.
+- O CI atualiza o lockfile, executa npm audit, roda os testes e empacota o aplicativo Electron.
+- A auditoria de dependências do build validado retornou zero vulnerabilidades.
