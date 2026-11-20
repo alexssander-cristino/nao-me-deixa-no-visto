@@ -43,7 +43,10 @@ test("articulated first-person body follows movement, crouch and hiding", () => 
   assert.equal(avatar.userData.legs.length,2);
   player.crouch=true;
   player.hid={};
+  player.actionTime=.46;
+  player.fear=.8;
   globalThis.GamePlayerAnimation.update(avatar,player,1/60);
+  assert.ok(player.actionTime<.46);
   assert.equal(avatar.visible,false);
   assert.ok(avatar.userData.torso.position.y<.9);
 });
