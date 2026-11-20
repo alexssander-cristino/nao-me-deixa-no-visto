@@ -28,6 +28,11 @@ jobs:
         run: |
           npm audit --json > audit.json || true
           node -e "const a=require('./audit.json'); for (const [name,v] of Object.entries(a.vulnerabilities||{})) console.log(name+': '+v.severity+'; fix='+JSON.stringify(v.fixAvailable))"
+      - name: Inspect SonarCloud new-code vulnerabilities
+        if: github.event_name == 'pull_request'
+        run: |
+          curl -sS 'https://sonarcloud.io/api/issues/search?componentKeys=alexssander-cristino_nao-me-deixa-no-visto&pullRequest=4&types=VULNERABILITY&ps=100' -o sonar-issues.json || true
+          node -e "try{const a=require('./sonar-issues.json');for(const i of a.issues||[])console.log(i.rule+' '+i.severity+' '+i.component+':'+i.line+' '+i.message)}catch(e){console.log('SonarCloud issue API not available anonymously')}"
       - run: npm test
       - name: Package Electron application
         run: npm run package
