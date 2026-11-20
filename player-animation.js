@@ -37,13 +37,13 @@
       return {shoulder,elbow,hand,side};
     });
     const legs=[-1,1].map(side=>{
-      const hip=new THREE.Group();hip.position.set(side*.135,-.39,0);torso.add(hip);
+      const hip=new THREE.Group();hip.position.set(side*.135,-.2,0);torso.add(hip);
       sphere(hip,pants,0,-.035,0,.13,.16,.15);
       segment(hip,pants,.12,.085,.43,-.23);
-      const knee=new THREE.Group();knee.position.y=-.45;hip.add(knee);
+      const knee=new THREE.Group();knee.position.y=-.42;hip.add(knee);
       sphere(knee,pants,0,0,0,.09,.095,.095);
       segment(knee,pants,.078,.058,.34,-.17);
-      const foot=new THREE.Group();foot.position.set(0,-.35,-.045);knee.add(foot);
+      const foot=new THREE.Group();foot.position.set(0,-.34,-.045);knee.add(foot);
       sphere(foot,shoe,0,-.015,-.075,.085,.065,.16);
       return {hip,knee,foot,side};
     });
