@@ -15,7 +15,7 @@ test("all browser scripts parse and local modules are wired into the game", () =
   // Keep validating every inline block instead of assuming a single monolithic block.
   assert.equal(scripts.length, 2);
   for (const source of scripts) new vm.Script(source);
-  for (const file of ["input.js", "save-system.js", "rendering.js", "physics.js", "controller.js", "models.js"]) {
+  for (const file of ["input.js", "save-system.js", "rendering.js", "physics.js", "controller.js", "models.js", "gameplay-systems.js"]) {
     new vm.Script(read(file), { filename: file });
     assert.ok(html.includes('src="./' + file + '"'));
   }
@@ -115,7 +115,7 @@ test("gameplay wires audible investigation and an animated lethal Valdirene atta
 
 test("manual saves include player state, collected progress and relevant settings", () => {
   const html = read("index.html");
-  assert.match(html, /schema:4,mechanisms:mechanismSystem\.serialize\(\),chapter:lv/);
+  assert.match(html, /schema:5,mechanisms:mechanismSystem\.serialize\(\),keys:keyInventory\.serialize\(\),chapter:lv/);
   assert.match(html, /feetY:pl\.feetY\|\|0/);
   assert.match(html, /difficulty:S\.diff,quality:S\.quality/);
   assert.match(html, /openDoors:Object\.keys\(doors\)\.filter/);
@@ -400,4 +400,16 @@ test("wardrobe drawers spawn a collectible battery and restore it without duplic
   assert.match(html, /spawnOpenedDrawerLoot\(\)/);
   assert.match(html, /mechanismSystem\.restore\(SG\.mechanisms\);spawnOpenedDrawerLoot\(\)/);
   assert.match(html, /Array\.isArray\(SG\.collected\)&&SG\.collected\.includes\(key\)/);
+});
+
+test("mission progression integrates collectible keys, a locked cabinet and a powered exit", () => {
+  const html = read("index.html");
+  assert.match(html, /locked:side>0,key:'wardrobe-key:'\+lv/);
+  assert.match(html, /function spawnDrawerKey\(/);
+  assert.match(html, /keyInventory\.add\(it\.keyId/);
+  assert.match(html, /id:'breaker:'\+lv,type:'switch'/);
+  assert.match(html, /A saída está sem energia/);
+  assert.match(html, /powerOn\?\.3:\.075/);
+  assert.match(html, /keys:keyInventory\.serialize\(\)/);
+  assert.match(html, /keyInventory\.restore\(/);
 });
