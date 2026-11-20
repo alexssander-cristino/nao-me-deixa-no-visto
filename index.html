@@ -44,6 +44,7 @@ label{display:flex;gap:10px;align-items:center;justify-content:space-between;wid
 <script src="./models.js"></script>
 <script src="./player-animation.js"></script>
 <script src="./enemy-animation.js"></script>
+<script src="./enemy-ai.js"></script>
 <script src="./loading-manager.js"></script>
 <script>
 const $=i=>document.getElementById(i),R=Math.random,P=Math.PI,pk=a=>a[0|R()*a.length];
@@ -311,15 +312,13 @@ if(v.st=='relocate'){
  const step=Math.min(d2,2.6*dt);v.x+=dx2/d2*step;v.z+=dz2/d2*step;
  vm.position.set(v.x,0,v.z);vm.rotation.y=Math.atan2(dx2,dz2);return
 }
-const difficulty=S.diff||'normal',vision=difficulty=='easy'?15:difficulty=='hard'?29:22;const see=!pl.hid&&dist<(pl.crouch?vision*.42:(pl.on?vision:vision*.6))&&los(v.x,v.z,pl.x,pl.z);
+const difficulty=S.diff||'normal',vision=difficulty=='easy'?15:difficulty=='hard'?29:22;
+const perception=GameEnemyAI.perceive(v,pl,{distance:dist,vision:vision*(pl.crouch?.42:(pl.on?1:.6)),lineOfSight:los(v.x,v.z,pl.x,pl.z),noise:noiseEvent,now:performance.now()/1000});
+const see=perception.type==='sight';
 if(see){if(v.st!='chase'){say(pk(CH),1);sting(.5)}v.st='chase';v.last=[pl.x,pl.z];v.lost=0}
 else{
  if(v.st=='chase'){v.lost+=dt;if(v.lost>1.5){v.st='search';v.w=0}}
- const now=performance.now()/1000;
- if(noiseEvent&&noiseEvent.expires>now&&v.heard!==noiseEvent.id&&v.st!=='chase'&&!pl.hid){
-  const heardDistance=Math.hypot(noiseEvent.x-v.x,noiseEvent.z-v.z);
-  if(heardDistance<=noiseEvent.radius){v.heard=noiseEvent.id;v.st='inv';v.last=[noiseEvent.x,noiseEvent.z];v.w=0;at(noiseEvent.x,noiseEvent.z,q=>nz(.12,noiseEvent.kind==='door-open'?260:420,.28,q));}
- }
+ if(perception.type==='hearing'&&v.st!=='chase'){v.st='inv';v.last=[perception.position.x,perception.position.z];v.w=0;at(perception.position.x,perception.position.z,q=>nz(.12,perception.kind==='door-open'?260:420,.28,q));}
 }
 if(!pl.hid&&pl.run&&dist<(difficulty=='easy'?12:difficulty=='hard'?22:16)&&v.st=='pat'){v.st='inv';v.last=[pl.x,pl.z]}
 if(pl.hid&&dist<5.5&&(v.st=='search'||v.st=='inv')){v.f=(v.f||0)+dt;if(v.f>2.5&&!v.c){v.c=1;if(R()<(difficulty=='easy'?.15:difficulty=='hard'?.55:.3)){die();return}}}else if(!pl.hid){v.f=0;v.c=0}
