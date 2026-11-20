@@ -252,7 +252,9 @@ Esta atualização registra o que foi efetivamente implementado no código. As c
 
 - O workflow executou npm test em ubuntu-latest e windows-latest.
 - Na execução de código imediatamente anterior à separação dos dois circuitos, foram confirmados 57/57 testes em Linux e 57/57 em Windows, além de build portátil Windows e artefatos de build.
-- A execução do commit com os dois circuitos e alinhamento visual dos indicadores foi iniciada em https://github.com/alexssander-cristino/nao-me-deixa-no-visto/actions/runs/44829520233; os testes Linux e Windows passaram, enquanto a etapa de empacotamento Windows ainda estava em andamento no momento deste registro.
+- Workflow final do commit com dois circuitos e indicadores alinhados: https://github.com/alexssander-cristino/nao-me-deixa-no-visto/actions/runs/44829520233 — completed / success.
+- Linux: 57 testes aprovados, 0 falhas. Windows: 57 testes aprovados, 0 falhas.
+- Build portátil Windows: success. Artefatos publicados: game-build-Windows (317,7 MB) e game-build-Linux (126,3 MB).
 - Uma asserção antiga do teste de save esperava o payload schema 4. Ela foi atualizada para schema 5 e para incluir o snapshot de objetos; os testes subsequentes passaram.
 - A restauração de saves ativos foi corrigida para hidratar chaves, mecanismos, circuitos, configurações, estado do jogador e posições dos objetos — não apenas o progresso básico.
 - A restauração de fechaduras foi endurecida para não aceitar um estado desbloqueado sem comprovação de uso da chave.
