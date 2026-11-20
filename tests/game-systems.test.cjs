@@ -13,7 +13,7 @@ test("all browser scripts parse and local modules are wired into the game", () =
     .map((match) => match[1]).filter((source) => source.trim());
   assert.equal(scripts.length, 1);
   for (const source of scripts) new vm.Script(source);
-  for (const file of ["physics.js", "controller.js", "models.js"]) {
+  for (const file of ["input.js", "physics.js", "controller.js", "models.js"]) {
     new vm.Script(read(file), { filename: file });
     assert.ok(html.includes('src="./' + file + '"'));
   }
@@ -65,4 +65,28 @@ test("sprint consumes stamina and raises FOV while crouching lowers camera", () 
   controller.update(1 / 30, player, { ControlLeft: true }, camera, null, move, { fov: 76 });
   assert.equal(player.crouch, true);
   assert.ok(camera.position.y < 1.65);
+});
+
+
+test("mouse input batches high-frequency deltas and applies them once per frame", () => {
+  require("../input.js");
+  const input = new globalThis.GameInput.MouseLookInput();
+  input.setEnabled(true);
+  for (let i = 0; i < 120; i++) {
+    input.handle({ movementX: 1.25, movementY: -0.5 });
+  }
+  const delta = input.consume(0.85);
+  assert.ok(Math.abs(delta.x - 127.5) < 1e-9);
+  assert.ok(Math.abs(delta.y + 51) < 1e-9);
+  assert.deepEqual(input.consume(0.85), { x: 0, y: 0 });
+});
+
+test("mouse input discards deltas outside pointer lock and clears on release", () => {
+  require("../input.js");
+  const input = new globalThis.GameInput.MouseLookInput();
+  assert.equal(input.handle({ movementX: 40, movementY: 20 }), false);
+  input.setEnabled(true);
+  input.handle({ movementX: 40, movementY: 20 });
+  input.setEnabled(false);
+  assert.deepEqual(input.consume(1), { x: 0, y: 0 });
 });
