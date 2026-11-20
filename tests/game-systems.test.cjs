@@ -13,7 +13,7 @@ test("all browser scripts parse and local modules are wired into the game", () =
     .map((match) => match[1]).filter((source) => source.trim());
   assert.equal(scripts.length, 1);
   for (const source of scripts) new vm.Script(source);
-  for (const file of ["input.js", "rendering.js", "physics.js", "controller.js", "models.js"]) {
+  for (const file of ["input.js", "rendering.js", "physics.js", "controller.js", "models.js", "player-model.js"]) {
     new vm.Script(read(file), { filename: file });
     assert.ok(html.includes('src="./' + file + '"'));
   }
@@ -111,4 +111,32 @@ test("graphics profiles cap pixel ratio and scale shadow and atmosphere budgets"
   assert.equal(light.castShadow, true);
   assert.equal(light.shadow.mapSize.x, 512);
   assert.equal(selected.fog, 1);
+});
+
+
+test("player visual rig builds a hidden first-person head and animates with movement", () => {
+  require("../player-model.js");
+  class Node {
+    constructor(){this.children=[];this.position={x:0,y:0,z:0,set(x,y,z){this.x=x;this.y=y;this.z=z}};this.rotation={x:0,y:0,z:0};this.userData={};this.visible=true;}
+    add(child){this.children.push(child);child.parent=this;}
+    traverse(fn){fn(this);for(const child of this.children)child.traverse(fn);}
+  }
+  class Geometry {}
+  class Material { constructor(options){Object.assign(this,options)} }
+  class Mesh extends Node { constructor(geometry,material){super();this.geometry=geometry;this.material=material;this.isMesh=true;} }
+  const THREE={
+    Group:Node,Mesh,MeshStandardMaterial:Material,
+    SphereGeometry:Geometry,CylinderGeometry:Geometry,BoxGeometry:Geometry
+  };
+  const rig=globalThis.GamePlayerModel.create(THREE,{firstPerson:true});
+  assert.equal(rig.userData.head.visible,false);
+  const leftLeg=rig.userData.legs[0].hip.rotation.x;
+  globalThis.GamePlayerModel.update(rig,{x:4,z:7,yaw:.5,speed:4.5,running:true},1/30);
+  assert.equal(rig.position.x,4);
+  assert.equal(rig.position.z,7);
+  assert.equal(rig.rotation.y,.5+Math.PI);
+  assert.notEqual(rig.userData.legs[0].hip.rotation.x,leftLeg);
+  assert.equal(rig.visible,true);
+  globalThis.GamePlayerModel.update(rig,{visible:false},1/60);
+  assert.equal(rig.visible,false);
 });
