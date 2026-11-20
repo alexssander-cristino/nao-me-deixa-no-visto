@@ -22,6 +22,8 @@ test("all browser scripts parse and local modules are wired into the game", () =
   assert.doesNotMatch(html, /v\.x=c\[1\]\*4;v\.z=c\[0\]\*4/);
   assert.match(html, /id="iv"/);
   assert.match(html, /KeyI/);
+  assert.match(html, /function sanitizeSave/);
+  assert.doesNotMatch(html, /Object\.assign\(S/);
 });
 
 test("controller accelerates smoothly and respects the world collider", () => {
