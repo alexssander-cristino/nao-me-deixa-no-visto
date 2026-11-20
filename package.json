@@ -1,6 +1,6 @@
 {
-  "name": "ela-nao-aceita-o-fim",
-  "productName": "Ela Não Aceita o Fim",
+  "name": "nao-me-deixa-no-visto",
+  "productName": "Não Me Deixa no Visto",
   "version": "1.0.0",
   "description": "Jogo de terror em primeira pessoa com Valdirene",
   "main": "main.cjs",
@@ -22,13 +22,13 @@
     "forge": {
       "packagerConfig": {
         "asar": true,
-        "name": "ElaNaoAceitaOFim"
+        "name": "NaoMeDeixaNoVisto"
       },
       "makers": [
         {
           "name": "@electron-forge/maker-squirrel",
           "config": {
-            "name": "ela_nao_aceita_o_fim",
+            "name": "nao_me_deixa_no_visto",
             "authors": "Desenvolvedor",
             "description": "Ela Não Aceita o Fim"
           }

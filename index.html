@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Ela Não Aceita o Fim</title>
+<!DOCTYPE html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Não Me Deixa no Visto</title>
 <style>
 *{box-sizing:border-box;margin:0}html,body{height:100%;background:#000;color:#d8cfc4;font-family:Georgia,serif;overflow:hidden;user-select:none}
 canvas{position:fixed;inset:0;width:100%;height:100%}
@@ -13,7 +13,7 @@ canvas{position:fixed;inset:0;width:100%;height:100%}
 h1{font-size:clamp(26px,6vw,54px);color:#b3151b;text-shadow:0 0 20px #600;letter-spacing:2px}
 p{max-width:640px;line-height:1.5}
 button{background:#1a0a0a;color:#e8ddd0;border:1px solid #7a1519;padding:11px 26px;font:inherit;font-size:17px;cursor:pointer;min-width:250px}
-button:hover{background:#4a0d10}
+button:hover{background:#4a0d10;transform:translateY(-1px)}button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid #d64b52;outline-offset:3px}select{background:#100909;color:#e8ddd0;border:1px solid #7a1519;padding:7px 10px;font:inherit}
 label{display:flex;gap:10px;align-items:center}
 #hud{position:fixed;inset:0;z-index:3;pointer-events:none;display:none}
 .a{position:absolute}.bar{position:relative;width:140px;height:7px;background:#222}.bar i{display:block;height:100%}
@@ -25,9 +25,9 @@ label{display:flex;gap:10px;align-items:center}
 </style></head><body>
 <canvas id="cv"></canvas><div id="gr"></div><div id="vg"></div><div id="dg"></div><div id="hd"></div>
 <div id="hud"><div class="a" id="obj"></div><div class="a" style="left:16px;bottom:18px;font-size:12px">Fôlego<div class="bar"><i id="bs" style="background:#c9b27a"></i></div><div style="margin-top:6px">Lanterna [F]</div><div class="bar"><i id="bb" style="background:#e8d36a"></i></div></div><div class="a" id="pr"></div><div class="a" id="sb"></div><div class="a" id="nt"></div></div>
-<div class="ov on" id="mn"><h1>ELA NÃO ACEITA O FIM</h1><p>Anderson acorda às 03h17 numa casa abandonada. Bateria: 2%. 47 chamadas perdidas. Valdirene já sabe que ele acordou.</p><button onclick="newG()">Novo jogo</button><button id="ct" onclick="cont()">Continuar</button><button onclick="cfg(1)">Configurações</button><p style="font-size:14px;opacity:.7">WASD mover · Shift correr · F lanterna · E interagir / abrir e fechar portas / esconder no armário · Mouse olhar (ou arraste) · Esc pausa<br>Feche as portas atrás de você: ela demora a derrubá-las. Use fones de ouvido.</p></div>
+<div class="ov on" id="mn"><h1>NÃO ME DEIXA NO VISTO</h1><p>Anderson acorda às 03h17 numa casa abandonada. Bateria: 2%. 47 chamadas perdidas. Valdirene já sabe que ele acordou.</p><button onclick="newG()">Novo jogo</button><button id="ct" onclick="cont()">Continuar</button><button onclick="cfg(1)">Configurações</button><p style="font-size:14px;opacity:.7">WASD mover · Shift correr · F lanterna · E interagir / abrir e fechar portas / esconder no armário · Mouse olhar (ou arraste) · Esc pausa<br>Feche as portas atrás de você: ela demora a derrubá-las. Use fones de ouvido.</p></div>
 <div class="ov" id="pa"><h1>PAUSADO</h1><button onclick="resume()">Continuar</button><button onclick="cfg(1)">Configurações</button><button onclick="menu()">Menu principal</button></div>
-<div class="ov" id="cf"><h1>CONFIGURAÇÕES</h1><label>Volume <input type="range" min="0" max="1" step=".05" id="r1" oninput="S.vol=+this.value;if(mg)mg.gain.value=S.vol;sv()"></label><label>Sensibilidade <input type="range" min=".3" max="2.5" step=".1" id="r2" oninput="S.sens=+this.value;sv()"></label><label>Brilho <input type="range" min=".8" max="2" step=".1" id="r3" oninput="S.bri=+this.value;ap();sv()"></label><button onclick="cfg(0)">Voltar</button></div>
+<div class="ov" id="cf"><h1>CONFIGURAÇÕES</h1><label>Volume <input type="range" min="0" max="1" step=".05" id="r1" oninput="S.vol=+this.value;if(mg)mg.gain.value=S.vol;sv()"></label><label>Sensibilidade <input type="range" min=".3" max="2.5" step=".1" id="r2" oninput="S.sens=+this.value;sv()"></label><label>Brilho <input type="range" min=".8" max="2" step=".1" id="r3" oninput="S.bri=+this.value;ap();sv()"></label><label>Dificuldade <select id="diff" onchange="S.diff=this.value;sv()"><option value="easy">Tranquilo</option><option value="normal">Normal</option><option value="hard">Sem misericórdia</option></select></label><button onclick="cfg(0)">Voltar</button></div>
 <div class="ov" id="go"><h1>VALDIRENE TE ENCONTROU</h1><p id="gt"></p><button onclick="retry()">Tentar de novo</button><button onclick="menu()">Menu principal</button></div>
 <div class="ov" id="en"><h1 id="et" style="font-size:clamp(22px,4.5vw,40px)"></h1><p id="ep"></p><button onclick="menu()">Menu principal</button></div>
 <div class="ov" id="al"><h1 style="font-size:32px">O ALTAR</h1><p>Valdirene espera de véu, a dois metros. O celular vibra: a mensagem de 13 anos atrás, ainda sem resposta.</p><button onclick="alt(1)">Responder a mensagem</button><button onclick="alt(0)">Dizer "sim" e casar</button></div>
@@ -35,7 +35,7 @@ label{display:flex;gap:10px;align-items:center}
 <script src="./node_modules/three/build/three.min.js"></script>
 <script>
 const $=i=>document.getElementById(i),R=Math.random,P=Math.PI,pk=a=>a[0|R()*a.length];
-let S={vol:.7,sens:1,bri:1};try{Object.assign(S,JSON.parse(localStorage.getItem('vs')||'{}'))}catch(e){}
+let S={vol:.7,sens:1,bri:1,diff:'normal'};try{Object.assign(S,JSON.parse(localStorage.getItem('vs')||'{}'))}catch(e){}
 const sv=()=>{try{localStorage.setItem('vs',JSON.stringify(S))}catch(e){}};
 let SG=null;try{SG=JSON.parse(localStorage.getItem('sg')||'null')}catch(e){}
 const L=[
@@ -73,10 +73,10 @@ function sub(t,ms){$('sb').textContent=t;clearTimeout(subT);subT=setTimeout(()=>
 function note(t,ms){const n=$('nt');n.textContent=t;n.style.display='block';clearTimeout(ntT);ntT=setTimeout(()=>n.style.display='none',ms||7000)}
 function say(t,c){sub(t);try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='pt-BR';u.pitch=c?.4:.1;u.rate=c?1.3:.8;u.volume=Math.min(1,S.vol+.2);speechSynthesis.speak(u)}catch(e){}}
 // mundo
-let cv,rd,camera,scene,spot,amb,pls=[],g,rows,cols,lv=0,items=[],doors={},wards=[],ex,V,vm,gh,gT=0,L5=0,tg,state='menu',paused=0,modal=0,keys={},lore=0,sec=0,baseL=0,baseS=0,locked=0,drag=0,mdown=0,evT=30,flick=0,hb=0;
+let cv,rd,camera,scene,spot,amb,pls=[],g,rows,cols,lv=0,items=[],doors={},wards=[],ex,V,vm,gh,gT=0,L5=0,tg,state='menu',paused=0,modal=0,keys={},lore=0,sec=0,baseL=0,baseS=0,locked=0,drag=0,mdown=0,evT=30,flick=0,hb=0,resumeCheckpoint=0;
 const pl={x:0,z:0,y:0,p:0,st:100,ex:0,bat:100,hid:null,on:1,got:0,need:0,bob:0,sa:0,run:0};
 const ch=(r,c)=>(g[r]||'')[c]||'#';
-const sol=(x,z)=>{const r=Math.round(z/4),c=Math.round(x/4),k=ch(r,c);return k=='#'||k=='H'||(k=='D'&&!doors[r+','+c].o)};
+const sol=(x,z)=>{const r=Math.round(z/4),c=Math.round(x/4),k=ch(r,c),d=doors[r+','+c];return k=='#'||k=='H'||(k=='D'&&(!d||!d.o))};
 function mv(o,dx,dz,r){const t=(x,z)=>sol(x+r,z)||sol(x-r,z)||sol(x,z+r)||sol(x,z-r);if(!t(o.x+dx,o.z))o.x+=dx;if(!t(o.x,o.z+dz))o.z+=dz}
 function los(ax,az,bx,bz){const n=Math.ceil(Math.hypot(bx-ax,bz-az)/.6);for(let i=1;i<n;i++){const t=i/n;if(sol(ax+(bx-ax)*t,az+(bz-az)*t))return false}return true}
 function tex(c){const k=document.createElement('canvas');k.width=k.height=128;const x=k.getContext('2d');x.fillStyle=c;x.fillRect(0,0,128,128);for(let i=0;i<900;i++){x.fillStyle='rgba(0,0,0,'+R()*.25+')';x.fillRect(R()*128,R()*128,1+R()*3,1+R()*10)}for(let i=0;i<4;i++){x.fillStyle='rgba(30,10,5,.25)';x.beginPath();x.arc(R()*128,R()*128,10+R()*25,0,7);x.fill()}const t=new THREE.CanvasTexture(k);t.wrapS=t.wrapT=THREE.RepeatWrapping;return t}
@@ -115,13 +115,13 @@ if(!par[k(b)])return null;let c=b;while(par[k(c)]&&k(par[k(c)])!=k(a))c=par[k(c)
 function odoor(d,s){d.o=s?1:0;at(d.x,d.z,q=>nz(.35,s?500:250,.8,q))}
 function updV(dt){const v=V,dx=pl.x-v.x,dz=pl.z-v.z,dist=Math.hypot(dx,dz);
 if(v.st=='dorm'){vm.visible=false;v.t-=dt;if(v.t<=0){const c=rc(22);v.x=c[1]*4;v.z=c[0]*4;v.st='pat';v.t=35+R()*25;v.tg=null;vm.visible=true;sting(.3)}return}
-const see=!pl.hid&&dist<(pl.on?22:13)&&los(v.x,v.z,pl.x,pl.z);
+const difficulty=S.diff||'normal',vision=difficulty=='easy'?15:difficulty=='hard'?29:22;const see=!pl.hid&&dist<(pl.on?vision:vision*.6)&&los(v.x,v.z,pl.x,pl.z);
 if(see){if(v.st!='chase'){say(pk(CH),1);sting(.5)}v.st='chase';v.last=[pl.x,pl.z];v.lost=0}
 else if(v.st=='chase'){v.lost+=dt;if(v.lost>1.5){v.st='search';v.w=0}}
-if(!pl.hid&&pl.run&&dist<14&&v.st=='pat'){v.st='inv';v.last=[pl.x,pl.z]}
-if(pl.hid&&dist<5.5&&(v.st=='search'||v.st=='inv')){v.f=(v.f||0)+dt;if(v.f>2.5&&!v.c){v.c=1;if(R()<.3){die();return}}}else if(!pl.hid){v.f=0;v.c=0}
+if(!pl.hid&&pl.run&&dist<(difficulty=='easy'?12:difficulty=='hard'?22:16)&&v.st=='pat'){v.st='inv';v.last=[pl.x,pl.z]}
+if(pl.hid&&dist<5.5&&(v.st=='search'||v.st=='inv')){v.f=(v.f||0)+dt;if(v.f>2.5&&!v.c){v.c=1;if(R()<(difficulty=='easy'?.15:difficulty=='hard'?.55:.3)){die();return}}}else if(!pl.hid){v.f=0;v.c=0}
 let tx,tz,sp;
-if(v.st=='chase'){tx=pl.x;tz=pl.z;sp=L5?4.9:4.4}
+if(v.st=='chase'){tx=pl.x;tz=pl.z;sp=difficulty=='easy'?(L5?4.2:3.7):difficulty=='hard'?(L5?5.7:5.2):(L5?4.9:4.4)}
 else if(v.st=='inv'||v.st=='search'){tx=v.last[0];tz=v.last[1];sp=v.st=='inv'?2.6:2.2}
 else{if(!v.tg||Math.hypot(v.tg[1]*4-v.x,v.tg[0]*4-v.z)<1)v.tg=R()<.5?nearP():rc(0);tx=v.tg[1]*4;tz=v.tg[0]*4;sp=1.7;v.t-=dt;if(v.t<=0){v.st='dorm';v.t=14+R()*16;return}
 v.sp=(v.sp==null?8:v.sp)-dt;if(v.sp<0&&dist<26){say(pk(PT));v.sp=14+R()*10}}
@@ -145,22 +145,23 @@ else{at(pl.x+Math.cos(pl.y)*.4,pl.z-Math.sin(pl.y)*.4,q=>nz(1.2,3500,.6,q,'bandp
 // jogo
 function pick(it){scene.remove(it.m);items.splice(items.indexOf(it),1);th(600,.2,.2);
 if(it.k=='K'){pl.got++;note(L[lv].t[(pl.got-1)%3]+'  ('+pl.got+'/'+pl.need+')');if(pl.got>=pl.need){ex.m.material.color.set(0x33cc66);sub(L5?'As velas estão acesas. Vá ao altar.':'A saída destrancou.',5000)}}
-else if(it.k=='N'){lore++;note(NT[lv],9000)}else if(it.k=='X'){sec=1;note(XT,9000)}else{pl.bat=Math.min(100,pl.bat+40);note("Pilhas. Na embalagem, escrito à mão: 'pro meu amor'.")}}
+else if(it.k=='N'){lore++;note(NT[lv],9000)}else if(it.k=='X'){sec=1;note(XT,9000)}else{pl.bat=Math.min(100,pl.bat+40);note("Pilhas. Na embalagem, escrito à mão: 'pro meu amor'.")}saveProgress(it,true)}
 function hide(w){pl.hid=w;pl.px=pl.x;pl.pz=pl.z;pl.x=w.x;pl.z=w.z;w.m.visible=false;$('hd').style.display='block';th(120,.2,.4)}
 function unhide(){const w=pl.hid;w.m.visible=true;pl.hid=null;pl.x=pl.px;pl.z=pl.pz;$('hd').style.display='none'}
 function act(){if(pl.hid)return unhide();if(!tg)return;if(tg.t=='i')pick(tg.o);else if(tg.t=='h')hide(tg.o);else odoor(tg.o,tg.o.o?0:1)}
-function load(n){lv=n;build(n);baseL=lore;baseS=sec;SG={lv:n,lore,sec};try{localStorage.setItem('sg',JSON.stringify(SG))}catch(e){}evT=30+R()*20;$('hd').style.display='none'}
+function saveProgress(item,keep){const prev=keep&&SG&&SG.lv===lv?SG:{},collected=new Set(prev.collected||[]);if(item)collected.add(item.k+':'+item.x+':'+item.z);SG={lv,lore,sec,got:pl.got,bat:pl.bat,st:pl.st,on:pl.on,x:pl.x,z:pl.z,y:pl.y,p:pl.p,collected:[...collected],openDoors:Object.keys(doors).filter(k=>doors[k].o)};baseL=lore;baseS=sec;try{localStorage.setItem('sg',JSON.stringify(SG))}catch(e){}}
+function load(n){lv=n;build(n);const resumed=!!(resumeCheckpoint&&SG&&SG.lv===n);if(resumed){const totalNeed=pl.need,collected=new Set(SG.collected||[]);items=items.filter(it=>{const key=it.k+':'+it.x+':'+it.z;if(collected.has(key)){scene.remove(it.m);return false}return true});pl.got=Number(SG.got)||0;pl.need=totalNeed;pl.bat=Number.isFinite(SG.bat)?SG.bat:100;pl.st=Number.isFinite(SG.st)?SG.st:100;pl.on=SG.on===0?0:1;pl.x=Number.isFinite(SG.x)?SG.x:pl.x;pl.z=Number.isFinite(SG.z)?SG.z:pl.z;pl.y=Number.isFinite(SG.y)?SG.y:pl.y;pl.p=Number.isFinite(SG.p)?SG.p:pl.p;(SG.openDoors||[]).forEach(k=>{const d=doors[k];if(d){d.o=1;d.pv.rotation.y=d.sx?-1.5:1.5}});camera.position.set(pl.x,1.65,pl.z);camera.rotation.set(pl.p,pl.y,0)}resumeCheckpoint=0;saveProgress(null,resumed);evT=30+R()*20;$('hd').style.display='none'}
 function go(n){state='tr';$('fd').style.opacity=1;$('fd').innerHTML='<div><h1 style="font-size:32px">'+(n+1)+'. '+L[n].n+'</h1><p>'+L[n].i.replace('\n','<br>')+'</p></div>';setTimeout(()=>{load(n);$('fd').style.opacity=0;state='play'},3200)}
 function lock(){try{const r=cv.requestPointerLock();r&&r.catch&&r.catch(()=>drag=1)}catch(e){drag=1}}
 const sh=(i,o)=>$(i).classList.toggle('on',!!o);
-function cfg(o){sh('cf',o)}
+function cfg(o){if(o)$('diff').value=S.diff||'normal';sh('cf',o)}
 function ap(){cv.style.filter='brightness('+S.bri+')'}
-function newG(){ai();lore=0;sec=0;sh('mn',0);$('hud').style.display='block';paused=0;lock();go(0)}
-function cont(){if(!SG)return;ai();lore=SG.lore;sec=SG.sec;sh('mn',0);$('hud').style.display='block';paused=0;lock();go(SG.lv)}
+function newG(){ai();lore=0;sec=0;resumeCheckpoint=0;SG=null;try{localStorage.removeItem('sg')}catch(e){}sh('mn',0);$('hud').style.display='block';paused=0;lock();go(0)}
+function cont(){if(!SG)return;ai();lore=SG.lore||0;sec=SG.sec||0;resumeCheckpoint=1;sh('mn',0);$('hud').style.display='block';paused=0;lock();go(SG.lv)}
 function menu(){state='menu';paused=0;modal=0;document.exitPointerLock&&document.exitPointerLock();['pa','go','en','al','cf'].forEach(i=>sh(i,0));sh('mn',1);$('hud').style.display='none';$('ct').style.display=SG?'':'none';$('dg').style.opacity=0;try{speechSynthesis.cancel()}catch(e){}}
 function pause(){if(state!='play'||paused)return;paused=1;sh('pa',1);document.exitPointerLock&&document.exitPointerLock()}
 function resume(){paused=0;sh('pa',0);sh('cf',0);lock()}
-function retry(){sh('go',0);lore=baseL;sec=baseS;lock();go(lv)}
+function retry(){sh('go',0);lore=baseL;sec=baseS;resumeCheckpoint=0;lock();go(lv)}
 function die(){if(state!='play')return;state='over';document.exitPointerLock&&document.exitPointerLock();sting(.8);if(lv==4){fin('bad');return}$('gt').textContent='Valdirene: '+pk(GT);sh('go',1)}
 function fin(t,x){state='end';modal=0;document.exitPointerLock&&document.exitPointerLock();$('et').textContent=E[t][0];$('ep').textContent=(x?'Você tenta responder, mas não sabe o que ela passou. O "digitando..." aparece e some. Ela viu. ':'')+E[t][1];sh('en',1);$('hud').style.display='none';$('dg').style.opacity=0}
 function alt(c){sh('al',0);if(!c)fin('bad');else if(lore>=4)fin(sec?'sec':'good');else fin('bad',1)}
@@ -202,8 +203,8 @@ document.addEventListener('pointerlockerror',()=>drag=1);
 cv.addEventListener('mousedown',()=>mdown=1);addEventListener('mouseup',()=>mdown=0);
 addEventListener('mousemove',e=>{if(state!='play'||paused)return;if(locked||mdown){pl.y-=(e.movementX||0)*.0022*S.sens;pl.p=Math.max(-1.3,Math.min(1.3,pl.p-(e.movementY||0)*.0022*S.sens))}});
 addEventListener('keydown',e=>{keys[e.code]=1;if(['Space','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.code))e.preventDefault();if(state!='play')return;
-if(e.code=='KeyE'&&!e.repeat&&!paused)act();
-if(e.code=='KeyF'&&!e.repeat){pl.on=!pl.on;th(900,.04,.2)}
+if(e.code=='KeyE'&&!e.repeat&&!paused&&!modal)act();
+if(e.code=='KeyF'&&!e.repeat&&!paused&&!modal){pl.on=!pl.on;th(900,.04,.2)}
 if(e.code=='Escape')pause();if(e.code=='KeyP')paused?resume():pause()});
 addEventListener('keyup',e=>keys[e.code]=0);addEventListener('blur',()=>keys={});
 let last=0;(function loop(t){requestAnimationFrame(loop);const dt=Math.min((t-last)/1000||0,.05);last=t;if(state=='play'&&!paused&&!modal)upd(dt);rd.render(scene,camera)})(0);

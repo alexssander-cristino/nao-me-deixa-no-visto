@@ -1,4 +1,4 @@
-# Ela Não Aceita o Fim — versão desktop
+# Não Me Deixa no Visto — versão desktop
 
 Este projeto empacota o HTML original como aplicativo Windows usando Electron.
 O Three.js foi configurado para ser carregado localmente pelo pacote `three`,
@@ -35,6 +35,7 @@ O instalador do Windows (Squirrel) normalmente fica em:
 - Mouse: olhar
 - Esc: pausar
 - F11: alternar tela cheia da janela
+- Dificuldade: ajuste nas configurações (Tranquilo, Normal ou Sem misericórdia)
 
 ## Observações
 - O HTML e a lógica original do jogo foram preservados, exceto pela troca
