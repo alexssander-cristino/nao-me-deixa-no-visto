@@ -732,8 +732,8 @@ function setupWardrobeMechanisms(){
  const panel=new THREE.Group(),panelMetal=new THREE.MeshStandardMaterial({color:0x303238,metalness:.68,roughness:.48}),panelDark=new THREE.MeshStandardMaterial({color:0x111316,metalness:.25,roughness:.8}),lampLight=new THREE.MeshStandardMaterial({color:0x6c1717,emissive:0x260000,emissiveIntensity:.35}),lampExit=new THREE.MeshStandardMaterial({color:0x6c1717,emissive:0x260000,emissiveIntensity:.35}),leverMat=new THREE.MeshStandardMaterial({color:0x8d2525,roughness:.48});
  const plate=new THREE.Mesh(new THREE.BoxGeometry(.82,.72,.13),panelMetal);panel.add(plate);
  const inset=new THREE.Mesh(new THREE.BoxGeometry(.68,.52,.025),panelDark);inset.position.z=.078;panel.add(inset);
- const lampA=new THREE.Mesh(new THREE.SphereGeometry(.045,12,10),lampLight);lampA.position.set(-.2,.19,.105);panel.add(lampA);
- const lampB=new THREE.Mesh(new THREE.SphereGeometry(.045,12,10),lampExit);lampB.position.set(.2,.19,.105);panel.add(lampB);
+ const lampA=new THREE.Mesh(new THREE.SphereGeometry(.045,12,10),lampLight);lampA.position.set(.2,.19,.105);panel.add(lampA);
+ const lampB=new THREE.Mesh(new THREE.SphereGeometry(.045,12,10),lampExit);lampB.position.set(-.2,.19,.105);panel.add(lampB);
  const makeLever=x=>{const lever=new THREE.Group();lever.position.set(x,-.04,.11);panel.add(lever);const stem=new THREE.Mesh(new THREE.CylinderGeometry(.025,.03,.22,10),panelMetal);stem.position.y=.09;lever.add(stem);const grip=new THREE.Mesh(new THREE.SphereGeometry(.055,12,10),leverMat);grip.position.y=.2;lever.add(grip);return lever;};
  const lightLever=makeLever(.2),exitLever=makeLever(-.2);
  panel.position.set(pl.x+1.22,1.48,pl.z+.7);panel.rotation.y=Math.PI;panel.traverse(mesh=>{if(mesh.isMesh){mesh.castShadow=true;mesh.receiveShadow=true}});scene.add(panel);rigidPhysics.addStaticBox({x:pl.x+1.22,y:1.48,z:pl.z+.7,hx:.41,hy:.36,hz:.08,tag:'breaker-panel'});
