@@ -145,7 +145,23 @@ for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){const k=g[r][c],x=c*4,z=r*4;
 if(k=='#'){const m=new THREE.Mesh(bx,wm);m.position.set(x,d.h/2,z);m.castShadow=m.receiveShadow=true;scene.add(m);physics.addAABB(x,z,2,2,'wall')}
 else if(k=='S'){pl.x=x;pl.z=z}
 else if(k=='D'){const sx=ch(r,c-1)=='#'&&ch(r,c+1)=='#',pv=new THREE.Group(),m=new THREE.Mesh(new THREE.BoxGeometry(sx?4:.3,d.h*.92,sx?.3:4),dm);m.castShadow=true;
-if(sx){pv.position.set(x-2,0,z);m.position.set(2,d.h*.46,0)}else{pv.position.set(x,0,z-2);m.position.set(0,d.h*.46,2)}pv.add(m);scene.add(pv);doors[r+','+c]={o:0,pv,sx,x,z,physicsId:physics.addOBB(sx?x-2:x,z-2,2,.16,0,'door',true)};updateDoorCollider(doors[r+','+c])}
+if(sx){pv.position.set(x-2,0,z);m.position.set(2,d.h*.46,0)}else{pv.position.set(x,0,z-2);m.position.set(0,d.h*.46,2)}
+const trim=new THREE.MeshStandardMaterial({color:0x251512,roughness:.84}),inset=new THREE.MeshStandardMaterial({color:0x3a201c,roughness:.92}),brass=new THREE.MeshStandardMaterial({color:0x9b7848,metalness:.72,roughness:.32});
+const detail=(geo,ma,px,py,pz)=>{const q=new THREE.Mesh(geo,ma);q.position.set(px,py,pz);q.castShadow=true;q.receiveShadow=true;m.add(q);return q};
+if(sx){
+ for(const yy of [.58,1.72])detail(new THREE.BoxGeometry(1.12,.78,.045),inset,0,yy,.17);
+ for(const xx of [-1.82,1.82])for(const yy of [.32,1.38,2.42]){const hinge=detail(new THREE.CylinderGeometry(.035,.035,.19,12),brass,xx,yy,.19);hinge.rotation.z=Math.PI/2}
+ detail(new THREE.BoxGeometry(.06,.48,.06),trim,-1.52,1.02,.205);
+ const handle=detail(new THREE.SphereGeometry(.055,14,10),brass,1.46,1.18,.22);
+ detail(new THREE.CylinderGeometry(.018,.018,.14,10),brass,1.46,1.08,.2);
+}else{
+ for(const yy of [.58,1.72])detail(new THREE.BoxGeometry(.045,.78,1.12),inset,.17,yy,0);
+ for(const zz of [-1.82,1.82])for(const yy of [.32,1.38,2.42])detail(new THREE.CylinderGeometry(.035,.035,.19,12),brass,.19,yy,zz);
+ detail(new THREE.BoxGeometry(.06,.48,.06),trim,.205,1.02,-1.52);
+ detail(new THREE.SphereGeometry(.055,14,10),brass,.22,1.18,1.46);
+ detail(new THREE.CylinderGeometry(.018,.018,.14,10),brass,.2,1.08,1.46);
+}
+pv.add(m);scene.add(pv);doors[r+','+c]={o:0,pv,sx,x,z,physicsId:physics.addOBB(sx?x-2:x,z-2,2,.16,0,'door',true)};updateDoorCollider(doors[r+','+c])}
 else if(k=='H'){const group=new THREE.Group(),wood=new THREE.MeshStandardMaterial({color:0x38271f,roughness:.88}),edge=new THREE.MeshStandardMaterial({color:0x74513a,roughness:.72}),dark=new THREE.MeshStandardMaterial({color:0x100d0b}),gold=new THREE.MeshStandardMaterial({color:0xb18a4e,metalness:.65,roughness:.3});const part=(geo,ma,px,py,pz)=>{const q=new THREE.Mesh(geo,ma);q.position.set(px,py,pz);q.castShadow=true;q.receiveShadow=true;group.add(q)};part(new THREE.BoxGeometry(2.25,2.55,1.45),wood,0,1.28,0);part(new THREE.BoxGeometry(2.32,.12,1.52),edge,0,2.58,0);part(new THREE.BoxGeometry(2.32,.12,1.52),edge,0,.04,0);part(new THREE.BoxGeometry(.12,2.42,1.5),edge,-1.12,1.28,0);part(new THREE.BoxGeometry(.12,2.42,1.5),edge,1.12,1.28,0);part(new THREE.BoxGeometry(1.02,2.35,.08),edge,-.54,1.28,.77);part(new THREE.BoxGeometry(1.02,2.35,.08),edge,.54,1.28,.77);part(new THREE.BoxGeometry(.04,2.15,.025),dark,0,1.28,.83);part(new THREE.SphereGeometry(.055,10,8),gold,-.12,1.28,.86);group.position.set(x,0,z);scene.add(group);wards.push({x,z,m:group})}
 else if(k=='K')items.push({k:'K',x,z,m:em(0xffcc33,x,z,1,'K')});else if(k=='N')items.push({k:'N',x,z,m:em(0xffffff,x,z,1,'N')});
 else if(k=='B')items.push({k:'B',x,z,m:em(0x44ff66,x,z,1,'B')});else if(k=='X')items.push({k:'X',x,z,m:em(0xaa44ff,x,z,1,'X')});
