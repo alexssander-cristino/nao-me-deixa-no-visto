@@ -1,0 +1,51 @@
+name: Game regression tests
+
+permissions:
+  contents: write
+
+on:
+  push:
+    branches:
+      - main
+      - rebuild/**
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  physics:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Refresh lockfile for upgraded toolchain
+        run: npm install --package-lock-only --ignore-scripts
+      - run: npm ci --ignore-scripts
+      - name: Install Electron binary explicitly
+        run: node node_modules/electron/install.js
+      - name: Report dependency audit
+        run: |
+          npm audit --json > audit.json || true
+          node -e "const a=require('./audit.json'); for (const [name,v] of Object.entries(a.vulnerabilities||{})) console.log(name+': '+v.severity+'; fix='+JSON.stringify(v.fixAvailable))"
+      - name: Inspect SonarCloud new-code vulnerabilities
+        if: github.event_name == 'pull_request'
+        run: |
+          curl -sS 'https://sonarcloud.io/api/issues/search?componentKeys=alexssander-cristino_nao-me-deixa-no-visto&pullRequest=4&issueStatuses=OPEN,CONFIRMED&sinceLeakPeriod=true&ps=100' -o sonar-issues.json || true
+          node -e "try{const a=require('./sonar-issues.json');console.log('Sonar issues returned: '+a.total);for(const i of a.issues||[])console.log(i.type+' '+i.rule+' '+i.severity+' '+i.component+':'+i.line+' '+i.message)}catch(e){console.log('SonarCloud issue API not available anonymously')}"
+      - run: npm test
+      - name: Package Electron application
+        run: npm run package
+
+      - name: Commit refreshed lockfile
+        if: github.event_name == 'push'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add package-lock.json
+          if ! git diff --cached --quiet; then
+            git commit -m "chore: refresh secure Electron dependency lockfile"
+            git push
+          fi
