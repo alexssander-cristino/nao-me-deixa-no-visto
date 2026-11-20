@@ -71,9 +71,9 @@
       }
       const cameraTarget=player.capsuleHeight-(player.crouch?.12:.12);
       this.cameraHeight=approach(this.cameraHeight,cameraTarget,18,delta);
-      const bob=actualSpeed>.12&&player.grounded?Math.sin(this.bobPhase)*(player.run?.045:player.crouch?.006:.014):0;
+      const bob=settings.headBob!==false&&!settings.reduceCameraEffects&&actualSpeed>.12&&player.grounded?Math.sin(this.bobPhase)*(player.run?.045:player.crouch?.006:.014):0;
       camera.position.set(player.x,player.feetY+this.cameraHeight+bob,player.z);
-      camera.rotation.set(player.p,player.y,actualSpeed>.25&&player.grounded?Math.sin(this.bobPhase*.5)*(player.run?.009:.003):0);
+      camera.rotation.set(player.p,player.y,!settings.reduceCameraEffects&&settings.headBob!==false&&actualSpeed>.25&&player.grounded?Math.sin(this.bobPhase*.5)*(player.run?.009:.003):0);
       const baseFov=clamp(Number(settings.fov)||76,60,110);
       camera.fov=approach(camera.fov,baseFov+(player.run?3:0),5,delta);
       camera.updateProjectionMatrix();
