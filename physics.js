@@ -188,7 +188,7 @@
       const velocity="v"+axis,normalSpeed=body[velocity]*sign;
       if(normalSpeed<0){
         const restitution=Math.abs(normalSpeed)>.35?body.restitution:0;
-        body[velocity]-=(1+restitution)*normalSpeed;
+        body[velocity]=-normalSpeed*restitution*sign;
       }
       if(axis==="y"&&sign>0){
         body.grounded=true;
