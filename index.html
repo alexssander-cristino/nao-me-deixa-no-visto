@@ -141,7 +141,7 @@ else if(k=='K')items.push({k:'K',x,z,m:em(0xffcc33,x,z)});else if(k=='N')items.p
 else if(k=='B')items.push({k:'B',x,z,m:em(0x44ff66,x,z)});else if(k=='X')items.push({k:'X',x,z,m:em(0xaa44ff,x,z)});
 else if(k=='E'||k=='A'){const m=new THREE.Mesh(new THREE.BoxGeometry(k=='E'?2.4:1.6,k=='E'?2.6:1.2,k=='E'?.2:.8),new THREE.MeshBasicMaterial({color:0x772222}));m.position.set(x,k=='E'?1.3:.6,z);scene.add(m);ex={x,z,m}}}
 decorateLevel(n);pl.need=items.filter(i=>i.k=='K').length;pl.got=0;pl.hid=null;pl.p=0;pl.y=0;pl.st=100;pl.bat=100;pl.on=1;
-V={x:0,z:0,st:'dorm',t:n==4?12:28};vm=mkV(n==2);vm.visible=false;scene.add(vm);gh=mkV(0);gh.visible=false;scene.add(gh);gT=0;
+V={x:0,z:0,st:'dorm',t:n==4?12:28};vm=mkV(0);vm.visible=false;scene.add(vm);gh=mkV(1);gh.visible=false;scene.add(gh);gT=0;
 camera.position.set(pl.x,1.65,pl.z)}
 // IA da Valdirene
 const cell=o=>[Math.round(o.z/4),Math.round(o.x/4)];
