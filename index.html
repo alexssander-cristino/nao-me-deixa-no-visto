@@ -441,9 +441,9 @@ let last=0;(function loop(t){
  if(document.hidden){last=t;mouseLook.clear();return;}
  const dt=Math.min((t-last)/1000||0,.05);last=t;
  if(state==='play'&&!paused&&!modal){
-   const look=mouseLook.consume(S.sens);
-   pl.y-=look.x*.00185;
-   pl.p=Math.max(-1.28,Math.min(1.28,pl.p-look.y*.00165));
+   const look=mouseLook.consume(1);
+   pl.y-=look.x*.00185*S.sensX;
+   pl.p=Math.max(-1.28,Math.min(1.28,pl.p-look.y*.00165*S.sensY*(S.invertY?-1:1)));
    upd(dt);
  }
  rd.render(scene,camera);
