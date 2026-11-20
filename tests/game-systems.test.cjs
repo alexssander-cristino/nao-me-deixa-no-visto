@@ -106,6 +106,7 @@ test("gameplay wires audible investigation and an animated lethal Valdirene atta
   assert.match(html, /function emitNoise\(/);
   assert.match(html, /noiseEvent\.radius/);
   assert.match(html, /emitNoise\(pl\.x,pl\.z,pl\.run\?16/);
+  assert.match(html, /emitNoise\(b\.x,b\.z,10,'object-moved'\)/);
   assert.match(html, /function startAttack\(/);
   assert.match(html, /if\(attackSequence\)\{/);
   assert.match(html, /GameEnemyAnimation\.update\(vm,v,dt,dist\)/);
