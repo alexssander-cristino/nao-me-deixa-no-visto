@@ -273,7 +273,22 @@
       this.iterations=Math.max(1,Math.floor(finite(options.iterations,5)));
       this.stepHeight=clamp(finite(options.stepHeight,.28),0,.6);
       this.skin=Math.max(.001,finite(options.skin,.012));
-      this.stats={tests:0,contacts:0,substeps:0};
+      this.stats={tests:0,contacts:0,substeps:0};this.ramps=[];
+    }
+    addRamp(def={}){
+      const axis=def.axis==="z"?"z":"x",rise=Math.max(.01,finite(def.rise,1));
+      const ramp={x:finite(def.x),z:finite(def.z),hx:Math.max(.1,finite(def.hx,1)),hz:Math.max(.1,finite(def.hz,1)),
+        baseY:finite(def.baseY),rise,axis,direction:def.direction===-1?-1:1,tag:def.tag||"ramp",ramp:true};
+      this.ramps.push(ramp);return ramp;
+    }
+    clearRamps(){this.ramps.length=0}
+    _rampHeight(x,z,radius,ramp){
+      const along=ramp.axis==="x"?x-ramp.x:z-ramp.z;
+      const across=ramp.axis==="x"?z-ramp.z:x-ramp.x;
+      const halfAlong=ramp.axis==="x"?ramp.hx:ramp.hz,halfAcross=ramp.axis==="x"?ramp.hz:ramp.hx;
+      if(Math.abs(along)>halfAlong+radius||Math.abs(across)>halfAcross+radius)return null;
+      const t=clamp(.5+(along*ramp.direction)/(halfAlong*2),0,1);
+      return ramp.baseY+t*ramp.rise;
     }
     _overlapY(feet,height,b){
       return feet < b.y+b.hy-this.skin && feet+height > b.y-b.hy+this.skin;
@@ -281,7 +296,8 @@
     canFit(position,shape,statics=[]){
       const radius=Math.max(.08,finite(shape.radius,.34)),height=Math.max(radius*2,finite(shape.height,1.7));
       if(position.y<this.groundY-this.skin)return false;
-      for(const b of statics){if(!b||b.active===false)continue;if(!this._overlapY(position.y,height,b))continue;if(this._circleAabb(position.x,position.z,radius,b))return false;}
+      for(const b of statics){if(!b||b.active===false||b.ramp)continue;if(!this._overlapY(position.y,height,b))continue;if(this._circleAabb(position.x,position.z,radius,b))return false;}
+      for(const ramp of this.ramps){const surface=this._rampHeight(position.x,position.z,radius,ramp);if(surface!==null&&position.y<surface-this.skin)return false;}
       return true;
     }
     _circleAabb(x,z,r,b){
@@ -305,7 +321,7 @@
         position.y+=sy;
         if(position.y<this.groundY){position.y=this.groundY;velocity.y=0;grounded=true;blockedY=sy<0}
         for(const b of statics){
-          if(!b||b.active===false)continue;
+          if(!b||b.active===false||b.ramp)continue;
           const horizontal=this._circleAabb(position.x,position.z,radius,b);
           if(!horizontal)continue;
           const bottom=b.y-b.hy,top=b.y+b.hy;
@@ -318,7 +334,7 @@
         for(let pass=0;pass<this.iterations;pass++){
           let changed=false;
           for(const b of statics){
-            if(!b||b.active===false||!this._overlapY(position.y,height,b))continue;
+            if(!b||b.active===false||b.ramp||!this._overlapY(position.y,height,b))continue;
             this.stats.tests++;
             const hit=this._circleAabb(position.x,position.z,radius,b);
             if(!hit)continue;
@@ -339,7 +355,7 @@
         for(let pass=0;pass<this.iterations;pass++){
           let changed=false;
           for(const b of statics){
-            if(!b||b.active===false||!this._overlapY(position.y,height,b))continue;
+            if(!b||b.active===false||b.ramp||!this._overlapY(position.y,height,b))continue;
             this.stats.tests++;
             const hit=this._circleAabb(position.x,position.z,radius,b);
             if(!hit)continue;
@@ -351,6 +367,14 @@
           }
           if(!changed)break;
         }
+        // A rampa fornece uma superfície inclinada contínua, sem degraus AABB.
+        for(const ramp of this.ramps){
+          const surface=this._rampHeight(position.x,position.z,radius,ramp);
+          if(surface===null)continue;
+          if(velocity.y<=0&&position.y<=surface+this.stepHeight+this.skin&&surface>=position.y-this.stepHeight){
+            position.y=surface;velocity.y=0;grounded=true;
+          }
+        }
         this.stats.substeps++;
       }
       // Ground probe catches standing still and descending onto a surface.
@@ -361,6 +385,7 @@
         const top=b.y+b.hy;
         if(horizontal&&position.y>=top-this.stepHeight-this.skin&&position.y<=top+this.skin&&top>support)support=top;
       }
+      for(const ramp of this.ramps){const surface=this._rampHeight(position.x,position.z,radius,ramp);if(surface!==null&&surface>support)support=surface;}
       if(position.y<=support+this.skin&&velocity.y<=0){
         position.y=support;velocity.y=0;grounded=true;
       }
