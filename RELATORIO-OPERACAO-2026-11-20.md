@@ -202,3 +202,72 @@ Commit de código: `4a27e978777ecae0ab845a135f6c16bccb7b1d20`
 - Workflow completo: **completed / success**.
 
 Aprovação do workflow cobre testes automatizados e build, mas não altera as classificações de playtest manual e benchmark: ambos continuam **NÃO VALIDADO**.
+
+
+---
+
+## Aditivo técnico — implementação das pendências (20/11/2026)
+
+Esta atualização registra o que foi efetivamente implementado no código. As classificações abaixo substituem o estado anterior para os sistemas listados; não representam validação visual de execução.
+
+### Estado consolidado
+
+| Sistema | Situação | Implementação realizada | Testes |
+|---|---|---|---|
+| Gavetas e armários | **PARCIAL** | Duas portas articuladas e duas gavetas por armário, animação progressiva, colisores atualizados durante o movimento, sons separados e loot persistente na gaveta inferior do primeiro armário | Testes de mecanismos, limites, colisão e restauração |
+| Chaves e cadeados | **PARCIAL** | Inventário de chaves por ID; chave coletável na gaveta; fechadura do armário-alvo consome a chave correta; restauração impede abrir fechadura por snapshot inconsistente | Testes de inventário, chave incompatível, consumo e save corrompido |
+| Disjuntores | **PARCIAL** | Dois interruptores independentes por capítulo: iluminação e saída; luzes e indicadores mudam de estado; sons de acionamento; ambos os circuitos são persistidos | Teste de switch, callback, serialização e restauração |
+| Integração com missões | **PARCIAL** | Chave abre o armário designado; os dois circuitos precisam ser religados para liberar a saída; Valdirene pode abrir uma porta de armário desbloqueada durante uma busca por jogador escondido | Testes de integração e regressão de estados |
+| Física de objetos | **PARCIAL** | Mantido o solver 3D existente com massa, gravidade, atrito, restituição e colisões; caixas podem ser empurradas e arrastadas com G; ruídos dos objetos alimentam a percepção da IA; posição e rotação das caixas são salvas | Testes de gravidade, impulso, colisão, repouso, arrasto integrado e persistência |
+| Rampas e escadas | **PARCIAL** | CharacterPhysicsWorld ganhou superfícies inclinadas contínuas, suporte de chão e transição de subida/descida; mantém a tolerância de degrau existente | Testes automatizados de subida, descida, suporte e prevenção de penetração; não há geometria de rampa/escada adicionada aos capítulos |
+| Rig humano | **PARCIAL** | Hierarquia nomeada de ossos para jogador e Valdirene: raiz, pelve, coluna, pescoço, cabeça, ombros e quadris; partes visuais existentes foram ligadas aos ossos e continuam sendo animadas | Testes de hierarquia, relações entre ossos e partes articuladas |
+| Animações da Valdirene | **PARCIAL** | Animação procedural existente passou a dirigir o rig hierárquico; integração de abertura de armário com estado de busca da IA | Testes de animação e rig; sem captura de movimento ou playtest visual |
+| Modelos 3D | **PARCIAL** | Modelos procedurais existentes foram preservados e ligados ao novo rig; não foram substituídos por placeholders | Testes de construção do modelo e rig; qualidade artística não validada visualmente |
+| Materiais PBR | **PARCIAL** | Geradores de mapas de normal e roughness em DataTexture, aplicados às paredes e pisos; materiais continuam usando MeshStandardMaterial | Teste de geração, variação e aplicação dos mapas |
+| LOD | **PARCIAL** | LOD de duas distâncias para caixas móveis; paredes estáticas agrupadas com InstancedMesh para reduzir draw calls | Testes de integração do LOD e do instanciamento |
+| Salvamento | **PARCIAL** | Payload schema 5 salva mecanismos, chaves, circuitos e transformações das caixas; continuação do slot ativo restaura esses dados; saves antigos são sanitizados e continuam carregáveis | Testes de serialização, restauração, compatibilidade e validação de dados |
+| Testes automatizados | **CONCLUÍDO** | Cobertura ampliada sem remover a suíte existente | 57 aprovados, 0 falhas em Linux e Windows no workflow mais recente |
+| Testes visuais Windows | **NÃO VALIDADO** | Build/testes automatizados no runner Windows não equivalem a jogar interativamente no desktop | Não foi realizada sessão visual interativa |
+| Desempenho | **NÃO VALIDADO** | Instancing e LOD foram implementados, mas não há benchmark medido na RTX 3050 física | FPS, 1% low, frametime, VRAM e RAM não medidos |
+
+### Arquivos criados
+
+- gameplay-systems.js — inventário persistente de chaves por identificador.
+- materials.js — geração e aplicação de mapas PBR procedurais.
+- tests/gameplay-systems.test.cjs — testes de inventário, duplicidade, restauração e validação de IDs.
+
+### Arquivos modificados
+
+- index.html — integração dos mecanismos, painel elétrico com dois circuitos, progressão, IA de busca de armário, inventário, save schema 5, arrasto e restauração de caixas, PBR, instancing e LOD.
+- mechanisms.js — restauração segura de fechaduras e estado dos mecanismos.
+- physics.js — suporte contínuo para rampas no controlador FPS.
+- models.js — rig hierárquico da Valdirene.
+- player-animation.js — rig hierárquico do corpo do jogador.
+- tests/game-systems.test.cjs — regressões de integração, rig, PBR, LOD, mecanismos e persistência.
+- tests/mechanisms.test.cjs — circuitos e validação de snapshots de fechaduras.
+- tests/physics.test.cjs — subida e descida em rampas.
+- RELATORIO-OPERACAO-2026-11-20.md — este aditivo.
+
+### Resultados automatizados e problemas corrigidos
+
+- O workflow executou npm test em ubuntu-latest e windows-latest.
+- Na execução de código imediatamente anterior à separação dos dois circuitos, foram confirmados 57/57 testes em Linux e 57/57 em Windows, além de build portátil Windows e artefatos de build.
+- A execução do commit com os dois circuitos e alinhamento visual dos indicadores foi iniciada em https://github.com/alexssander-cristino/nao-me-deixa-no-visto/actions/runs/44829520233; os testes Linux e Windows passaram, enquanto a etapa de empacotamento Windows ainda estava em andamento no momento deste registro.
+- Uma asserção antiga do teste de save esperava o payload schema 4. Ela foi atualizada para schema 5 e para incluir o snapshot de objetos; os testes subsequentes passaram.
+- A restauração de saves ativos foi corrigida para hidratar chaves, mecanismos, circuitos, configurações, estado do jogador e posições dos objetos — não apenas o progresso básico.
+- A restauração de fechaduras foi endurecida para não aceitar um estado desbloqueado sem comprovação de uso da chave.
+
+### Limitações restantes
+
+1. O solver continua sendo uma física de corpos rígidos simplificada com colisões AABB e rotação limitada; não é um motor 6DOF completo.
+2. Rampas têm suporte no controlador, mas ainda não foram construídas como geometria jogável nos capítulos; escadas físicas não foram adicionadas aos cenários.
+3. O rig é uma hierarquia óssea que conduz partes rígidas existentes; não é um pipeline completo de skinning, pesos de vértices ou mocap.
+4. A IA abre uma porta de armário desbloqueada quando procura o jogador escondido; não há investigação completa de todos os armários nem animação de alcance manual sincronizada.
+5. O loot permanece concentrado na gaveta inferior do primeiro armário; não existe tabela variável de conteúdo para todas as gavetas.
+6. Os mapas PBR estão aplicados às superfícies principais; não há mapas AO/normal/roughness individualizados para todos os móveis, personagens e objetos.
+7. O LOD foi aplicado às caixas móveis; os demais modelos ainda não têm níveis de detalhe próprios.
+8. O salvamento de objetos cobre as caixas físicas atuais, não qualquer objeto arbitrário que venha a ser movimentado.
+9. O runner Windows comprova testes e empacotamento, não uma sessão visual interativa no computador do usuário.
+10. Não há métricas de desempenho da RTX 3050 física; qualquer benchmark continua pendente.
+
+**Conclusão técnica:** os mecanismos de chave, armário, dois circuitos elétricos, progressão, arrasto de caixas, persistência desses estados, rig hierárquico, mapas PBR principais e otimizações de instancing/LOD foram implementados e integrados. A operação geral permanece **PARCIAL** porque qualidade visual final, física 6DOF, geometria de rampas/escadas, skinning completo, playtest visual no Windows e benchmark físico ainda não foram comprovados ou concluídos.
