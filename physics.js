@@ -106,5 +106,94 @@
       return {hit:false,t:1,x:x2,z:z2};
     }
   }
-  root.GamePhysics={PhysicsWorld};
+  class RigidBodyWorld{
+    constructor(options={}){
+      this.gravity=options.gravity||9.81;
+      this.fixedStep=options.fixedStep||1/60;
+      this.maxSubSteps=options.maxSubSteps||8;
+      this.accumulator=0;this.bodies=[];this.statics=[];this.nextBodyId=1;
+      this.stats={steps:0,contacts:0};
+    }
+    clear(){this.accumulator=0;this.bodies.length=0;this.statics.length=0;this.stats.steps=0;this.stats.contacts=0;}
+    addStaticBox(box){
+      const b={x:box.x||0,y:box.y||0,z:box.z||0,hx:box.hx,hy:box.hy,hz:box.hz,tag:box.tag||"static"};
+      this.statics.push(b);return b;
+    }
+    addBody(options={}){
+      const mass=Math.max(.01,options.mass||1),p=options.position||{};
+      const b={id:this.nextBodyId++,x:p.x||0,y:p.y||0,z:p.z||0,
+        vx:0,vy:0,vz:0,rotation:options.rotation||0,angularVelocity:0,
+        hx:options.halfExtents?.x||.15,hy:options.halfExtents?.y||.15,hz:options.halfExtents?.z||.15,
+        mass,invMass:1/mass,restitution:options.restitution??.12,friction:options.friction??.72,
+        grounded:false,active:true,userData:options.userData||null};
+      this.bodies.push(b);return b;
+    }
+    applyImpulse(bodyOrId,impulse){
+      const b=typeof bodyOrId==="object"?bodyOrId:this.bodies.find(v=>v.id===bodyOrId);
+      if(!b||!b.active)return false;
+      b.vx+=(impulse.x||0)*b.invMass;b.vy+=(impulse.y||0)*b.invMass;b.vz+=(impulse.z||0)*b.invMass;
+      if(impulse.angular)b.angularVelocity+=impulse.angular*b.invMass;
+      b.grounded=false;return true;
+    }
+    removeBody(bodyOrId){
+      const b=typeof bodyOrId==="object"?bodyOrId:this.bodies.find(v=>v.id===bodyOrId);
+      if(!b)return false;b.active=false;return true;
+    }
+    _contact(body,box){
+      const ox=body.hx+box.hx-Math.abs(body.x-box.x);
+      const oy=body.hy+box.hy-Math.abs(body.y-box.y);
+      const oz=body.hz+box.hz-Math.abs(body.z-box.z);
+      if(ox<=0||oy<=0||oz<=0)return false;
+      let axis="x",depth=ox;if(oy<depth){axis="y";depth=oy}if(oz<depth){axis="z";depth=oz}
+      const sign=body[axis]>=box[axis]?1:-1;
+      body[axis]+=sign*(depth+1e-4);
+      const velocity="v"+axis;
+      if(body[velocity]*sign<0)body[velocity]=-body[velocity]*body.restitution;
+      if(axis==="y"&&sign>0){
+        body.grounded=true;
+        body.vx*=Math.max(0,1-body.friction*this.fixedStep*8);
+        body.vz*=Math.max(0,1-body.friction*this.fixedStep*8);
+      }
+      this.stats.contacts++;return true;
+    }
+    _pair(a,b){
+      const ox=a.hx+b.hx-Math.abs(a.x-b.x),oy=a.hy+b.hy-Math.abs(a.y-b.y),oz=a.hz+b.hz-Math.abs(a.z-b.z);
+      if(ox<=0||oy<=0||oz<=0)return;
+      let axis="x",depth=ox;if(oy<depth){axis="y";depth=oy}if(oz<depth){axis="z";depth=oz}
+      const sign=a[axis]>=b[axis]?1:-1,inv=a.invMass+b.invMass;
+      a[axis]+=sign*(depth*a.invMass/inv);
+      b[axis]-=sign*(depth*b.invMass/inv);
+      const va="v"+axis,rel=(a[va]-b[va])*sign;
+      if(rel<0){const impulse=-(1+Math.min(a.restitution,b.restitution))*rel/inv;a[va]+=sign*impulse*a.invMass;b[va]-=sign*impulse*b.invMass}
+      this.stats.contacts++;
+    }
+    _tick(dt){
+      for(const b of this.bodies){
+        if(!b.active)continue;
+        b.grounded=false;b.vy-=this.gravity*dt;
+        b.x+=b.vx*dt;b.y+=b.vy*dt;b.z+=b.vz*dt;
+        b.rotation+=b.angularVelocity*dt;
+        if(b.y-b.hy<0){b.y=b.hy;if(b.vy<0)b.vy=-b.vy*b.restitution;b.grounded=true;b.vx*=Math.max(0,1-b.friction*dt*8);b.vz*=Math.max(0,1-b.friction*dt*8)}
+        for(let pass=0;pass<3;pass++){
+          let changed=false;
+          for(const wall of this.statics)if(this._contact(b,wall))changed=true;
+          if(!changed)break;
+        }
+      }
+      for(let i=0;i<this.bodies.length;i++)for(let j=i+1;j<this.bodies.length;j++){
+        const a=this.bodies[i],b=this.bodies[j];if(a.active&&b.active)this._pair(a,b);
+      }
+      this.stats.steps++;
+    }
+    step(dt){
+      this.accumulator+=Math.min(.1,Math.max(0,dt||0));
+      let n=0;
+      while(this.accumulator>=this.fixedStep&&n<this.maxSubSteps){
+        this._tick(this.fixedStep);this.accumulator-=this.fixedStep;n++;
+      }
+      if(n===this.maxSubSteps)this.accumulator=0;
+      return n;
+    }
+  }
+  root.GamePhysics={PhysicsWorld,RigidBodyWorld};
 })(typeof window!=="undefined"?window:globalThis);
