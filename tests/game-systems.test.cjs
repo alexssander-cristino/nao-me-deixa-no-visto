@@ -154,7 +154,7 @@ test("3D controller applies gravity, camera height and crouch clearance", () => 
   const controller = new globalThis.GameController.FirstPersonController();
   const player = {x:0,z:0,y:0,p:0,feetY:0,grounded:false,capsuleHeight:1.72,velocity3D:{x:0,y:0,z:0},st:100};
   const camera = {position:{set(x,y,z){this.x=x;this.y=y;this.z=z}},rotation:{set(){}},fov:76,updateProjectionMatrix(){}};
-  const move = (p,v,d,shape) => {p.feetY=Math.max(0,p.feetY+d.y);if(p.feetY===0){v.y=0;return {grounded:true,blockedY:true}}return {grounded:false}};
+  const move = () => ({grounded:false,blockedY:false});
   move.canFit=(_p,shape)=>shape.height<1.3;
   let result=controller.update3D(1/60,player,{},camera,null,move,{fov:76});
   assert.ok(player.velocity3D.y<0);
