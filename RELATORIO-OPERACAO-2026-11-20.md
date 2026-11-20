@@ -2,98 +2,113 @@
 
 **Data:** 20/11/2026  
 **Branch:** `main`  
-**Commit de referência:** `2e5ed29280eef82249d6cee1c33215a837a18507`
+**Repositório:** https://github.com/alexssander-cristino/nao-me-deixa-no-visto
 
 ## Resumo executivo
 
-A base existente foi preservada. A auditoria confirmou uma aplicação Three.js r128 + Electron, com gameplay principal ainda concentrado em `index.html` e módulos auxiliares para entrada, física, controle FPS, modelos, renderização e salvamento.
+A base Three.js r128 + Electron foi preservada. Foram integrados quatro módulos novos, corrigidos pontos de persistência e colisão, melhoradas as reações da IA e substituído o loading temporizado por etapas de trabalho assíncronas.
 
-Nesta etapa foram corrigidos os testes de regressão que estavam bloqueando o CI e integrado um corpo procedural articulado de primeira pessoa, sincronizado com posição, rotação, velocidade, corrida e agachamento do jogador. A cabeça foi omitida para não obstruir a câmera FPS; o avatar desaparece enquanto o jogador está escondido.
-
-**Não é uma conclusão integral da operação solicitada.** Vários sistemas ainda estão parciais e exigem implementação adicional e validação visual interativa.
-
-## Arquivos modificados
-
-- `index.html`
-  - Carrega o novo módulo `player-animation.js`.
-  - Cria o avatar ao construir cada fase.
-  - Atualiza a animação do corpo junto ao controlador FPS.
-- `tests/game-systems.test.cjs`
-  - Corrige a expectativa antiga de um único script inline; agora valida os dois blocos inline existentes.
-  - Adiciona teste de integração do corpo articulado.
+**A operação ainda não está integralmente concluída.** Os sistemas implementados abaixo passaram por testes automatizados, mas o jogo ainda precisa de playtest visual prolongado, medição de desempenho na RTX 3050 Laptop e validação da distribuição Windows final.
 
 ## Arquivos criados
 
 - `player-animation.js`
-  - Corpo procedural com tronco, braços, antebraços, mãos, pernas, joelhos e pés.
-  - Pivôs articulados e animação de marcha/corrida/agachamento.
-  - Sincronização com transformações do jogador e ocultação durante esconderijos.
+  - Corpo procedural articulado de primeira pessoa, com tronco, braços, antebraços, mãos, pernas, joelhos e pés.
+  - Sincronização com posição, yaw, velocidade, corrida e agachamento.
+  - Animação de alcance durante interação e reações corporais de medo.
+  - Ocultação durante esconderijos; cabeça omitida para não bloquear a câmera.
+- `enemy-animation.js`
+  - Animação procedural com blending por estado, marcha, corrida, respiração e movimento de cabeça.
+- `enemy-ai.js`
+  - Percepção explícita por visão e audição. A entidade só atualiza a última posição conhecida quando vê o jogador ou recebe um ruído válido.
+- `loading-manager.js`
+  - Gerenciador assíncrono de tarefas ponderadas, com progresso emitido após cada tarefa real e tratamento de falhas.
 
-## Sistemas e estado técnico observado
+## Arquivos modificados
 
-| Sistema | Estado nesta etapa |
+- `index.html`
+  - Integração do corpo do jogador, animação da Valdirene e módulo de percepção.
+  - Passos, corrida, portas e objetos empurrados emitem eventos sonoros investigáveis.
+  - Ataque final animado da Valdirene dentro do ambiente 3D, com aproximação, pose de ataque, câmera e áudio sincronizados.
+  - Loading com etapas reais: construção do cenário/colisões, compilação de materiais/iluminação e primeiro render.
+  - Salvamento ampliado com dificuldade, qualidade, FOV, sensibilidade, acessibilidade, posição vertical, agachamento, itens, portas e estado da entidade.
+  - Restauração de portas também atualiza os colliders físicos.
+  - Callbacks de áudio atrasados são invalidados ao pausar, morrer ou sair da partida, impedindo reprodução atrasada após retomar.
+- `main.cjs`
+  - Validação de payloads, rejeição de arrays, limite de 1 MB e escrita temporária exclusiva com limpeza em caso de erro.
+- `tests/game-systems.test.cjs`
+  - Testes para corpo do jogador, animação da Valdirene, loading, percepção, ataque, salvamentos, colisões e áudio.
+- `.github/workflows/game-tests.yml`
+  - Matriz Linux/Windows, testes em ambas as plataformas, empacotamento Linux e build portátil Windows com artefatos.
+- `package.json`
+  - Removido o maker Squirrel, que falhou no runner Windows por ferramenta externa ausente. Mantido o pacote ZIP portátil com o executável e os recursos necessários.
+
+## Resultado dos testes automatizados
+
+Workflow mais recente:  
+https://github.com/alexssander-cristino/nao-me-deixa-no-visto/actions/runs/44821077423
+
+- Ubuntu: **38 testes aprovados, 0 falhas**; empacotamento Electron Linux aprovado.
+- Windows: **38 testes aprovados, 0 falhas**.
+- Build portátil Windows: estava em execução no momento da atualização deste relatório; o resultado final e o artefato precisam ser confirmados no workflow.
+- `npm audit`: 0 vulnerabilidades reportadas no último pipeline concluído.
+- O pipeline anterior identificou que o maker Squirrel falhava no runner Windows. Ele foi removido; a distribuição configurada agora é ZIP portátil contendo o executável.
+
+## Estado real dos sistemas
+
+| Sistema | Situação |
 |---|---|
-| Corpo 3D do jogador | Implementado em versão procedural de primeira pessoa; não é um rig humano completo com cabeça visível |
-| Valdirene | Modelo procedural articulado existente; ainda sem rig/asset externo e clips autorados |
-| Jumpscare | Sequência 3D procedural existente; ataque cinematográfico letal e variações ainda precisam de evolução |
-| IA | Patrulha, relocação, perseguição, busca e investigação existentes; percepção e transições ainda precisam de refinamento |
-| Física do jogador | Cápsula 3D em implementação, com colisão contra geometria estática; escadas/degraus e rampas exigem validação e melhorias |
-| Física de objetos | Solver AABB simplificado; não equivale a solver 6DOF com juntas |
-| Interações | Coleta, portas e esconderijos funcionais; gavetas, armários com estados próprios e mecanismos adicionais não estão completos |
-| Salvamento | Cinco slots, validação de envelope e persistência Electron/localStorage; restauração do estado do mundo ainda é parcial |
-| Loading | Ainda não há progresso granular real de todos os recursos; o carregamento de fase usa espera artificial e precisa ser substituído |
-| Áudio | Web Audio e posicionamento estéreo existentes; mixagem por estado e cancelamento central de eventos ainda são parciais |
-| Cenário | Geometria e materiais procedurais existentes; não há pipeline completo de assets PBR/LOD |
-| Lanterna | SpotLight, bateria, oscilação e modelo de mão existentes; reflexos e volumetria física não implementados |
-| HUD/UI | Menus, inventário, pausa, configurações e slots existentes; feedback e acabamento ainda precisam de revisão |
-| Desempenho | Perfis Low/Medium/High e limites de renderização existentes; RTX 3050 Laptop não foi medida nesta etapa |
-| Electron | Main/preload com context isolation e IPC de salvamento; empacotamento CI passou em runner Linux |
-| Windows | Instalador/EXE e execução gráfica real ainda não validados em Windows |
+| Corpo 3D do jogador | Procedural e integrado; sem rig externo, cabeça visível ou animações mocap |
+| Animação da Valdirene | Rig procedural existente com blending de patrulha, busca e perseguição |
+| Jumpscare | Ataque em ambiente 3D, com aproximação, animação, áudio e transição para morte; ainda sem captura de movimento |
+| IA | Visão/audição explícitas, última posição conhecida, investigação de ruídos, busca e perseguição; pathfinding e estados legados ainda precisam de refinamento |
+| Física do jogador | Cápsula 3D e colisões com geometria estática; degraus, escadas e rampas precisam de playtest |
+| Física de objetos | Solver AABB 3D com gravidade, impulsos, colisões e sono; não é solver 6DOF com juntas |
+| Interações | Coleta, portas e esconderijos integrados; gavetas, armários com inventário próprio e mecanismos adicionais não estão completos |
+| Salvamento | Cinco slots, validação, gravação atômica no Electron, estado do jogador, itens, portas, entidade e configurações; não há estado de gavetas/mecanismos ainda inexistentes |
+| Loading | Etapas reais de construção, compilação e primeiro render; não mede individualmente cada textura/modelo/arquivo de áudio |
+| Áudio | Áudio posicional existente, ruídos investigáveis e invalidação de callbacks ao pausar; mixagem avançada por estado ainda parcial |
+| Cenário | Geometria e materiais procedurais existentes; pipeline completo de assets PBR/LOD não foi criado |
+| Lanterna | SpotLight, bateria, oscilação e falhas existentes; reflexos e volumetria física não implementados |
+| HUD/UI | Menus, inventário, pausa, configurações e slots existentes; revisão visual geral pendente |
+| Desempenho | Perfis gráficos e limite de FPS existentes; RTX 3050 Laptop ainda não medida |
+| Electron | Isolamento de contexto, preload e salvamentos IPC existentes; Linux empacotado |
+| Windows | Testes automatizados passaram; build portátil está em validação no workflow. A abertura interativa em desktop Windows ainda não foi observada |
 
-## Testes executados
+## Como executar no Windows
 
-Workflow GitHub Actions:  
-https://github.com/alexssander-cristino/nao-me-deixa-no-visto/actions/runs/44818859545
+Na pasta do repositório:
 
-- `npm ci --ignore-scripts`: aprovado.
-- Instalação do binário Electron no CI: aprovada.
-- `npm audit`: 0 vulnerabilidades reportadas.
-- `npm test`: **30 aprovados, 0 falhas**.
-- `npm run package`: aprovado no runner Linux.
-
-O teste de regressão anterior falhava porque esperava um único bloco inline, apesar do bootstrap de fallback do Three.js ser um segundo bloco válido. A expectativa foi corrigida sem remover o fallback.
-
-## Pendências prioritárias
-
-1. Implementar loading assíncrono por tarefas reais de modelos, texturas, áudio, física e IA, removendo a espera artificial.
-2. Completar o contrato de salvamento/restauração de estados serializáveis de todos os objetos e eventos.
-3. Consolidar a IA em máquina de estados explícita, com investigação de ruídos/portas/objetos e memória de última posição.
-4. Criar a sequência de ataque/jumpscare letal com animação e áudio sincronizados.
-5. Evoluir as interações de gavetas, armários, mecanismos e objetos manipuláveis.
-6. Completar a física de degraus, rampas e colisões de objetos, mantendo explícitas as limitações do solver atual.
-7. Validar animação e clipping do avatar e da Valdirene em execução real.
-8. Fazer playtest no Windows/Electron e medir frame time/VRAM em RTX 3050 Laptop 6 GB.
-9. Gerar e testar o instalador Windows com `npm run make` em ambiente Windows.
-
-## Como executar
-
-Na pasta do repositório, com Node.js instalado:
-
-```bash
+```powershell
 npm install
 npm start
 ```
 
-Testes:
+Executar testes:
 
-```bash
+```powershell
 npm test
 ```
 
-Gerar pacote/instalador no Windows:
+Gerar o pacote portátil Windows:
 
-```bash
+```powershell
 npm run make
 ```
 
-Os artefatos são gerados em `out/`. A assinatura digital do executável não está configurada.
+O ZIP e os arquivos empacotados são gerados em `out/`. Extraia o ZIP e execute o arquivo `.exe` dentro da pasta do aplicativo. Não é necessário instalar Node.js ou ferramentas de desenvolvimento na máquina de destino.
+
+## Validação manual ainda necessária
+
+1. Abrir o jogo no Windows e percorrer os cinco capítulos.
+2. Verificar clipping, visibilidade e proporções do corpo em primeira pessoa.
+3. Testar a Valdirene em corredores, portas, esconderijos e perseguições.
+4. Confirmar o ataque e a tela de morte em execução real.
+5. Salvar e carregar cada tipo de estado do ambiente.
+6. Testar escadas, degraus, rampas, portas e objetos empurráveis.
+7. Medir FPS, frame time, VRAM e estabilidade na RTX 3050 Laptop de 6 GB.
+8. Confirmar que o ZIP portátil abre em uma instalação limpa do Windows.
+
+## Critério de conclusão
+
+Esta entrega melhora e integra sistemas reais, mas não declara o jogo completo. A conclusão exige a validação manual acima e a implementação dos sistemas ainda parciais, especialmente gavetas/mecanismos, física avançada, assets visuais finais e testes de desempenho em hardware-alvo.
