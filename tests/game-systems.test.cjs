@@ -15,7 +15,7 @@ test("all browser scripts parse and local modules are wired into the game", () =
   // Keep validating every inline block instead of assuming a single monolithic block.
   assert.equal(scripts.length, 2);
   for (const source of scripts) new vm.Script(source);
-  for (const file of ["input.js", "save-system.js", "rendering.js", "physics.js", "controller.js", "models.js", "gameplay-systems.js"]) {
+  for (const file of ["input.js", "save-system.js", "rendering.js", "physics.js", "controller.js", "models.js", "gameplay-systems.js", "materials.js"]) {
     new vm.Script(read(file), { filename: file });
     assert.ok(html.includes('src="./' + file + '"'));
   }
@@ -432,4 +432,19 @@ test("Valdirene model exposes a named hierarchical skeleton used by animated lim
   assert.equal(rig.hips.length, 2);
   assert.equal(model.arms[0].userData.fore.parent.parent, model.arms[0]);
   assert.equal(model.legs[0].userData.knee.parent.parent, model.legs[0]);
+});
+
+test("procedural PBR surface maps contain normal and roughness variation", () => {
+  require("../materials.js");
+  const THREE = require("three");
+  const maps = globalThis.GameMaterials.createSurfaceMaps(THREE, 42, 64);
+  assert.ok(maps.normalMap.isDataTexture);
+  assert.ok(maps.roughnessMap.isDataTexture);
+  assert.equal(maps.normalMap.image.width, 64);
+  assert.equal(maps.roughnessMap.image.height, 64);
+  assert.notEqual(maps.roughnessMap.image.data[0], maps.roughnessMap.image.data[4]);
+  const material = new THREE.MeshStandardMaterial({roughness:.9});
+  globalThis.GameMaterials.apply(material, maps, .3);
+  assert.equal(material.normalMap, maps.normalMap);
+  assert.equal(material.roughnessMap, maps.roughnessMap);
 });
