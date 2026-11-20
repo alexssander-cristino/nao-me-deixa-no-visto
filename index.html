@@ -34,7 +34,8 @@ label{display:flex;gap:10px;align-items:center;justify-content:space-between;wid
 <div class="ov" id="al"><h1 style="font-size:32px">O ALTAR</h1><p>Valdirene espera de véu, a dois metros. O celular vibra: a mensagem de 13 anos atrás, ainda sem resposta.</p><button onclick="alt(1)">Responder a mensagem</button><button onclick="alt(0)">Dizer "sim" e casar</button></div>
 <div class="ov" id="iv"><h1>INVENTÁRIO</h1><p id="ivContent" style="white-space:pre-line"></p><button onclick="inventory(0)">Fechar [I]</button></div>
 <div id="fd"></div>
-<script src="./node_modules/three/build/three.min.js" onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js'"></script>
+<script src="./node_modules/three/build/three.min.js"></script>
+<script>if(!window.THREE)document.write('<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"><\\/script>')</script>
 <script src="./input.js"></script>
 <script src="./save-system.js"></script>
 <script src="./rendering.js"></script>
