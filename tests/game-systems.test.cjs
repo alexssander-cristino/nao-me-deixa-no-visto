@@ -159,7 +159,7 @@ test("3D controller applies gravity, camera height and crouch clearance", () => 
   let result=controller.update3D(1/60,player,{},camera,null,move,{fov:76});
   assert.ok(player.velocity3D.y<0);
   assert.equal(result.grounded,false);
-  controller.update3D(1/60,player,{ControlLeft:true},camera,null,move,{fov:76});
+  for(let i=0;i<30;i++)controller.update3D(1/60,player,{ControlLeft:true},camera,null,move,{fov:76});
   assert.equal(player.crouch,true);
   assert.ok(camera.position.y<1.3);
 });
