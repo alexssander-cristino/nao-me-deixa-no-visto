@@ -448,3 +448,11 @@ test("procedural PBR surface maps contain normal and roughness variation", () =>
   assert.equal(material.normalMap, maps.normalMap);
   assert.equal(material.roughnessMap, maps.roughnessMap);
 });
+
+test("static wall geometry is instanced and movable props switch to a distance LOD", () => {
+  const html = read("index.html");
+  assert.match(html, /new THREE\.InstancedMesh\(bx,wm,rows\*cols\)/);
+  assert.match(html, /wallBatch\.setMatrixAt\(wallBatch\.count\+\+,wallDummy\.matrix\)/);
+  assert.match(html, /new THREE\.LOD\(\),highDetail/);
+  assert.match(html, /group\.addLevel\(lowDetail,16\)/);
+});
