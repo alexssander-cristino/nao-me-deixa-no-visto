@@ -126,3 +126,27 @@ test("invalid and oversized frame deltas are bounded by the fixed-step accumulat
   assert.ok(Number.isFinite(body.y));
   assert.ok(world.accumulator < 1 / 60);
 });
+
+test("first-person capsule follows a continuous ramp while ascending and descending", () => {
+  const world = new globalThis.GamePhysics.CharacterPhysicsWorld({gravity:18,stepHeight:.28,maxSubstep:.07});
+  world.addRamp({x:0,z:0,hx:2,hz:1,baseY:0,rise:1,axis:"x"});
+  const position = {x:-1.5,y:0,z:0};
+  const velocity = {x:1,y:0,z:0};
+  const shape = {radius:.34,height:1.72};
+  for(let i=0;i<6;i++) world.moveCapsule(position,velocity,{x:.5,y:0,z:0},shape,[]);
+  assert.ok(Math.abs(position.x-1.5)<.001);
+  assert.ok(Math.abs(position.y-.875)<.025);
+  assert.equal(world.canFit(position,shape,[]),true);
+  for(let i=0;i<6;i++) world.moveCapsule(position,velocity,{x:-.5,y:0,z:0},shape,[]);
+  assert.ok(Math.abs(position.x+1.5)<.001);
+  assert.ok(Math.abs(position.y-.125)<.025);
+});
+
+test("ramp support rejects penetration and can be cleared between levels", () => {
+  const world = new globalThis.GamePhysics.CharacterPhysicsWorld({stepHeight:.28});
+  world.addRamp({x:0,z:0,hx:2,hz:1,baseY:0,rise:1,axis:"z",direction:-1});
+  assert.equal(world.canFit({x:0,y:0,z:0},{radius:.34,height:1.7},[]),false);
+  assert.equal(world.canFit({x:0,y:.5,z:0},{radius:.34,height:1.7},[]),true);
+  world.clearRamps();
+  assert.equal(world.canFit({x:0,y:0,z:0},{radius:.34,height:1.7},[]),true);
+});
