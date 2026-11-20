@@ -444,8 +444,8 @@ if(e.code=='Escape')pause();if(e.code=='KeyP')paused?resume():pause()});
 addEventListener('keyup',e=>keys[e.code]=0);addEventListener('blur',()=>keys={});
 let last=0,lastFrame=0;(function loop(t){
  requestAnimationFrame(loop);
- if(document.hidden){last=t;mouseLook.clear();return;}
- const dt=Math.min((t-last)/1000||0,.05);last=t;
+ if(document.hidden){last=t;lastFrame=t;mouseLook.clear();return;}
+ const fpsLimit=Number(S.fpsLimit)||0;if(fpsLimit>0&&t-lastFrame<1000/fpsLimit-.5)return;lastFrame=t;const dt=Math.min((t-last)/1000||0,.05);last=t;
  if(state==='play'&&!paused&&!modal){
    const look=mouseLook.consume(1);
    pl.y-=look.x*.00185*S.sensX;
