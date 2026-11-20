@@ -178,3 +178,13 @@ Commit de código testado: `14f1e96d94d65d20fbd3f5e2d1df030c43d0b97d`
 - Essa aprovação comprova testes automatizados e empacotamento, não comprova playtest visual no desktop nem benchmark de hardware.
 
 Classificação atualizada: **testes automatizados — CONCLUÍDO** para o commit acima; **build portátil Windows — CONCLUÍDO** em CI; **teste manual Windows e RTX 3050 — NÃO VALIDADO**.
+
+
+### Extensão de loot e validação incremental (20/11/2026)
+
+- A primeira gaveta inferior do primeiro armário de cada capítulo agora pode revelar uma pilha coletável. O item reutiliza o fluxo existente de bateria/inventário e não é duplicado quando já consta no progresso coletado.
+- Ao carregar um save com a gaveta aberta, o loot é reconstruído se ainda não foi coletado; se já foi coletado, permanece ausente.
+- Foi adicionado teste de regressão para spawn, coleta e restauração sem duplicação.
+- Workflow atual: https://github.com/alexssander-cristino/nao-me-deixa-no-visto/actions/runs/44824993583
+- Os testes automatizados Linux e Windows passaram nesta execução; o build/artefato Windows ainda estava em execução no momento deste registro.
+- O loot continua **PARCIAL**: só há um ponto de loot por capítulo; não há tabela de itens aleatórios, chaves de missão ou conteúdo individual em todas as gavetas.
