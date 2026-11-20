@@ -13,7 +13,7 @@ test("all browser scripts parse and local modules are wired into the game", () =
     .map((match) => match[1]).filter((source) => source.trim());
   assert.equal(scripts.length, 1);
   for (const source of scripts) new vm.Script(source);
-  for (const file of ["input.js", "rendering.js", "physics.js", "controller.js", "models.js"]) {
+  for (const file of ["input.js", "save-system.js", "rendering.js", "physics.js", "controller.js", "models.js"]) {
     new vm.Script(read(file), { filename: file });
     assert.ok(html.includes('src="./' + file + '"'));
   }
@@ -162,4 +162,89 @@ test("3D controller applies gravity, camera height and crouch clearance", () => 
   for(let i=0;i<30;i++)controller.update3D(1/60,player,{ControlLeft:true},camera,null,move,{fov:76});
   assert.equal(player.crouch,true);
   assert.ok(camera.position.y<1.3);
+});
+
+
+test("save system validates and isolates five independent slots", () => {
+  require("../save-system.js");
+  const store = globalThis.GameSaveSystem;
+  const original = globalThis.localStorage;
+  const values = new Map();
+  globalThis.localStorage = {
+    getItem: key => values.get(key) || null,
+    setItem: (key, value) => values.set(key, value)
+  };
+  try {
+    assert.equal(store.SLOT_COUNT, 5);
+    assert.equal(store.write(1, { chapter: 2, player: { x: 4 } }, { chapter: "Corredor" }).ok, true);
+    assert.equal(store.write(2, { chapter: 4 }, {}).ok, true);
+    assert.equal(store.read(1).payload.chapter, 2);
+    assert.equal(store.read(2).payload.chapter, 4);
+    assert.equal(store.read(6).ok, false);
+    assert.equal(store.remove(1).ok, true);
+    assert.equal(store.read(1).ok, false);
+    assert.equal(store.readAll().find(slot => slot.slot === 2).occupied, true);
+  } finally {
+    globalThis.localStorage = original;
+  }
+});
+
+test("Electron main and preload scripts parse and use isolated IPC", () => {
+  new vm.Script(read("main.cjs"), { filename: "main.cjs" });
+  new vm.Script(read("preload.cjs"), { filename: "preload.cjs" });
+  const main = read("main.cjs");
+  const preload = read("preload.cjs");
+  assert.match(main, /app\.getPath\("userData"\)/);
+  assert.match(main, /game-saves:write/);
+  assert.match(preload, /contextBridge\.exposeInMainWorld/);
+  assert.doesNotMatch(preload, /require\(["']node:|require\(["']fs/);
+});
+
+
+test("horizontal and vertical mouse settings are independently applied", () => {
+  const html = read("index.html");
+  assert.match(html, /id="r2y"/);
+  assert.match(html, /id="invertY"/);
+  assert.match(html, /mouseLook\.consume\(1\)/);
+  assert.match(html, /look\.x\*\.00185\*S\.sensX/);
+  assert.match(html, /look\.y\*\.00165\*S\.sensY/);
+  assert.match(html, /S\.invertY\?-1:1/);
+});
+
+
+test("accessibility settings reduce head bob and jumpscare camera shake", () => {
+  const html = read("index.html");
+  const controller = read("controller.js");
+  assert.match(html, /id="headBob"/);
+  assert.match(html, /id="reduceCamera"/);
+  assert.match(html, /reduceCameraEffects:S\.reduceCameraEffects/);
+  assert.match(controller, /settings\.headBob!==false/);
+  assert.match(controller, /!settings\.reduceCameraEffects/);
+  assert.match(html, /const shake=S\.reduceCameraEffects\?0:1/);
+});
+
+
+test("fullscreen and reset-settings controls are connected to real behavior", () => {
+  const html = read("index.html");
+  const main = read("main.cjs");
+  const preload = read("preload.cjs");
+  assert.match(html, /function toggleFullscreen/);
+  assert.match(html, /function resetSettings/);
+  assert.match(main, /game-window:toggle-fullscreen/);
+  assert.match(main, /setFullScreen\(!win\.isFullScreen\(\)\)/);
+  assert.match(preload, /toggleFullscreen: \(\) => ipcRenderer\.send/);
+});
+
+
+test("resolution and FPS controls change the actual Electron window and frame loop", () => {
+  const html = read("index.html");
+  const main = read("main.cjs");
+  const preload = read("preload.cjs");
+  assert.match(html, /id="resolution"/);
+  assert.match(html, /id="fpsLimit"/);
+  assert.match(html, /1000\/fpsLimit/);
+  assert.match(html, /gameWindowBridge\.setResolution/);
+  assert.match(main, /game-window:set-resolution/);
+  assert.match(main, /win\.setSize\(allowed\[size\]\[0\], allowed\[size\]\[1\], true\)/);
+  assert.match(preload, /setResolution: size => ipcRenderer\.send/);
 });
