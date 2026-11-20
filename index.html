@@ -83,7 +83,7 @@ const pl={x:0,z:0,y:0,p:0,st:100,ex:0,bat:100,hid:null,on:1,got:0,need:0,bob:0,s
 const ch=(r,c)=>(g[r]||'')[c]||'#';
 const sol=(x,z)=>{const r=Math.round(z/4),c=Math.round(x/4),k=ch(r,c),d=doors[r+','+c];return k=='#'||k=='H'||(k=='D'&&(!d||!d.o))};
 function mv(o,dx,dz,r){return physics.moveCircle(o,dx,dz,r)}
-function los(ax,az,bx,bz){const n=Math.ceil(Math.hypot(bx-ax,bz-az)/.6);for(let i=1;i<n;i++){const t=i/n;if(sol(ax+(bx-ax)*t,az+(bz-az)*t))return false}return true}
+function los(ax,az,bx,bz){return !physics.raycast(ax,az,bx,bz,{step:.18,radius:.04}).hit}
 function tex(c,kind='wall'){
  const size=512,k=document.createElement('canvas');k.width=k.height=size;
  const x=k.getContext('2d',{alpha:false});x.fillStyle=c;x.fillRect(0,0,size,size);
@@ -442,7 +442,7 @@ at = function(x,z,fn){
     p.rolloffFactor=1.25;
     p.coneInnerAngle=70;
     p.coneOuterAngle=180;
-    p.coneOuterGain=.28;
+    p.coneOuterGain=physics.raycast(pl.x,pl.z,x,z,{step:.2,radius:.035}).hit?.09:.28;
     if(p.positionX){
       p.positionX.value=x;p.positionY.value=.8;p.positionZ.value=z;
     } else p.setPosition(x,.8,z);
