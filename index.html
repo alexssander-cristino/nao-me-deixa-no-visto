@@ -328,16 +328,16 @@ function act(){if(pl.hid)return unhide();if(!tg)return;if(tg.t=='i')pick(tg.o);e
 function saveProgress(item,keep){const prev=keep&&SG&&SG.lv===lv?SG:{},collected=new Set(prev.collected||[]);if(item)collected.add(item.k+':'+item.x+':'+item.z);SG={lv,lore,sec,got:pl.got,bat:pl.bat,st:pl.st,on:pl.on,x:pl.x,z:pl.z,y:pl.y,p:pl.p,collected:[...collected],openDoors:Object.keys(doors).filter(k=>doors[k].o)};baseL=lore;baseS=sec;try{localStorage.setItem('sg',JSON.stringify(SG))}catch(e){}}
 function load(n){lv=n;build(n);const resumed=!!(resumeCheckpoint&&SG&&SG.lv===n);if(resumed){const totalNeed=pl.need,collected=new Set(SG.collected||[]);items=items.filter(it=>{const key=it.k+':'+it.x+':'+it.z;if(collected.has(key)){scene.remove(it.m);return false}return true});pl.got=Number(SG.got)||0;pl.need=totalNeed;pl.bat=Number.isFinite(SG.bat)?SG.bat:100;pl.st=Number.isFinite(SG.st)?SG.st:100;pl.on=SG.on===0?0:1;pl.x=Number.isFinite(SG.x)?SG.x:pl.x;pl.z=Number.isFinite(SG.z)?SG.z:pl.z;pl.y=Number.isFinite(SG.y)?SG.y:pl.y;pl.p=Number.isFinite(SG.p)?SG.p:pl.p;(SG.openDoors||[]).forEach(k=>{const d=doors[k];if(d){d.o=1;d.pv.rotation.y=d.sx?-1.5:1.5}});camera.position.set(pl.x,1.65,pl.z);camera.rotation.set(pl.p,pl.y,0)}resumeCheckpoint=0;saveProgress(null,resumed);evT=30+R()*20;$('hd').style.display='none'}
 function go(n){state='tr';$('fd').style.opacity=1;const wrap=document.createElement('div'),title=document.createElement('h1'),desc=document.createElement('p');title.style.fontSize='32px';title.textContent=(n+1)+'. '+L[n].n;desc.textContent=L[n].i;wrap.append(title,desc);$('fd').replaceChildren(wrap);setTimeout(()=>{load(n);$('fd').style.opacity=0;state='play'},3200)}
-function lock(){try{const r=cv.requestPointerLock();r&&r.catch&&r.catch(()=>drag=1)}catch(e){drag=1}}
+function lock(){drag=0;mdown=0;try{if(!cv.requestPointerLock)throw new Error('Pointer Lock indisponível');const r=cv.requestPointerLock();if(r&&r.catch)r.catch(()=>{drag=1;mouseLook.setEnabled(false)})}catch(e){drag=1;mouseLook.setEnabled(false)}}
 const sh=(i,o)=>$(i).classList.toggle('on',!!o);
 function cfg(o){if(o)$('diff').value=S.diff||'normal';sh('cf',o)}
 function ap(){cv.style.filter='brightness('+S.bri+')'}
-function newG(){ai();lore=0;sec=0;resumeCheckpoint=0;SG=null;try{localStorage.removeItem('sg')}catch(e){}sh('mn',0);$('hud').style.display='block';paused=0;lock();go(0)}
-function cont(){if(!SG)return;ai();lore=SG.lore||0;sec=SG.sec||0;resumeCheckpoint=1;sh('mn',0);$('hud').style.display='block';paused=0;lock();go(SG.lv)}
+function newG(){ai();lore=0;sec=0;resumeCheckpoint=0;SG=null;try{localStorage.removeItem('sg')}catch(e){}sh('mn',0);$('hud').style.display='block';paused=0;go(0);lock()}
+function cont(){if(!SG)return;ai();lore=SG.lore||0;sec=SG.sec||0;resumeCheckpoint=1;sh('mn',0);$('hud').style.display='block';paused=0;go(SG.lv);lock()}
 function menu(){state='menu';paused=0;modal=0;document.exitPointerLock&&document.exitPointerLock();['pa','go','en','al','cf','iv'].forEach(i=>sh(i,0));modal=0;sh('mn',1);$('hud').style.display='none';$('ct').style.display=SG?'':'none';$('dg').style.opacity=0;try{speechSynthesis.cancel()}catch(e){}}
 function pause(){if(state!='play'||paused)return;if($('iv').classList.contains('on')){sh('iv',0);modal=0}paused=1;sh('pa',1);document.exitPointerLock&&document.exitPointerLock()}
 function resume(){paused=0;sh('pa',0);sh('cf',0);lock()}
-function retry(){sh('go',0);lore=baseL;sec=baseS;resumeCheckpoint=0;lock();go(lv)}
+function retry(){sh('go',0);lore=baseL;sec=baseS;resumeCheckpoint=0;go(lv);lock()}
 function die(){if(state!='play')return;state='over';document.exitPointerLock&&document.exitPointerLock();sting(.8);if(lv==4){fin('bad');return}$('gt').textContent='Valdirene: '+pk(GT);sh('go',1)}
 function fin(t,x){state='end';modal=0;document.exitPointerLock&&document.exitPointerLock();$('et').textContent=E[t][0];$('ep').textContent=(x?'Você tenta responder, mas não sabe o que ela passou. O "digitando..." aparece e some. Ela viu. ':'')+E[t][1];sh('en',1);$('hud').style.display='none';$('dg').style.opacity=0}
 function alt(c){sh('al',0);if(!c)fin('bad');else if(lore>=4)fin(sec?'sec':'good');else fin('bad',1)}
@@ -394,16 +394,18 @@ flashlightModel.position.set(.32,-.28,-.48);flashlightModel.rotation.x=-.08;came
 rs();addEventListener('resize',rs);build(0);ap();$('r1').value=S.vol;$('r2').value=S.sens;$('sensVal').textContent=(Number(S.sens)||.85).toFixed(2);$('r3').value=S.bri;$('ct').style.display=SG?'':'none';
 document.addEventListener('pointerlockchange',()=>{
  const active=!!document.pointerLockElement;
- mouseLook.setEnabled(active&&state==='play'&&!paused&&!modal);
+ mouseLook.setEnabled(active&&(state==='play'||state==='tr')&&!paused&&!modal);
  if(!active&&locked&&state==='play'&&!modal)pause();
  locked=active;
  keys={};
  });
- document.addEventListener('pointerlockerror',()=>{drag=0;mouseLook.setEnabled(false);});
- cv.addEventListener('click',()=>{if(state==='play'&&!paused&&!modal&&!document.pointerLockElement)lock();});
+ document.addEventListener('pointerlockerror',()=>{drag=1;mouseLook.setEnabled(false);});
+ cv.addEventListener('click',()=>{if(state==='play'&&!paused&&!modal&&!document.pointerLockElement&&!drag)lock();});
+ cv.addEventListener('mousedown',e=>{if(state==='play'&&!paused&&!modal&&!document.pointerLockElement){drag=1;mdown=1;mouseLook.setEnabled(true);e.preventDefault()}});
+ document.addEventListener('mouseup',()=>{mdown=0;if(drag)mouseLook.clear()});
  document.addEventListener('mousemove',e=>{
-   if(state!=='play'||paused||modal||!document.pointerLockElement)return;
-   mouseLook.handle(e);
+   if(state!=='play'||paused||modal)return;
+   if(document.pointerLockElement||drag&&mdown)mouseLook.handle(e);
  },{passive:true});
 addEventListener('keydown',e=>{keys[e.code]=1;if(['Space','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.code))e.preventDefault();if(state!='play')return;
 if(e.code=='KeyE'&&!e.repeat&&!paused&&!modal)act();if(e.code=='KeyI'&&!e.repeat&&!paused)inventory(!$('iv').classList.contains('on'));
