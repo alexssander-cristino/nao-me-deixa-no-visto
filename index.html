@@ -35,6 +35,7 @@ label{display:flex;gap:10px;align-items:center;justify-content:space-between;wid
 <div id="fd"></div>
 <script src="./node_modules/three/build/three.min.js"></script>
 <script src="./input.js"></script>
+<script src="./rendering.js"></script>
 <script src="./physics.js"></script>
 <script src="./controller.js"></script>
 <script src="./models.js"></script>
@@ -364,7 +365,7 @@ $('dg').style.opacity=dg;if(dg>.12){hb-=dt;if(hb<=0){hb=1.15-dg*.75;th(60,.15,.5
 /* Removido jitter aleatório aplicado à câmera a cada frame: ele causava microteletransportes visuais. */
 $('bs').style.width=pl.st+'%';$('bb').style.width=pl.bat+'%';$('lightState').textContent=(pl.on&&pl.bat>0?'LIGADA':'DESLIGADA')+' · '+Math.ceil(pl.bat)+'%';$('lightState').style.color=pl.bat<15?'#e45a50':'#d8cfc4';$('obj').textContent=(lv+1)+'. '+L[lv].n+': '+pl.got+'/'+pl.need+' '+L[lv].o+(sec?'  ·  ✦':'')}
 function rs(){rd.setSize(innerWidth,innerHeight);camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix()}
-cv=$('cv');rd=new THREE.WebGLRenderer({canvas:cv,antialias:true,powerPreference:'high-performance'});rd.setPixelRatio(Math.min(devicePixelRatio,1.75));rd.shadowMap.enabled=true;rd.shadowMap.type=THREE.PCFSoftShadowMap;rd.outputEncoding=THREE.sRGBEncoding;rd.toneMapping=THREE.ACESFilmicToneMapping;rd.toneMappingExposure=1.15;
+cv=$('cv');rd=GameRendering.createRenderer(THREE,cv,S.quality,window.devicePixelRatio||1);
 camera=new THREE.PerspectiveCamera(72,1,.1,70);camera.rotation.order='YXZ';
 spot=new THREE.SpotLight(0xffe7c2,3.1,30,.29,.72,1.25);spot.position.set(0,-.08,-.12);spot.castShadow=true;spot.shadow.mapSize.set(1024,1024);spot.shadow.camera.near=.15;spot.shadow.camera.far=32;spot.shadow.bias=-.00025;camera.add(spot);spot.target.position.set(0,-.12,-1);camera.add(spot.target);const flashlightFill=new THREE.PointLight(0xffdfb0,.35,4,2);flashlightFill.position.set(0,-.12,-.25);camera.add(flashlightFill);const beamMat=new THREE.MeshBasicMaterial({color:0xffedcf,transparent:true,opacity:.055,depthWrite:false,side:THREE.DoubleSide});const beam=new THREE.Mesh(new THREE.ConeGeometry(2.35,17,32,1,true),beamMat);beam.rotation.x=-P/2;beam.position.set(0,-.02,-8.6);camera.add(beam);const flashlightModel=new THREE.Group();
 const flashlightMetal=new THREE.MeshStandardMaterial({color:0x202327,metalness:.78,roughness:.34});
@@ -439,16 +440,7 @@ let lastStepRun = false;
 function applyGraphics(){
   if(!rd || !spot) return;
   const q = S.quality || "high";
-  const config = q === "low"
-    ? {pixel:.85, shadows:false, map:384, particles:55, fog:0.92}
-    : q === "medium"
-      ? {pixel:1, shadows:true, map:512, particles:100, fog:1}
-      : {pixel:1.25, shadows:true, map:768, particles:160, fog:1.06};
-  rd.setPixelRatio(Math.min(window.devicePixelRatio || 1, config.pixel));
-  rd.shadowMap.enabled = config.shadows;
-  spot.castShadow = config.shadows;
-  spot.shadow.mapSize.set(config.map, config.map);
-  spot.shadow.needsUpdate = true;
+  const config = GameRendering.applyQuality(rd,spot,q,window.devicePixelRatio||1);
   if(scene && scene.fog) scene.fog.density = (lv===1?.052:lv===4?.06:lv===2?.068:.078) * config.fog;
   const qEl = $("quality"), fEl = $("fov"), fv = $("fovVal");
   if(qEl) qEl.value = q;
@@ -459,7 +451,7 @@ function createDust(){
   if(!scene || !THREE) return;
   if(dustField){if(dustField.parent)dustField.parent.remove(dustField);if(dustField.geometry)dustField.geometry.dispose();if(dustField.material)dustField.material.dispose();dustField=null;}
   const q = S.quality || "high";
-  const count = q==="low" ? 55 : q==="medium" ? 100 : 160;
+  const count = GameRendering.profile(q).particles;
   const positions = new Float32Array(count*3);
   dustVelocity = new Float32Array(count);
   const width = Math.max(12, cols*4), depth = Math.max(12, rows*4);
