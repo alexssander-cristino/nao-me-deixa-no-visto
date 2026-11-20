@@ -611,11 +611,11 @@ function syncAudioListener(){
   const l=AC.listener;
   const fx=-Math.sin(pl.y),fz=-Math.cos(pl.y);
   if(l.positionX){
-    l.positionX.value=pl.x;l.positionY.value=1.6;l.positionZ.value=pl.z;
+    l.positionX.value=pl.x;l.positionY.value=pl.feetY+(controller.cameraHeight||1.6);l.positionZ.value=pl.z;
     l.forwardX.value=fx;l.forwardY.value=0;l.forwardZ.value=fz;
     l.upX.value=0;l.upY.value=1;l.upZ.value=0;
   }else{
-    l.setPosition(pl.x,1.6,pl.z);
+    l.setPosition(pl.x,pl.feetY+(controller.cameraHeight||1.6),pl.z);
     l.setOrientation(fx,0,fz,0,1,0);
   }
 }
