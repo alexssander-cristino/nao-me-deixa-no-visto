@@ -210,3 +210,15 @@ test("horizontal and vertical mouse settings are independently applied", () => {
   assert.match(html, /look\.y\*\.00165\*S\.sensY/);
   assert.match(html, /S\.invertY\?-1:1/);
 });
+
+
+test("accessibility settings reduce head bob and jumpscare camera shake", () => {
+  const html = read("index.html");
+  const controller = read("controller.js");
+  assert.match(html, /id="headBob"/);
+  assert.match(html, /id="reduceCamera"/);
+  assert.match(html, /reduceCameraEffects:S\.reduceCameraEffects/);
+  assert.match(controller, /settings\.headBob!==false/);
+  assert.match(controller, /!settings\.reduceCameraEffects/);
+  assert.match(html, /const shake=S\.reduceCameraEffects\?0:1/);
+});
