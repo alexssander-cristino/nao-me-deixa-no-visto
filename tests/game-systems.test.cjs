@@ -13,7 +13,7 @@ test("all browser scripts parse and local modules are wired into the game", () =
     .map((match) => match[1]).filter((source) => source.trim());
   assert.equal(scripts.length, 1);
   for (const source of scripts) new vm.Script(source);
-  for (const file of ["input.js", "physics.js", "controller.js", "models.js"]) {
+  for (const file of ["input.js", "rendering.js", "physics.js", "controller.js", "models.js"]) {
     new vm.Script(read(file), { filename: file });
     assert.ok(html.includes('src="./' + file + '"'));
   }
@@ -89,4 +89,26 @@ test("mouse input discards deltas outside pointer lock and clears on release", (
   input.handle({ movementX: 40, movementY: 20 });
   input.setEnabled(false);
   assert.deepEqual(input.consume(1), { x: 0, y: 0 });
+});
+
+
+test("graphics profiles cap pixel ratio and scale shadow and atmosphere budgets", () => {
+  require("../rendering.js");
+  const rendering = globalThis.GameRendering;
+  assert.equal(rendering.profile("low").shadows, false);
+  assert.equal(rendering.profile("medium").shadowMapSize, 512);
+  assert.equal(rendering.profile("high").particles, 160);
+  assert.equal(rendering.profile("unknown"), rendering.profile("high"));
+
+  const renderer = {
+    shadowMap: {},
+    setPixelRatio(value) { this.pixelRatio = value; }
+  };
+  const light = { shadow: { mapSize: { set(x, y) { this.x = x; this.y = y; } } } };
+  const selected = rendering.applyQuality(renderer, light, "medium", 2);
+  assert.equal(renderer.pixelRatio, 1);
+  assert.equal(renderer.shadowMap.enabled, true);
+  assert.equal(light.castShadow, true);
+  assert.equal(light.shadow.mapSize.x, 512);
+  assert.equal(selected.fog, 1);
 });
