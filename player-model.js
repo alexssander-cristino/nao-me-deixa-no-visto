@@ -22,7 +22,7 @@
       m.castShadow=true;m.receiveShadow=true;parent.add(m);return m;
     };
     const sphere=(parent,material,pos,scale)=>mesh(parent,new THREE.SphereGeometry(1,16,12),material,pos,scale);
-    const limb=(parent,material,length,radius){
+    const limb=(parent,material,length,radius)=>{
       const g=new THREE.Group();parent.add(g);
       mesh(g,new THREE.CylinderGeometry(radius*.82,radius,length,12),material,[0,-length/2,0]);
       sphere(g,material,[0,-length,0],[radius*.88,radius*.88,radius*.88]);
