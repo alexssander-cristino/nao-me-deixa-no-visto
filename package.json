@@ -27,14 +27,6 @@
       },
       "makers": [
         {
-          "name": "@electron-forge/maker-squirrel",
-          "config": {
-            "name": "nao_me_deixa_no_visto",
-            "authors": "Desenvolvedor",
-            "description": "Não Me Deixa no Visto"
-          }
-        },
-        {
           "name": "@electron-forge/maker-zip",
           "platforms": [
             "win32"
