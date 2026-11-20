@@ -1,8 +1,8 @@
 {
   "name": "nao-me-deixa-no-visto",
   "productName": "Não Me Deixa no Visto",
-  "version": "1.0.0",
-  "description": "Jogo de terror em primeira pessoa com Valdirene",
+  "version": "1.1.0",
+  "description": "Terror em primeira pessoa: explore, sobreviva e fuja de Valdirene",
   "main": "main.cjs",
   "scripts": {
     "start": "electron-forge start",
@@ -30,7 +30,7 @@
           "config": {
             "name": "nao_me_deixa_no_visto",
             "authors": "Desenvolvedor",
-            "description": "Ela Não Aceita o Fim"
+            "description": "Não Me Deixa no Visto"
           }
         },
         {
