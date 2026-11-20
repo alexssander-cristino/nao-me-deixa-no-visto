@@ -46,3 +46,12 @@ O instalador do Windows (Squirrel) normalmente fica em:
 - A primeira execução de `npm install` precisa baixar Electron, Forge e Three.js.
 - O instalador gerado não é assinado digitalmente; o Windows pode exibir um
   aviso do SmartScreen ao executar.
+
+
+## Novidades da versão 1.3.0
+- Qualidade gráfica escalável: Desempenho, Equilibrada e Alta.
+- Campo de visão ajustável nas configurações.
+- Partículas de poeira animadas para reforçar a atmosfera dos ambientes.
+- Áudio espacial HRTF com posicionamento de fontes sonoras.
+- Valdirene reage aos ruídos de passos e corrida; agachar reduz o alcance de detecção.
+- A entidade pode desaparecer quando observada diretamente durante a patrulha.
