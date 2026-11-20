@@ -11,7 +11,9 @@ test("all browser scripts parse and local modules are wired into the game", () =
   const html = read("index.html");
   const scripts = [...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/gi)]
     .map((match) => match[1]).filter((source) => source.trim());
-  assert.equal(scripts.length, 1);
+  // The Three.js CDN fallback is a separate inline bootstrap script.
+  // Keep validating every inline block instead of assuming a single monolithic block.
+  assert.equal(scripts.length, 2);
   for (const source of scripts) new vm.Script(source);
   for (const file of ["input.js", "save-system.js", "rendering.js", "physics.js", "controller.js", "models.js"]) {
     new vm.Script(read(file), { filename: file });
