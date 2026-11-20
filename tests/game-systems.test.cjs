@@ -408,7 +408,7 @@ test("wardrobe drawers spawn a collectible battery and restore it without duplic
 
 test("mission progression integrates collectible keys, a locked cabinet and a powered exit", () => {
   const html = read("index.html");
-  assert.match(html, /locked:side>0,key:'wardrobe-key:'\+lv/);
+  assert.match(html, /locked:side>0&&wardrobe===wards\[0\],key:'wardrobe-key:'\+lv/);
   assert.match(html, /function spawnDrawerKey\(/);
   assert.match(html, /keyInventory\.add\(it\.keyId/);
   assert.match(html, /id:'breaker:'\+lv,type:'switch'/);
