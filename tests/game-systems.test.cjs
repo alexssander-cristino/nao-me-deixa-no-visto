@@ -127,6 +127,34 @@ test("loading a save restores the collider transform for every open door", () =>
   assert.match(html, /d\.pv\.rotation\.y=d\.sx\?-1\.5:1\.5;updateDoorCollider\(d\)/);
 });
 
+test("enemy perception only acquires visible players or audible noise sources", () => {
+  require("../enemy-ai.js");
+  const enemy = { x: 0, z: 0, heard: 0, last: null };
+  const player = { x: 5, z: 0, hid: null };
+  let result = globalThis.GameEnemyAI.perceive(enemy, player, {
+    distance: 5, vision: 8, lineOfSight: true, now: 10
+  });
+  assert.equal(result.type, "sight");
+  assert.deepEqual(enemy.last, [5, 0]);
+  player.hid = {};
+  result = globalThis.GameEnemyAI.perceive(enemy, player, {
+    distance: 1, vision: 8, lineOfSight: true, now: 10
+  });
+  assert.equal(result.type, "none");
+  result = globalThis.GameEnemyAI.perceive(enemy, player, {
+    distance: 20, vision: 8, lineOfSight: false, now: 10,
+    noise: { id: 2, x: 3, z: 2, radius: 5, expires: 12, kind: "door-open" }
+  });
+  assert.equal(result.type, "hearing");
+  assert.deepEqual(result.position, { x: 3, z: 2 });
+  assert.equal(enemy.heard, 2);
+  result = globalThis.GameEnemyAI.perceive(enemy, player, {
+    distance: 20, vision: 8, lineOfSight: false, now: 13,
+    noise: { id: 3, x: 3, z: 2, radius: 5, expires: 12 }
+  });
+  assert.equal(result.type, "none");
+});
+
 test("controller accelerates smoothly and respects the world collider", () => {
   require("../physics.js");
   require("../controller.js");
