@@ -752,6 +752,21 @@ function spawnOpenedDrawerLoot(){
  }
 }
 
+const __updVWithCabinetInvestigation=updV;
+updV=function(dt){
+ __updVWithCabinetInvestigation(dt);
+ if(state!=='play'||!pl.hid||!V||!['search','inv'].includes(V.st))return;
+ const wardrobe=wards.find(w=>Math.hypot(V.x-w.x,V.z-w.z)<2.45);
+ if(!wardrobe)return;
+ const base='wardrobe:'+Math.round(wardrobe.x*100)+':'+Math.round(wardrobe.z*100),door=mechanismSystem.get(base+':door:left');
+ if(door&&!door.locked&&!door.target){
+  wardrobe.m.visible=true;
+  mechanismSystem.toggle(door.id,mechanismInventory);
+  emitNoise(wardrobe.x,wardrobe.z,13,'enemy-cabinet-search');
+  saveProgress(null,true);
+  sub('Valdirene está abrindo o armário...',2400);
+ }
+};
 const __buildWithMechanisms=build;
 build=function(n){__buildWithMechanisms(n);setupWardrobeMechanisms();};
 const __updateWithMechanisms=upd;
