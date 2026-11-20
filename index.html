@@ -670,7 +670,7 @@ function syncAudioListener(){
 /* Mecanismos de cenário: portas articuladas e gavetas individuais por armário. */
 let mechanismSystem=new GameMechanisms.MechanismSystem();
 const mechanismInventory=[];
-function mechanismCoordinates(id){const m=/^wardrobe:([-0-9]+):([-0-9]+):/.exec(id);return m?{x:Number(m[1])/100,z:Number(m[2])/100}:{x:pl.x,z:pl.z};}
+function mechanismCoordinates(id){const m=/^wardrobe:([-0-9]+):([-0-9]+):(.+)$/.exec(id);if(!m)return{x:pl.x,z:pl.z};const x=Number(m[1])/100,z=Number(m[2])/100,kind=m[3];if(kind==='door:left')return{x:x-.55,z:z+.8};if(kind==='door:right')return{x:x+.55,z:z+.8};if(kind==='drawer:0')return{x:x-.3,z:z+1.12};if(kind==='drawer:1')return{x:x+.3,z:z+1.12};return{x,z};}
 function setupWardrobeMechanisms(){
  mechanismSystem=new GameMechanisms.MechanismSystem();
  for(const wardrobe of wards){
@@ -713,7 +713,7 @@ upd=function(dt){
  if(best){
   const p=mechanismCoordinates(best.id);
   const currentDistance=tg&&tg.o?Math.hypot(pl.x-(tg.o.x||0),pl.z-(tg.o.z||0)):Infinity;
-  if(!tg||bestDistance<currentDistance){
+  if(!tg||bestDistance<=currentDistance+.04){
    tg={t:'mechanism',o:{id:best.id,x:p.x,z:p.z}};
    $('pr').textContent='[E] '+(best.target?'fechar ':'abrir ')+best.label.toLowerCase();
    $('reticle').style.transform='translate(-50%,-50%) scale(1.9)';$('reticle').style.borderColor='#e9bd78';
