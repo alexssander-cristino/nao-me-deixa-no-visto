@@ -283,7 +283,7 @@ if(!par[k(b)])return null;let c=b;while(par[k(c)]&&k(par[k(c)])!=k(a))c=par[k(c)
 function updateDoorCollider(d){if(!d||!d.physicsId)return;const a=d.pv.rotation.y,co=Math.cos(a),si=Math.sin(a);let cx,cz,hx,hz;if(d.sx){cx=d.x-2+2*co;cz=d.z-2*si;hx=2*Math.abs(co)+.16*Math.abs(si);hz=2*Math.abs(si)+.16*Math.abs(co)}else{cx=d.x+2*si;cz=d.z-2+2*co;hx=.16*Math.abs(co)+2*Math.abs(si);hz=.16*Math.abs(si)+2*Math.abs(co)}physics.updateOBB(d.physicsId,cx,cz,d.sx?2:.16,d.sx?.16:2,-a);if(d.body3d){d.body3d.x=cx;d.body3d.z=cz;d.body3d.hx=hx;d.body3d.hz=hz}}
 function emitNoise(x,z,radius=8,kind='environment'){noiseEvent={id:++noiseSerial,x,z,radius,kind,expires:performance.now()/1000+3};}
 function odoor(d,s){d.o=s?1:0;emitNoise(d.x,d.z,s?12:8,s?'door-open':'door-close');at(d.x,d.z,q=>nz(.35,s?500:250,.8,q))}
-function updV(dt){if(attackSequence)return;const v=V,dx=pl.x-v.x,dz=pl.z-v.z,dist=Math.hypot(dx,dz);
+function updV(dt){if(attackSequence)return;const v=V,dx=pl.x-v.x,dz=pl.z-v.z,dist=Math.hypot(dx,dz);pl.fear=v.st==='chase'?Math.max(0,Math.min(1,1-dist/14)):v.st==='search'||v.st==='inv'?Math.max(0,.35-dist/24):0;
 if(v.st=='dorm'){
  vm.visible=false;v.t-=dt;
  if(v.t<=0){
@@ -355,7 +355,7 @@ else if(it.k=='N'){lore++;note(NT[lv],9000)}else if(it.k=='X'){sec=1;note(XT,900
 function hide(w){pl.hid=w;pl.px=pl.x;pl.pz=pl.z;pl.x=w.x;pl.z=w.z;w.m.visible=false;$('hd').style.display='block';th(120,.2,.4)}
 function unhide(){const w=pl.hid;w.m.visible=true;pl.hid=null;pl.x=pl.px;pl.z=pl.pz;$('hd').style.display='none'}
 function inventory(open){if(state!=="play")return;const panel=$("iv");if(open){modal=1;const lines=["OBJETIVO: "+pl.got+"/"+pl.need+" "+L[lv].o,"PISTAS LIDAS: "+lore,"BATERIA: "+Math.ceil(pl.bat)+"%","LANTERNA: "+(pl.on&&pl.bat>0?"ligada":"desligada"),"SEGREDO: "+(sec?"encontrado":"não encontrado"),"","As pistas ficam registradas aqui. Continue explorando."];$("ivContent").textContent=lines.join("\n");sh("iv",1);document.exitPointerLock&&document.exitPointerLock()}else{sh("iv",0);modal=0;if(!paused)lock()}}
-function act(){if(pl.hid)return unhide();if(!tg)return;if(tg.t=='i')pick(tg.o);else if(tg.t=='h')hide(tg.o);else odoor(tg.o,tg.o.o?0:1)}
+function act(){if(pl.hid)return unhide();if(!tg)return;pl.actionTime=.46;pl.actionType=tg.t;if(tg.t=='i')pick(tg.o);else if(tg.t=='h')hide(tg.o);else odoor(tg.o,tg.o.o?0:1)}
 
 function captureSavePayload(){return {schema:3,chapter:lv,lore:lore,secret:sec,player:{x:pl.x,z:pl.z,feetY:pl.feetY||0,yaw:pl.y,pitch:pl.p,stamina:pl.st,battery:pl.bat,flashlight:pl.on,got:pl.got,crouch:!!pl.crouch},settings:{difficulty:S.diff,quality:S.quality,fov:S.fov,sensX:S.sensX,sensY:S.sensY,invertY:S.invertY,headBob:S.headBob,reduceCameraEffects:S.reduceCameraEffects,fpsLimit:S.fpsLimit},collected:(SG&&SG.collected)||[],openDoors:Object.keys(doors).filter(k=>doors[k].o),elapsed:elapsedGameSeconds,entity:V?{x:V.x,z:V.z,st:V.st,t:V.t,lost:V.lost,last:Array.isArray(V.last)?V.last.slice(0,2):null,route:Array.isArray(V.route)?V.route.slice(0,2):null,heard:V.heard}:null};}
 function writeSaveSlot(slot){const result=GameSaveSystem.write(slot,captureSavePayload(),{chapter:L[lv].n,objective:pl.got+"/"+pl.need,elapsed:Math.floor(elapsedGameSeconds)});if(!result.ok){sub("Falha ao salvar: "+result.error,4500);return false}activeSaveSlot=slot;try{localStorage.setItem('ndmvv.activeSaveSlot',String(slot))}catch(e){}return true;}
