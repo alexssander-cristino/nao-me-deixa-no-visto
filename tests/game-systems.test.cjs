@@ -471,3 +471,13 @@ test("continuing the active slot hydrates saved keys, mechanisms and player stat
   assert.match(html, /SG\.playerState=\{feetY:/);
   assert.match(html, /SG\.settings=p\.settings/);
 });
+
+test("movable physics props can be dragged and their transforms persist in saves", () => {
+  const html = read("index.html");
+  assert.match(html, /function serializePhysicsProps\(/);
+  assert.match(html, /function restorePhysicsProps\(/);
+  assert.match(html, /objects:serializePhysicsProps\(\)/);
+  assert.match(html, /e\.code==='KeyG'/);
+  assert.match(html, /object-dragged/);
+  assert.match(html, /restorePhysicsProps\(resumed&&Array\.isArray\(SG\.objects\)/);
+});
