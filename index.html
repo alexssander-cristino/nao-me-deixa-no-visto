@@ -84,7 +84,29 @@ const ch=(r,c)=>(g[r]||'')[c]||'#';
 const sol=(x,z)=>{const r=Math.round(z/4),c=Math.round(x/4),k=ch(r,c),d=doors[r+','+c];return k=='#'||k=='H'||(k=='D'&&(!d||!d.o))};
 function mv(o,dx,dz,r){return physics.moveCircle(o,dx,dz,r)}
 function los(ax,az,bx,bz){const n=Math.ceil(Math.hypot(bx-ax,bz-az)/.6);for(let i=1;i<n;i++){const t=i/n;if(sol(ax+(bx-ax)*t,az+(bz-az)*t))return false}return true}
-function tex(c){const k=document.createElement('canvas');k.width=k.height=128;const x=k.getContext('2d');x.fillStyle=c;x.fillRect(0,0,128,128);for(let i=0;i<900;i++){x.fillStyle='rgba(0,0,0,'+R()*.25+')';x.fillRect(R()*128,R()*128,1+R()*3,1+R()*10)}for(let i=0;i<4;i++){x.fillStyle='rgba(30,10,5,.25)';x.beginPath();x.arc(R()*128,R()*128,10+R()*25,0,7);x.fill()}const t=new THREE.CanvasTexture(k);t.wrapS=t.wrapT=THREE.RepeatWrapping;return t}
+function tex(c,kind='wall'){
+ const size=512,k=document.createElement('canvas');k.width=k.height=size;
+ const x=k.getContext('2d',{alpha:false});x.fillStyle=c;x.fillRect(0,0,size,size);
+ const image=x.getImageData(0,0,size,size),data=image.data;
+ for(let i=0;i<data.length;i+=4){const n=(R()-.5)*(kind==='wood'?22:16);data[i]=Math.max(0,Math.min(255,data[i]+n));data[i+1]=Math.max(0,Math.min(255,data[i+1]+n));data[i+2]=Math.max(0,Math.min(255,data[i+2]+n))}
+ x.putImageData(image,0,0);
+ for(let i=0;i<(kind==='floor'?1900:1300);i++){
+   const px=R()*size,py=R()*size,alpha=.018+R()*.09;
+   x.fillStyle='rgba(12,8,7,'+alpha+')';
+   if(kind==='floor'){x.beginPath();x.ellipse(px,py,3+R()*28,2+R()*13,R()*P,0,Math.PI*2);x.fill()}
+   else{x.fillRect(px,py,1+R()*2,2+R()*24)}
+ }
+ if(kind==='wood'){
+   for(let i=0;i<180;i++){const y=R()*size;x.strokeStyle='rgba(35,17,9,'+(.035+R()*.09)+')';x.lineWidth=.5+R()*2;x.beginPath();x.moveTo(0,y);x.bezierCurveTo(130,y-8,320,y+9,size,y+(R()-.5)*18);x.stroke()}
+ }
+ for(let i=0;i<18;i++){
+   const px=R()*size,py=R()*size,r=5+R()*55;
+   const grad=x.createRadialGradient(px,py,1,px,py,r);
+   grad.addColorStop(0,'rgba(20,12,9,.11)');grad.addColorStop(1,'rgba(20,12,9,0)');
+   x.fillStyle=grad;x.fillRect(px-r,py-r,r*2,r*2);
+ }
+ const t=new THREE.CanvasTexture(k);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.anisotropy=Math.min(8,rd.capabilities.getMaxAnisotropy());t.encoding=THREE.sRGBEncoding;t.needsUpdate=true;return t
+}
 function mkV(ghost){return GameModels.createValdirene(THREE,ghost)}
 function decorateLevel(n){
 const wood=new THREE.MeshStandardMaterial({color:n==3?0x382027:0x49362a,roughness:.9}),woodHi=new THREE.MeshStandardMaterial({color:0x75523b,roughness:.82}),metal=new THREE.MeshStandardMaterial({color:0x35383a,metalness:.55,roughness:.5}),cloth=new THREE.MeshStandardMaterial({color:n==3?0x56212b:0x34302d,roughness:1}),dust=new THREE.MeshStandardMaterial({color:0x25211e,roughness:1}),ceramic=new THREE.MeshStandardMaterial({color:0x827568,roughness:.4});
@@ -114,10 +136,10 @@ for(let i=0;i<32;i++){const r=1+((i*7+n*3)%(rows-2)),c=1+((i*11+n*5)%(cols-2));i
 function build(n){physics.clear();const d=L[n];g=d.g;rows=g.length;cols=g[0].length;L5=n==4;items=[];doors={};wards=[];ex=null;
 scene=new THREE.Scene();scene.background=new THREE.Color(d.fg);scene.fog=new THREE.FogExp2(d.fg,n==1?.052:n==4?.06:n==2?.068:.078);scene.add(camera);
 amb=new THREE.AmbientLight(0x554466,.3);scene.add(amb);pls=[];for(let i=0;i<2;i++){const p=new THREE.PointLight(0xffa060,.5,14);scene.add(p);pls.push(p)}
-const wt=tex(d.w),ft=tex(d.f);wt.repeat.set(1,d.h/4);ft.repeat.set(cols,rows);
-const wm=new THREE.MeshLambertMaterial({map:wt}),dm=new THREE.MeshLambertMaterial({map:wt,color:0x997766}),bx=new THREE.BoxGeometry(4,d.h,4);
-const fl=new THREE.Mesh(new THREE.PlaneGeometry(cols*4,rows*4),new THREE.MeshLambertMaterial({map:ft}));fl.rotation.x=-P/2;fl.position.set((cols-1)*2,0,(rows-1)*2);fl.receiveShadow=true;scene.add(fl);
-const cl=new THREE.Mesh(new THREE.PlaneGeometry(cols*4,rows*4),new THREE.MeshLambertMaterial({color:0x111111}));cl.rotation.x=P/2;cl.position.set((cols-1)*2,d.h,(rows-1)*2);scene.add(cl);
+const wt=tex(d.w,'wall'),ft=tex(d.f,'floor');wt.repeat.set(1,d.h/4);ft.repeat.set(cols,rows);
+const wm=new THREE.MeshStandardMaterial({map:wt,bumpMap:wt,bumpScale:.035,roughness:.96}),dm=new THREE.MeshStandardMaterial({map:wt,color:0x997766,bumpMap:wt,bumpScale:.025,roughness:.94}),bx=new THREE.BoxGeometry(4,d.h,4);
+const fl=new THREE.Mesh(new THREE.PlaneGeometry(cols*4,rows*4),new THREE.MeshStandardMaterial({map:ft,bumpMap:ft,bumpScale:.055,roughness:.94}));fl.rotation.x=-P/2;fl.position.set((cols-1)*2,0,(rows-1)*2);fl.receiveShadow=true;scene.add(fl);
+const cl=new THREE.Mesh(new THREE.PlaneGeometry(cols*4,rows*4),new THREE.MeshStandardMaterial({color:0x111111,roughness:1}));cl.rotation.x=P/2;cl.position.set((cols-1)*2,d.h,(rows-1)*2);scene.add(cl);
 const em=(c,x,z,y,k)=>{const group=new THREE.Group();group.position.set(x,0,z);const mat=(color,rough=.7,metal=0)=>new THREE.MeshStandardMaterial({color,roughness:rough,metalness:metal});const add=(geo,ma,px,py,pz)=>{const m=new THREE.Mesh(geo,ma);m.position.set(px,py,pz);m.castShadow=true;m.receiveShadow=true;group.add(m);return m};const gold=mat(0xb68a3f,.35,.65),paper=mat(0xe0d4b8),red=mat(0x8d1721),glass=mat(0x7b9d9b,.2,.25);if(k=='K'){const ring=add(new THREE.TorusGeometry(.19,.045,10,24),gold,0,1,0);ring.rotation.x=P/2;const inner=add(new THREE.TorusGeometry(.11,.018,8,20),gold,0,1,0);inner.rotation.x=P/2;add(new THREE.CylinderGeometry(.025,.025,.25,8),gold,0,.79,0);add(new THREE.SphereGeometry(.055,12,10),red,0,.65,0)}else if(k=='N'){const note=add(new THREE.BoxGeometry(.34,.43,.055),paper,0,1,0);note.rotation.z=-.12;add(new THREE.BoxGeometry(.27,.025,.012),red,0,1.08,.04);for(let i=0;i<3;i++)add(new THREE.BoxGeometry(.23,.012,.012),mat(0x756b5b),0,.98-i*.07,.04)}else if(k=='B'){add(new THREE.CylinderGeometry(.12,.15,.34,12),glass,0,.85,0);add(new THREE.CylinderGeometry(.07,.07,.07,10),gold,0,1.06,0);add(new THREE.TorusGeometry(.12,.018,8,20),mat(0x9bd5a0),0,.72,0)}else{add(new THREE.BoxGeometry(.28,.38,.07),mat(0x332c45,.3,.4),0,1,0);add(new THREE.BoxGeometry(.18,.07,.018),mat(0x9e83ce),0,1.03,.05);add(new THREE.CircleGeometry(.055,12),gold,0,.82,.05)}scene.add(group);return group};
 for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){const k=g[r][c],x=c*4,z=r*4;
 if(k=='#'){const m=new THREE.Mesh(bx,wm);m.position.set(x,d.h/2,z);m.castShadow=m.receiveShadow=true;scene.add(m);physics.addAABB(x,z,2,2,'wall')}
