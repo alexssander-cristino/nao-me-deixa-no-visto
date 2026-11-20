@@ -248,3 +248,10 @@ test("resolution and FPS controls change the actual Electron window and frame lo
   assert.match(main, /win\.setSize\(allowed\[size\]\[0\], allowed\[size\]\[1\], true\)/);
   assert.match(preload, /setResolution: size => ipcRenderer\.send/);
 });
+
+
+test("delayed horror audio callbacks are suppressed while paused", () => {
+  const html = read("index.html");
+  assert.match(html, /if\(state==='play'&&!paused\)th\(880/);
+  assert.match(html, /if\(state==='play'&&!paused\)th\(50/);
+});
