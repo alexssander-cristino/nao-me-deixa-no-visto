@@ -392,3 +392,12 @@ test("delayed horror audio callbacks are suppressed while paused", () => {
   assert.match(html, /scheduleAudio\(\(\)=>th\(880/);
   assert.match(html, /scheduleAudio\(\(\)=>th\(50/);
 });
+
+test("wardrobe drawers spawn a collectible battery and restore it without duplication", () => {
+  const html = read("index.html");
+  assert.match(html, /function spawnDrawerLoot\(id,wardrobe\)/);
+  assert.match(html, /items\.push\(\{k:'B',x,z,m:group,lootId:id\}\)/);
+  assert.match(html, /spawnOpenedDrawerLoot\(\)/);
+  assert.match(html, /mechanismSystem\.restore\(SG\.mechanisms\);spawnOpenedDrawerLoot\(\)/);
+  assert.match(html, /Array\.isArray\(SG\.collected\)&&SG\.collected\.includes\(key\)/);
+});
