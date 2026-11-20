@@ -188,3 +188,17 @@ Classificação atualizada: **testes automatizados — CONCLUÍDO** para o commi
 - Workflow atual: https://github.com/alexssander-cristino/nao-me-deixa-no-visto/actions/runs/44824993583
 - Os testes automatizados Linux e Windows passaram nesta execução; o build/artefato Windows ainda estava em execução no momento deste registro.
 - O loot continua **PARCIAL**: só há um ponto de loot por capítulo; não há tabela de itens aleatórios, chaves de missão ou conteúdo individual em todas as gavetas.
+
+
+### Resultado final do workflow após o loot de gaveta
+
+Workflow: https://github.com/alexssander-cristino/nao-me-deixa-no-visto/actions/runs/44824993583  
+Commit de código: `4a27e978777ecae0ab845a135f6c16bccb7b1d20`
+
+- Linux: **43 testes aprovados, 0 falhas**.
+- Windows: **43 testes aprovados, 0 falhas**.
+- Empacotamento portátil Windows: **success**.
+- Artefatos `game-build-Windows` (aprox. 333 MB) e `game-build-Linux` (aprox. 132 MB) publicados.
+- Workflow completo: **completed / success**.
+
+Aprovação do workflow cobre testes automatizados e build, mas não altera as classificações de playtest manual e benchmark: ambos continuam **NÃO VALIDADO**.
