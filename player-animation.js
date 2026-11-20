@@ -64,7 +64,7 @@
       return {...leg,hip:b};
     });
     const bones=[rootBone,pelvisBone,spineBone,...shoulderBones.map(v=>v.shoulder),...hipBones.map(v=>v.hip)];
-    const skeleton=new THREE.Skeleton(bones);skeleton.calculateInverses();rootBone.updateMatrixWorld(true);avatar.add(rootBone);
+    rootBone.updateMatrixWorld(true);const skeleton=new THREE.Skeleton(bones);skeleton.calculateInverses();avatar.add(rootBone);
     avatar.userData={torso:spineBone,arms:shoulderBones,legs:hipBones,phase:0,model:"player-skeletal-v2",rig:{root:rootBone,pelvis:pelvisBone,spine:spineBone,shoulders:shoulderBones.map(v=>v.shoulder),hips:hipBones.map(v=>v.hip),bones,skeleton}};
     return avatar;
   }
