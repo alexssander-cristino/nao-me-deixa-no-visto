@@ -359,7 +359,7 @@ else if(it.k=='N'){lore++;note(NT[lv],9000)}else if(it.k=='X'){sec=1;note(XT,900
 function hide(w){pl.hid=w;pl.px=pl.x;pl.pz=pl.z;pl.x=w.x;pl.z=w.z;w.m.visible=false;$('hd').style.display='block';th(120,.2,.4)}
 function unhide(){const w=pl.hid;w.m.visible=true;pl.hid=null;pl.x=pl.px;pl.z=pl.pz;$('hd').style.display='none'}
 function inventory(open){if(state!=="play")return;const panel=$("iv");if(open){modal=1;const lines=["OBJETIVO: "+pl.got+"/"+pl.need+" "+L[lv].o,"CHAVES: "+(mechanismInventory.length?mechanismInventory.map(id=>id.replace("wardrobe-key:","Capítulo ")).join(", "):"nenhuma"),"ENERGIA: "+(powerOn?"restabelecida":"desligada"),"PISTAS LIDAS: "+lore,"BATERIA: "+Math.ceil(pl.bat)+"%","LANTERNA: "+(pl.on&&pl.bat>0?"ligada":"desligada"),"SEGREDO: "+(sec?"encontrado":"não encontrado"),"","As pistas ficam registradas aqui. Continue explorando."];$("ivContent").textContent=lines.join("\n");sh("iv",1);document.exitPointerLock&&document.exitPointerLock()}else{sh("iv",0);modal=0;if(!paused)lock()}}
-function act(){if(pl.hid)return unhide();if(!tg)return;pl.actionTime=.46;pl.actionType=tg.t;if(tg.t==='mechanism'){const result=mechanismSystem.toggle(tg.o.id,mechanismInventory);if(!result.ok){sub(result.reason==='locked'?'Está trancado. Falta a chave.':'Não é possível usar agora.',2200);return}emitNoise(tg.o.x,tg.o.z,8,'mechanism');saveProgress(null,true);return}if(tg.t=='i')pick(tg.o);else if(tg.t=='h')hide(tg.o);else odoor(tg.o,tg.o.o?0:1)}
+function act(){if(pl.hid)return unhide();if(!tg)return;pl.actionTime=.46;pl.actionType=tg.t;if(tg.t==='mechanism'){const result=mechanismSystem.toggle(tg.o.id,mechanismInventory);if(!result.ok){sub(result.reason==='locked'?'Está trancado. Encontre a chave correta na gaveta.':'Não é possível usar agora.',2200);return}emitNoise(tg.o.x,tg.o.z,8,'mechanism');saveProgress(null,true);return}if(tg.t=='i')pick(tg.o);else if(tg.t=='h')hide(tg.o);else odoor(tg.o,tg.o.o?0:1)}
 
 function captureSavePayload(){return {schema:5,mechanisms:mechanismSystem.serialize(),keys:keyInventory.serialize(),chapter:lv,lore:lore,secret:sec,player:{x:pl.x,z:pl.z,feetY:pl.feetY||0,yaw:pl.y,pitch:pl.p,stamina:pl.st,battery:pl.bat,flashlight:pl.on,got:pl.got,crouch:!!pl.crouch},settings:{difficulty:S.diff,quality:S.quality,fov:S.fov,sensX:S.sensX,sensY:S.sensY,invertY:S.invertY,headBob:S.headBob,reduceCameraEffects:S.reduceCameraEffects,fpsLimit:S.fpsLimit},collected:(SG&&SG.collected)||[],openDoors:Object.keys(doors).filter(k=>doors[k].o),elapsed:elapsedGameSeconds,entity:V?{x:V.x,z:V.z,st:V.st,t:V.t,lost:V.lost,last:Array.isArray(V.last)?V.last.slice(0,2):null,route:Array.isArray(V.route)?V.route.slice(0,2):null,heard:V.heard}:null};}
 function writeSaveSlot(slot){const result=GameSaveSystem.write(slot,captureSavePayload(),{chapter:L[lv].n,objective:pl.got+"/"+pl.need,elapsed:Math.floor(elapsedGameSeconds)});if(!result.ok){sub("Falha ao salvar: "+result.error,4500);return false}activeSaveSlot=slot;try{localStorage.setItem('ndmvv.activeSaveSlot',String(slot))}catch(e){}return true;}
@@ -674,7 +674,7 @@ let mechanismSystem=new GameMechanisms.MechanismSystem();
 const keyInventory=new GameGameplay.KeyInventory();
 const mechanismInventory=keyInventory.items;
 let breakerPoint={x:0,z:0},powerOn=false;
-function mechanismCoordinates(id){const m=/^wardrobe:([-0-9]+):([-0-9]+):(.+)$/.exec(id);if(!m)return{x:pl.x,z:pl.z};const x=Number(m[1])/100,z=Number(m[2])/100,kind=m[3];if(kind==='door:left')return{x:x-.55,z:z+.8};if(kind==='door:right')return{x:x+.55,z:z+.8};if(kind==='drawer:0')return{x:x-.3,z:z+1.12};if(kind==='drawer:1')return{x:x+.3,z:z+1.12};if(id.indexOf('breaker:')===0)return breakerPoint;return{x,z};}
+function mechanismCoordinates(id){if(id.indexOf('breaker:')===0)return breakerPoint;const m=/^wardrobe:([-0-9]+):([-0-9]+):(.+)$/.exec(id);if(!m)return{x:pl.x,z:pl.z};const x=Number(m[1])/100,z=Number(m[2])/100,kind=m[3];if(kind==='door:left')return{x:x-.55,z:z+.8};if(kind==='door:right')return{x:x+.55,z:z+.8};if(kind==='drawer:0')return{x:x-.3,z:z+1.12};if(kind==='drawer:1')return{x:x+.3,z:z+1.12};if(id.indexOf('breaker:')===0)return breakerPoint;return{x,z};}
 function setupWardrobeMechanisms(){
  mechanismSystem=new GameMechanisms.MechanismSystem();powerOn=false;
  for(const wardrobe of wards){
@@ -701,18 +701,42 @@ function setupWardrobeMechanisms(){
    mechanismSystem.register({id:base+':drawer:'+row,type:'drawer',label:row===0?'Gaveta inferior':'Gaveta superior',object:drawer,axis:'position',component:'z',closed:.82,open:1.16,duration:.3,onUpdate:update,onToggle:(item,open)=>{emitNoise(wardrobe.x,wardrobe.z,7,open?'drawer-open':'drawer-close');at(wardrobe.x,wardrobe.z,g=>nz(.16,open?260:175,.35,g,'lowpass'));if(open&&row===0&&wardrobe===wards[0])spawnDrawerLoot(item.id,wardrobe);}});
   }
  }
+ // Painel elétrico por capítulo: alterna a alimentação real da iluminação e da saída.
+ breakerPoint={x:pl.x+1.15,z:pl.z+.7};
+ const panel=new THREE.Group(),panelMetal=new THREE.MeshStandardMaterial({color:0x303238,metalness:.68,roughness:.48}),panelDark=new THREE.MeshStandardMaterial({color:0x111316,metalness:.25,roughness:.8}),indicator=new THREE.MeshStandardMaterial({color:0x6c1717,emissive:0x260000,emissiveIntensity:.35}),leverMat=new THREE.MeshStandardMaterial({color:0x8d2525,roughness:.48});
+ const plate=new THREE.Mesh(new THREE.BoxGeometry(.52,.72,.13),panelMetal);panel.add(plate);
+ const inset=new THREE.Mesh(new THREE.BoxGeometry(.38,.52,.025),panelDark);inset.position.z=.078;panel.add(inset);
+ const lamp=new THREE.Mesh(new THREE.SphereGeometry(.045,12,10),indicator);lamp.position.set(-.12,.19,.105);panel.add(lamp);
+ const lever=new THREE.Group();lever.position.set(.08,-.04,.11);panel.add(lever);
+ const stem=new THREE.Mesh(new THREE.CylinderGeometry(.025,.03,.22,10),panelMetal);stem.position.y=.09;lever.add(stem);
+ const grip=new THREE.Mesh(new THREE.SphereGeometry(.055,12,10),leverMat);grip.position.y=.2;lever.add(grip);
+ panel.position.set(breakerPoint.x,1.48,breakerPoint.z);panel.rotation.y=Math.PI;panel.traverse(mesh=>{if(mesh.isMesh){mesh.castShadow=true;mesh.receiveShadow=true}});scene.add(panel);
+ mechanismSystem.register({id:'breaker:'+lv,type:'switch',label:'Disjuntor geral',object:lever,axis:'rotation',component:'x',closed:.48,open:-.48,duration:.24,onUpdate:(_item,progress)=>{powerOn=progress>=.5;indicator.color.set(powerOn?0x42b86a:0x6c1717);indicator.emissive.set(powerOn?0x124d25:0x260000);indicator.emissiveIntensity=powerOn?1.2:.35;},onToggle:(_item,on)=>{emitNoise(breakerPoint.x,breakerPoint.z,11,on?'breaker-on':'breaker-off');at(breakerPoint.x,breakerPoint.z,g=>nz(.32,on?620:180,.6,g,'lowpass'));th(on?720:170,.18,.22);sub(on?'Circuito restabelecido. A iluminação voltou.':'Energia desligada. A lanterna continua funcionando.',2800);}});
 }
 
+function spawnDrawerKey(id,wardrobe){
+ const x=wardrobe.x+.2,z=wardrobe.z+1.03,key='KEY:'+x+':'+z,keyId='wardrobe-key:'+lv;
+ if(mechanismInventory.includes(keyId)||(SG&&Array.isArray(SG.collected)&&SG.collected.includes(key))||items.some(item=>item.lootId===id+':key'))return;
+ const group=new THREE.Group(),gold=new THREE.MeshStandardMaterial({color:0xb68a3f,metalness:.78,roughness:.28}),dark=new THREE.MeshStandardMaterial({color:0x33271b,roughness:.72});
+ const ring=new THREE.Mesh(new THREE.TorusGeometry(.075,.018,8,18),gold);ring.position.y=.04;group.add(ring);
+ const shaft=new THREE.Mesh(new THREE.CylinderGeometry(.014,.014,.19,8),gold);shaft.rotation.x=Math.PI/2;shaft.position.z=-.095;group.add(shaft);
+ const tooth=new THREE.Mesh(new THREE.BoxGeometry(.055,.035,.035),gold);tooth.position.set(.035,.015,-.17);group.add(tooth);
+ const tag=new THREE.Mesh(new THREE.BoxGeometry(.09,.025,.055),dark);tag.position.set(0,.018,.08);group.add(tag);
+ group.position.set(x,.58,z);group.traverse(mesh=>{if(mesh.isMesh){mesh.castShadow=true;mesh.receiveShadow=true}});
+ scene.add(group);items.push({k:'KEY',keyId,x,z,m:group,lootId:id+':key'});
+}
 function spawnDrawerLoot(id,wardrobe){
- const x=wardrobe.x,z=wardrobe.z+1.03,key='B:'+x+':'+z;
- if((SG&&Array.isArray(SG.collected)&&SG.collected.includes(key))||items.some(item=>item.lootId===id))return;
- const group=new THREE.Group(),body=new THREE.MeshStandardMaterial({color:0x252a2d,metalness:.72,roughness:.34}),cap=new THREE.MeshStandardMaterial({color:0x9a8b65,metalness:.78,roughness:.28}),label=new THREE.MeshStandardMaterial({color:0xd5c9a8,roughness:.9});
- const cell=new THREE.Mesh(new THREE.CylinderGeometry(.045,.045,.19,14),body);cell.rotation.x=Math.PI/2;group.add(cell);
- const positive=new THREE.Mesh(new THREE.CylinderGeometry(.018,.018,.035,12),cap);positive.rotation.x=Math.PI/2;positive.position.z=-.105;group.add(positive);
- const negative=new THREE.Mesh(new THREE.CylinderGeometry(.028,.028,.025,12),cap);negative.rotation.x=Math.PI/2;negative.position.z=.105;group.add(negative);
- const band=new THREE.Mesh(new THREE.BoxGeometry(.055,.045,.006),label);band.position.y=.024;group.add(band);
- group.position.set(x,.57,z);group.traverse(mesh=>{if(mesh.isMesh){mesh.castShadow=true;mesh.receiveShadow=true}});
- scene.add(group);items.push({k:'B',x,z,m:group,lootId:id});
+ const x=wardrobe.x-.18,z=wardrobe.z+1.03,key='B:'+x+':'+z;
+ if(!(SG&&Array.isArray(SG.collected)&&SG.collected.includes(key))&&!items.some(item=>item.lootId===id)){
+  const group=new THREE.Group(),body=new THREE.MeshStandardMaterial({color:0x252a2d,metalness:.72,roughness:.34}),cap=new THREE.MeshStandardMaterial({color:0x9a8b65,metalness:.78,roughness:.28}),label=new THREE.MeshStandardMaterial({color:0xd5c9a8,roughness:.9});
+  const cell=new THREE.Mesh(new THREE.CylinderGeometry(.045,.045,.19,14),body);cell.rotation.x=Math.PI/2;group.add(cell);
+  const positive=new THREE.Mesh(new THREE.CylinderGeometry(.018,.018,.035,12),cap);positive.rotation.x=Math.PI/2;positive.position.z=-.105;group.add(positive);
+  const negative=new THREE.Mesh(new THREE.CylinderGeometry(.028,.028,.025,12),cap);negative.rotation.x=Math.PI/2;negative.position.z=.105;group.add(negative);
+  const band=new THREE.Mesh(new THREE.BoxGeometry(.055,.045,.006),label);band.position.y=.024;group.add(band);
+  group.position.set(x,.57,z);group.traverse(mesh=>{if(mesh.isMesh){mesh.castShadow=true;mesh.receiveShadow=true}});
+  scene.add(group);items.push({k:'B',x,z,m:group,lootId:id});
+ }
+ if(wardrobe===wards[0])spawnDrawerKey(id,wardrobe);
 }
 function spawnOpenedDrawerLoot(){
  for(const item of mechanismSystem.items.values()){
@@ -741,7 +765,7 @@ upd=function(dt){
   const currentDistance=tg&&tg.o?Math.hypot(pl.x-(tg.o.x||0),pl.z-(tg.o.z||0)):Infinity;
   if(!tg||bestDistance<=currentDistance+.04){
    tg={t:'mechanism',o:{id:best.id,x:p.x,z:p.z}};
-   $('pr').textContent='[E] '+(best.target?'fechar ':'abrir ')+best.label.toLowerCase();
+   $('pr').textContent='[E] '+(best.type==='switch'?(best.target?'desligar ':'ligar '):(best.target?'fechar ':'abrir '))+best.label.toLowerCase();
    $('reticle').style.transform='translate(-50%,-50%) scale(1.9)';$('reticle').style.borderColor='#e9bd78';
   }
  }
