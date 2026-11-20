@@ -59,7 +59,7 @@
       return {...arm,shoulder:b};
     });
     const hipBones=legs.map((leg,index)=>{
-      const side=leg.side,b=bone(side<0?"hip.L":"hip.R",pelvisBone,[side*.135,-.2,0]);
+      const side=leg.side,b=bone(side<0?"hip.L":"hip.R",pelvisBone,[side*.135,0,0]);
       leg.hip.position.set(0,0,0);b.add(leg.hip);
       return {...leg,hip:b};
     });
