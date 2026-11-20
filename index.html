@@ -114,8 +114,9 @@ const pl={x:0,z:0,y:0,p:0,feetY:0,grounded:true,capsuleHeight:1.72,velocity3D:{x
 const ch=(r,c)=>(g[r]||'')[c]||'#';
 const sol=(x,z)=>{const r=Math.round(z/4),c=Math.round(x/4),k=ch(r,c),d=doors[r+','+c];return k=='#'||k=='H'||(k=='D'&&(!d||!d.o))};
 function mv(o,dx,dz,r){return physics.moveCircle(o,dx,dz,r)}
-function moveCharacter(o,v,delta,shape){const position={x:o.x,y:o.feetY||0,z:o.z};const result=characterPhysics.moveCapsule(position,v,delta,shape,rigidPhysics.statics);o.x=position.x;o.feetY=position.y;o.z=position.z;return result}
-moveCharacter.canFit=(o,shape)=>characterPhysics.canFit({x:o.x,y:o.feetY||0,z:o.z},shape,rigidPhysics.statics);
+function characterStatics(){return rigidPhysics.statics.concat(physicsProps.map(prop=>prop.body))}
+function moveCharacter(o,v,delta,shape){const position={x:o.x,y:o.feetY||0,z:o.z};const result=characterPhysics.moveCapsule(position,v,delta,shape,characterStatics());o.x=position.x;o.feetY=position.y;o.z=position.z;return result}
+moveCharacter.canFit=(o,shape)=>characterPhysics.canFit({x:o.x,y:o.feetY||0,z:o.z},shape,characterStatics());
 function los(ax,az,bx,bz){return !physics.raycast(ax,az,bx,bz,{step:.18,radius:.04}).hit}
 function tex(c,kind='wall'){
  const size=512,k=document.createElement('canvas');k.width=k.height=size;
