@@ -379,6 +379,14 @@ test("resolution and FPS controls change the actual Electron window and frame lo
 });
 
 
+test("scheduled horror audio is invalidated across pause and resume", () => {
+  const html = read("index.html");
+  assert.match(html, /function invalidateAudioEvents\(\)\{audioEpoch\+\+\}/);
+  assert.match(html, /function scheduleAudio\(callback,delay\)/);
+  assert.match(html, /function pause\(\)\{if\(state!='play'\|\|paused\)return;invalidateAudioEvents\(\)/);
+  assert.match(html, /scheduleAudio\(\(\)=>say\('Alô\? Amor\? Já comeu\?'\),2600\)/);
+});
+
 test("delayed horror audio callbacks are suppressed while paused", () => {
   const html = read("index.html");
   assert.match(html, /if\(state==='play'&&!paused\)th\(880/);
