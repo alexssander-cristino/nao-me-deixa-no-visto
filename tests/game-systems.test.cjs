@@ -389,6 +389,6 @@ test("scheduled horror audio is invalidated across pause and resume", () => {
 
 test("delayed horror audio callbacks are suppressed while paused", () => {
   const html = read("index.html");
-  assert.match(html, /if\(state==='play'&&!paused\)th\(880/);
-  assert.match(html, /if\(state==='play'&&!paused\)th\(50/);
+  assert.match(html, /scheduleAudio\(\(\)=>th\(880/);
+  assert.match(html, /scheduleAudio\(\(\)=>th\(50/);
 });
