@@ -48,6 +48,32 @@ test("articulated first-person body follows movement, crouch and hiding", () => 
   assert.ok(avatar.userData.torso.position.y<.9);
 });
 
+test("Valdirene animation blends patrol, search and chase poses without teleporting", () => {
+  require("../enemy-animation.js");
+  const model = {
+    rotation: { z: 0 },
+    torso: { rotation: { x: 0 }, scale: { y: 1 } },
+    arms: [
+      { rotation: { x: 0, z: 0 }, userData: { fore: { rotation: { x: 0 } } } },
+      { rotation: { x: 0, z: 0 }, userData: { fore: { rotation: { x: 0 } } } }
+    ],
+    legs: [
+      { rotation: { x: 0 }, userData: { knee: { rotation: { x: 0 } } } },
+      { rotation: { x: 0 }, userData: { knee: { rotation: { x: 0 } } } }
+    ],
+    head: { rotation: { x: 0, z: 0 } },
+    userData: {}
+  };
+  const enemy = { st: "pat" };
+  globalThis.GameEnemyAnimation.update(model, enemy, 1 / 60, 12);
+  enemy.st = "chase";
+  for (let i = 0; i < 30; i++) globalThis.GameEnemyAnimation.update(model, enemy, 1 / 60, 4);
+  assert.equal(model.userData.animationState, "chase");
+  assert.ok(model.arms.some(arm => Math.abs(arm.rotation.x) > .1));
+  assert.ok(model.legs.some(leg => Math.abs(leg.rotation.x) > .05));
+  assert.ok(Number.isFinite(model.head.rotation.z));
+});
+
 test("controller accelerates smoothly and respects the world collider", () => {
   require("../physics.js");
   require("../controller.js");
