@@ -493,3 +493,10 @@ test("movable physics props can be dragged and their transforms persist in saves
   assert.match(html, /object-dragged/);
   assert.match(html, /restorePhysicsProps\(resumed&&Array\.isArray\(SG\.objects\)/);
 });
+
+
+test("wall instancing stays compatible with Three.js 0.128 and avoids unsupported bounding-sphere calls", () => {
+  const html = read("index.html");
+  assert.match(html, /wallBatch\.instanceMatrix\.needsUpdate=true;wallBatch\.frustumCulled=false;scene\.add\(wallBatch\)/);
+  assert.doesNotMatch(html, /wallBatch\.computeBoundingSphere\s*\(/);
+});
