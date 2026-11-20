@@ -33,6 +33,7 @@ O instalador do Windows (Squirrel) normalmente fica em:
 - Ctrl: agachar e reduzir o ruído
 - F: lanterna
 - E: interagir
+- I: abrir inventário
 - Mouse: olhar (sensibilidade ajustável nas configurações)
 - Lanterna: feixe direcional, bateria e oscilação quando está fraca
 - Esc: pausar
