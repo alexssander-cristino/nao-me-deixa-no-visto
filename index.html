@@ -80,6 +80,8 @@ function sanitizeSave(value){
   on:value.on===0?0:1,x:number(value.x,-100,100,0),z:number(value.z,-100,100,0),
   y:number(value.y,-100,100,0),p:number(value.p,-1.28,1.28,0),
   collected:Array.isArray(value.collected)?value.collected.filter(v=>typeof v==='string'&&v.length<80).slice(0,100):[],
+  keys:Array.isArray(value.keys)?value.keys.filter(v=>typeof v==='string'&&v.length<=96).slice(0,64):[],
+  mechanisms:Array.isArray(value.mechanisms)?value.mechanisms.filter(v=>v&&typeof v==='object'&&!Array.isArray(v)).slice(0,256):[],
   openDoors:Array.isArray(value.openDoors)?value.openDoors.filter(v=>typeof v==='string'&&/^\d{1,2},\d{1,2}$/.test(v)).slice(0,80):[],entity:value.entity&&typeof value.entity==='object'?{x:number(value.entity.x,-100,100,0),z:number(value.entity.z,-100,100,0),st:['dorm','relocate','pat','chase','search','inv'].includes(value.entity.st)?value.entity.st:'pat',t:number(value.entity.t,0,120,0),lost:number(value.entity.lost,0,30,0),last:Array.isArray(value.entity.last)?[number(value.entity.last[0],-100,100,0),number(value.entity.last[1],-100,100,0)]:null}:null
  };
 }
