@@ -56,7 +56,7 @@
         const progress=Number(record.progress),target=Number(record.target);
         if(!Number.isFinite(progress)||!Number.isFinite(target)){ignored++;continue;}
         item.usedKey=record.usedKey===true;
-        item.locked=item.key?(record.locked===true||record.locked===false&&!item.usedKey):record.locked===true;
+        item.locked=item.key?(record.locked===false?!item.usedKey:true):record.locked===true;
         item.progress=item.locked?0:clamp(progress,0,1);
         item.target=item.locked?0:(target>=.5?1:0);
         item.enabled=record.enabled!==false;
