@@ -278,7 +278,13 @@
     _overlapY(feet,height,b){
       return feet < b.y+b.hy-this.skin && feet+height > b.y-b.hy+this.skin;
     }
-    canFit(position,shape,statics=[]){\n      const radius=Math.max(.08,finite(shape.radius,.34)),height=Math.max(radius*2,finite(shape.height,1.7));\n      if(position.y<this.groundY-this.skin)return false;\n      for(const b of statics){if(!b||b.active===false)continue;if(!this._overlapY(position.y,height,b))continue;if(this._circleAabb(position.x,position.z,radius,b))return false;}\n      return true;\n    }\n    _circleAabb(x,z,r,b){
+    canFit(position,shape,statics=[]){
+      const radius=Math.max(.08,finite(shape.radius,.34)),height=Math.max(radius*2,finite(shape.height,1.7));
+      if(position.y<this.groundY-this.skin)return false;
+      for(const b of statics){if(!b||b.active===false)continue;if(!this._overlapY(position.y,height,b))continue;if(this._circleAabb(position.x,position.z,radius,b))return false;}
+      return true;
+    }
+    _circleAabb(x,z,r,b){
       const qx=clamp(x,b.x-b.hx,b.x+b.hx),qz=clamp(z,b.z-b.hz,b.z+b.hz);
       let dx=x-qx,dz=z-qz,d=Math.hypot(dx,dz);
       if(d>=r-this.skin)return null;
