@@ -41,6 +41,10 @@ test("articulated first-person body follows movement, crouch and hiding", () => 
   assert.equal(avatar.visible,true);
   assert.equal(avatar.userData.arms.length,2);
   assert.equal(avatar.userData.legs.length,2);
+  assert.ok(avatar.userData.rig.skeleton instanceof THREE.Skeleton);
+  assert.equal(avatar.userData.rig.spine.parent,avatar.userData.rig.pelvis);
+  assert.equal(avatar.userData.rig.shoulders.length,2);
+  assert.equal(avatar.userData.rig.hips.length,2);
   player.crouch=true;
   player.hid={};
   player.actionTime=.46;
