@@ -234,3 +234,17 @@ test("fullscreen and reset-settings controls are connected to real behavior", ()
   assert.match(main, /setFullScreen\(!win\.isFullScreen\(\)\)/);
   assert.match(preload, /toggleFullscreen: \(\) => ipcRenderer\.send/);
 });
+
+
+test("resolution and FPS controls change the actual Electron window and frame loop", () => {
+  const html = read("index.html");
+  const main = read("main.cjs");
+  const preload = read("preload.cjs");
+  assert.match(html, /id="resolution"/);
+  assert.match(html, /id="fpsLimit"/);
+  assert.match(html, /1000\/fpsLimit/);
+  assert.match(html, /gameWindowBridge\.setResolution/);
+  assert.match(main, /game-window:set-resolution/);
+  assert.match(main, /win\.setSize\(allowed\[size\]\[0\], allowed\[size\]\[1\], true\)/);
+  assert.match(preload, /setResolution: size => ipcRenderer\.send/);
+});
