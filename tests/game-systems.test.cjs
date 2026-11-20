@@ -18,6 +18,8 @@ test("all browser scripts parse and local modules are wired into the game", () =
     assert.ok(html.includes('src="./' + file + '"'));
   }
   assert.doesNotMatch(html, /\.innerHTML\s*=/);
+  assert.match(html, /v\.st=='relocate'/);
+  assert.doesNotMatch(html, /v\.x=c\[1\]\*4;v\.z=c\[0\]\*4/);
 });
 
 test("controller accelerates smoothly and respects the world collider", () => {
