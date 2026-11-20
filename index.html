@@ -34,6 +34,7 @@ label{display:flex;gap:10px;align-items:center;justify-content:space-between;wid
 <div id="fd"></div>
 <script src="./node_modules/three/build/three.min.js"></script>
 <script src="./physics.js"></script>
+<script src="./models.js"></script>
 <script>
 const $=i=>document.getElementById(i),R=Math.random,P=Math.PI,pk=a=>a[0|R()*a.length];
 let S={vol:.7,sens:.85,bri:1,diff:'normal'};try{Object.assign(S,JSON.parse(localStorage.getItem('vs')||'{}'))}catch(e){}
@@ -82,29 +83,7 @@ const sol=(x,z)=>{const r=Math.round(z/4),c=Math.round(x/4),k=ch(r,c),d=doors[r+
 function mv(o,dx,dz,r){return physics.moveCircle(o,dx,dz,r)}
 function los(ax,az,bx,bz){const n=Math.ceil(Math.hypot(bx-ax,bz-az)/.6);for(let i=1;i<n;i++){const t=i/n;if(sol(ax+(bx-ax)*t,az+(bz-az)*t))return false}return true}
 function tex(c){const k=document.createElement('canvas');k.width=k.height=128;const x=k.getContext('2d');x.fillStyle=c;x.fillRect(0,0,128,128);for(let i=0;i<900;i++){x.fillStyle='rgba(0,0,0,'+R()*.25+')';x.fillRect(R()*128,R()*128,1+R()*3,1+R()*10)}for(let i=0;i<4;i++){x.fillStyle='rgba(30,10,5,.25)';x.beginPath();x.arc(R()*128,R()*128,10+R()*25,0,7);x.fill()}const t=new THREE.CanvasTexture(k);t.wrapS=t.wrapT=THREE.RepeatWrapping;return t}
-function mkV(ghost){
-const root=new THREE.Group(),mat=(c,r=.9,m=0)=>new THREE.MeshStandardMaterial({color:c,roughness:r,metalness:m});
-const skin=mat(ghost?0xb8b0b9:0xb98d7c),shadow=mat(0x76564f),dress=mat(ghost?0xaaa3b0:0x38131b),dressHi=mat(ghost?0xc4bfca:0x69232b),hair=mat(0x100d12),hairHi=mat(0x292027),black=mat(0x08070a),shoe=mat(0x100d10,.55,.18);
-const add=(p,g,m,x,y,z)=>{const o=new THREE.Mesh(g,m);o.position.set(x,y,z);o.castShadow=true;o.receiveShadow=true;p.add(o);return o};
-const ell=(p,m,x,y,z,sx,sy,sz)=>{const o=add(p,new THREE.SphereGeometry(1,18,14),m,x,y,z);o.scale.set(sx,sy,sz);return o};
-const torso=new THREE.Group();torso.position.y=1.23;root.add(torso);
-add(torso,new THREE.CylinderGeometry(.24,.32,.62,16),dress,0,0,0);
-add(torso,new THREE.CylinderGeometry(.29,.43,.5,20),dressHi,0,-.42,0);
-add(torso,new THREE.TorusGeometry(.3,.025,8,24),mat(0x1a0b10),0,-.12,0).rotation.x=P/2;
-add(torso,new THREE.CylinderGeometry(.105,.12,.2,12),skin,0,.39,0);
-const head=new THREE.Group();head.position.set(0,1.82,.015);root.add(head);
-ell(head,skin,0,.08,0,.235,.31,.22);ell(head,shadow,0,-.11,.17,.12,.035,.035);
-ell(head,hair,0,.29,-.025,.25,.19,.235);ell(head,hair,0,.1,-.17,.25,.32,.12);
-for(let i=0;i<9;i++){const side=i%2?1:-1,q=add(head,new THREE.CylinderGeometry(.035,.035,.32+(i%3)*.09,8),i%3?hair:hairHi,side*(.19+(i%3)*.018),-.12-(i%3)*.07,-.015+(i%2)*.04);q.rotation.z=side*(.08+(i%4)*.08)}
-ell(head,skin,0,-.015,.19,.15,.11,.07);
-[-.088,.088].forEach(x=>{ell(head,black,x,.105,.198,.045,.025,.018);ell(head,mat(ghost?0xddeeff:0xf0d9ce),x,.11,.215,.018,.014,.008)});
-add(head,new THREE.BoxGeometry(.11,.018,.018),shadow,0,-.045,.25);
-const arms=[-1,1].map(side=>{const g=new THREE.Group();g.position.set(side*.31,1.53,0);root.add(g);const sleeve=add(g,new THREE.CylinderGeometry(.105,.105,.42,10),dress,side*.035,-.18,0);sleeve.rotation.z=side*.18;const fore=new THREE.Group();fore.position.set(side*.07,-.39,.025);g.add(fore);const arm=add(fore,new THREE.CylinderGeometry(.062,.062,.4,10),skin,0,-.17,0);arm.rotation.z=-side*.05;ell(fore,skin,0,-.36,.025,.07,.085,.065);g.userData.fore=fore;return g});
-const legs=[-1,1].map(side=>{const g=new THREE.Group();g.position.set(side*.14,.34,0);root.add(g);add(g,new THREE.CylinderGeometry(.105,.105,.52,10),skin,0,-.2,0);const boot=add(g,new THREE.BoxGeometry(.19,.13,.32),shoe,0,-.47,.09);boot.rotation.x=-.08;return g});
-add(torso,new THREE.ConeGeometry(.12,.16,4),mat(0xe0d1c3),0,.3,.12).rotation.x=.12;
-if(ghost)root.traverse(o=>{if(o.isMesh){o.material=o.material.clone();o.material.transparent=true;o.material.opacity=.42}});
-root.arms=arms;root.legs=legs;root.head=head;root.torso=torso;return root
-}
+function mkV(ghost){return GameModels.createValdirene(THREE,ghost)}
 function decorateLevel(n){
 const wood=new THREE.MeshStandardMaterial({color:n==3?0x382027:0x49362a,roughness:.9}),woodHi=new THREE.MeshStandardMaterial({color:0x75523b,roughness:.82}),metal=new THREE.MeshStandardMaterial({color:0x35383a,metalness:.55,roughness:.5}),cloth=new THREE.MeshStandardMaterial({color:n==3?0x56212b:0x34302d,roughness:1}),dust=new THREE.MeshStandardMaterial({color:0x25211e,roughness:1}),ceramic=new THREE.MeshStandardMaterial({color:0x827568,roughness:.4});
 const box=(x,y,z,w,h,d,ma,rot=0)=>{const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),ma);m.position.set(x,y,z);m.rotation.y=rot;m.castShadow=true;m.receiveShadow=true;scene.add(m);if(h>=.3&&y-h/2<.62&&w>.28&&d>.28)physics.addOBB(x,z,w/2,d/2,-rot,"furniture");return m};
