@@ -466,6 +466,14 @@ test("resolution and FPS controls change the actual Electron window and frame lo
 });
 
 
+test("audio mix dynamically ducks ambience as player fear rises", () => {
+  const audio = read("audio-manager.js");
+  assert.match(audio, /const fear=clamp\(pl\.fear\|\|0,0,1\)/);
+  assert.match(audio, /const duck=1-fear\*\.48/);
+  assert.match(audio, /setTargetAtTime\(duck,AC\.currentTime,\.32\)/);
+  assert.match(audio, /play\("breathing",\{volume:\.28\+fear\*\.2/);
+});
+
 test("scheduled horror audio is invalidated across pause and resume", () => {
   const html = read("index.html");
   assert.match(html, /function invalidateAudioEvents\(\)\{audioEpoch\+\+\}/);
