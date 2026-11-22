@@ -8,13 +8,15 @@ O jogo possui um sistema de diálogos narrativos integrado aos 15 capítulos, co
 
 ## Entrega das gravações
 
-Consulte `voice-manifest.json` para a lista completa de 315 assets esperados (21 variações/eventos por capítulo, distribuídos pelos 15 capítulos).
+Consulte `voice-manifest.json` para a lista completa de 330 assets esperados (22 variações/eventos por capítulo, distribuídos pelos 15 capítulos).
 
 Padrão de caminho:
 
 ```
 audio/valdirene/pt-BR/capitulo-01/vd-c01-intro-01.ogg
 audio/valdirene/pt-BR/capitulo-01/vd-c01-explore-a.ogg
+...
+vd-c01-laugh.ogg
 ...
 audio/valdirene/pt-BR/capitulo-15/vd-c15-death.ogg
 ```
