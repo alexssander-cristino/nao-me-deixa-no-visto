@@ -68,7 +68,7 @@
   rootBone.updateMatrixWorld(true);
   const skeleton=new THREE.Skeleton(bones);skeleton.calculateInverses();
   avatar.add(rootBone);
-  avatar.userData={rig:{root:rootBone,pelvis,spine,neck,head,arms,legs,shoulders:arms,hips:legs,bones,skeleton},arms,legs,phase:0,state:"IDLE",stateBlend:1,model:"player-single-rig-v3"};
+  avatar.userData={rig:{root:rootBone,pelvis,spine,neck,head,arms,legs,shoulders:arms,hips:legs,torso:spine,bones,skeleton},arms,legs,torso:spine,phase:0,state:"IDLE",stateBlend:1,model:"player-single-rig-v3"};
   activeAvatar=avatar;
   assertIntegrity(avatar);
   return avatar;
