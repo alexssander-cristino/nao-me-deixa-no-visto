@@ -467,6 +467,13 @@ const led=new THREE.Mesh(new THREE.CircleGeometry(.012,20),new THREE.MeshBasicMa
 led.position.z=-.242;flashlightModel.add(led);
 const switchButton=new THREE.Mesh(new THREE.CylinderGeometry(.018,.02,.025,16),flashlightTrim);
 switchButton.position.set(0,.059,.055);flashlightModel.add(switchButton);
+// Mão visível em primeira pessoa: a palma e os dedos envolvem o corpo da lanterna, presos ao mesmo attachment da câmera.
+const gripHand=new THREE.Group(),handSkin=new THREE.MeshStandardMaterial({color:0x987568,roughness:.9}),handShadow=new THREE.MeshStandardMaterial({color:0x55413b,roughness:.96});
+const palm=new THREE.Mesh(new THREE.SphereGeometry(1,16,12),handSkin);palm.scale.set(.075,.06,.105);palm.position.set(-.065,-.015,.075);gripHand.add(palm);
+for(let finger=0;finger<4;finger++){const f=new THREE.Mesh(new THREE.SphereGeometry(1,12,10),handSkin);f.scale.set(.025,.022,.052);f.position.set(.005,-.045+finger*.024,.015);f.rotation.y=.18;gripHand.add(f)}
+const thumb=new THREE.Mesh(new THREE.SphereGeometry(1,12,10),handSkin);thumb.scale.set(.025,.035,.062);thumb.position.set(-.115,.025,.035);thumb.rotation.z=-.45;gripHand.add(thumb);
+const cuff=new THREE.Mesh(new THREE.CylinderGeometry(.075,.07,.09,16),handShadow);cuff.rotation.x=-P/2;cuff.position.set(-.065,-.012,.17);gripHand.add(cuff);
+gripHand.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true}});flashlightModel.add(gripHand);
 flashlightModel.position.set(.32,-.28,-.48);flashlightModel.rotation.x=-.08;camera.add(flashlightModel);
 rs();addEventListener('resize',rs);build(0);ap();$('r1').value=S.vol;$('r2').value=S.sensX;$('sensVal').textContent=(Number(S.sensX)||.85).toFixed(2);$('r2y').value=S.sensY;$('sensYVal').textContent=(Number(S.sensY)||.85).toFixed(2);$('invertY').checked=!!S.invertY;$('headBob').checked=S.headBob!==false;$('reduceCamera').checked=!!S.reduceCameraEffects;$('r3').value=S.bri;$('ct').style.display=SG?'':'none';
 document.addEventListener('pointerlockchange',()=>{
@@ -831,4 +838,4 @@ upd = function(dt){
   }
 };
 
-</script><script src="./campaign-expansion.js"></script><script src="./chapter-objectives.js"></script><script src="./anderson-encounter.js"></script><script src="./audio-manager.js"></script></body></html>
+</script><script src="./campaign-expansion.js"></script><script src="./chapter-objectives.js"></script><script src="./anderson-encounter.js"></script><script src="./audio-manager.js"></script><script src="./dynamic-world.js"></script></body></html>
