@@ -60,15 +60,17 @@
       const x=(i-3)*.052;
       tube(head,[[x*.6,.34,.08],[x,.22,.18],[x*.9,.04,.19],[x*1.15,-.12,.12]],.024,i%2?hair:hairHi,12);
     }
+    const face={eyes:[],mouth:null};
     [-1,1].forEach(side=>{
       ell(head,skin,side*.205,.015,0,.045,.075,.055);
       ell(head,black,side*.082,.075,.17,.052,.034,.018);
-      ell(head,eye,side*.082,.074,.188,.018,.013,.008);
-      ell(head,black,side*.082,.074,.195,.006,.01,.004);
+      const sclera=ell(head,eye,side*.082,.074,.188,.018,.013,.008);
+      const pupil=ell(head,black,side*.082,.074,.195,.006,.01,.004);
+      face.eyes.push({sclera,pupil});
     });
-    // Nariz e sorriso tenso.
+    // Nariz e boca articulável para expressões de ameaça durante perseguições.
     ell(head,skinShade,0,-.015,.204,.025,.052,.03);
-    tube(head,[[-.075,-.105,.18],[-.035,-.13,.205],[0,-.135,.21],[.04,-.13,.205],[.075,-.105,.18]],.009,skinShade,14);
+    face.mouth=tube(head,[[-.075,-.105,.18],[-.035,-.13,.205],[0,-.135,.21],[.04,-.13,.205],[.075,-.105,.18]],.009,skinShade,14);
     // Véu translúcido ondulado atrás da cabeça e dos ombros.
     const veilGeo=new THREE.BufferGeometry(),verts=[],indices=[];
     const rows=10,cols=8;
@@ -131,7 +133,7 @@
     rootBone.updateMatrixWorld(true);const skeleton=new THREE.Skeleton(bones);skeleton.calculateInverses();
     rootMesh.add(rootBone);
     rootMesh.arms=shoulderBones;rootMesh.legs=hipBones;rootMesh.head=headBone;rootMesh.torso=spineBone;
-    rootMesh.userData={model:"valdirene-procedural-v3",height:2.42,ghost:!!ghost,rig:{root:rootBone,pelvis:pelvisBone,spine:spineBone,neck:neckBone,head:headBone,shoulders:shoulderBones,hips:hipBones,bones,skeleton}};
+    rootMesh.userData={model:"valdirene-procedural-v4",height:2.42,ghost:!!ghost,face,rig:{root:rootBone,pelvis:pelvisBone,spine:spineBone,neck:neckBone,head:headBone,shoulders:shoulderBones,hips:hipBones,bones,skeleton}};
     if(ghost){
       rootMesh.traverse(o=>{
         if(o.isMesh){o.material=o.material.clone();o.material.transparent=true;o.material.opacity=Math.min(o.material.opacity??1,.48);o.material.depthWrite=false}
