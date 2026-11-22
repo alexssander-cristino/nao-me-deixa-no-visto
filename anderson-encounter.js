@@ -35,6 +35,7 @@ function update(dt){
  if(!revealed&&pl.got>=Math.max(1,pl.need-1)){
   revealed=true;model.visible=true;fade=0;
   sub("Há alguém com o seu rosto perto do altar.",4200);
+  if(root.GameAudio)root.GameAudio.play("growl",{volume:.52,position:{x:model.position.x,y:1.2,z:model.position.z}});
   th(54,.8,.48);scheduleAudio(()=>{if(AC&&mg)nz(.8,520,.35,mg,"bandpass")},260);
  }
  if(!revealed)return;
@@ -46,6 +47,7 @@ function update(dt){
  if(d<4.2){
   vanished=true;model.visible=false;
   sub("O reflexo desapareceu. Você continua ouvindo seus passos.",3800);
+  if(root.GameAudio)root.GameAudio.play("andersonScream",{volume:.72,position:{x:model.position.x,y:1.2,z:model.position.z}});
   th(68,.55,.5);scheduleAudio(()=>{if(AC&&mg)nz(.65,170,.4,mg,"lowpass")},120);
  }
 }
