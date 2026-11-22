@@ -77,12 +77,13 @@ function spawnPoints(){
   !items.some(it=>Math.hypot(it.x-p.x,it.z-p.z)<3.8)&&
   (!ex||Math.hypot(ex.x-p.x,ex.z-p.z)>4)
  ).sort((a,b)=>a.d-b.d);
+ const seed=(root.GameRunSeed?root.GameRunSeed():0x4e444d56)>>>0;let randomState=(seed^Math.imul(lv+1,0x85ebca6b))>>>0;const random=()=>{randomState=(randomState+0x6D2B79F5)>>>0;let t=randomState;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return((t^(t>>>14))>>>0)/4294967296};for(let i=candidates.length-1;i>0;i--){const j=Math.floor(random()*(i+1));[candidates[i],candidates[j]]=[candidates[j],candidates[i]]}
  if(candidates.length<3){
   const fallback=getReachableCells().filter(p=>ch(p.r,p.c)==="."&&Math.hypot(p.x-pl.x,p.z-pl.z)>4&&(!ex||Math.hypot(ex.x-p.x,ex.z-p.z)>3)&&!items.some(it=>Math.hypot(it.x-p.x,it.z-p.z)<2.4)).sort((a,b)=>b.d-a.d);
   for(const p of fallback){if(candidates.every(q=>Math.hypot(p.x-q.x,p.z-q.z)>4))candidates.push(p);if(candidates.length===3)break}
  }
  if(candidates.length<3)return candidates.slice(0,3);
- const max=candidates[candidates.length-1].d,targets=[max*.32,max*.57,max*.82],chosen=[];
+ const max=candidates.reduce((value,p)=>Math.max(value,p.d),0),targets=[max*.32,max*.57,max*.82],chosen=[];
  for(const target of targets){
   const ordered=candidates.slice().sort((a,b)=>Math.abs(a.d-target)-Math.abs(b.d-target));
   const pick=ordered.find(p=>chosen.every(q=>Math.hypot(p.x-q.x,p.z-q.z)>6));
