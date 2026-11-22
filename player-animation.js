@@ -126,10 +126,10 @@
  }
  function assertIntegrity(avatar){
   const rig=avatar&&avatar.userData&&avatar.userData.rig;if(!rig)throw new Error("Player sem rig");
-  const named=rig.bones.map(b=>b.name),arms=named.filter(n=>n.startsWith("upperArm.")),legs=named.filter(n=>n.startsWith("hip."));
-  const flashlight=rig.flashlight;
-  const result={armChains:arms.length,legChains:legs.length,bones:named.length,oneSkeleton:!!rig.skeleton&&rig.skeleton.bones.length===named.length,flashlightAttached:!flashlight||flashlight.parent===rig.flashlightSocket};
-  if(result.armChains!==2||result.legChains!==2||!result.oneSkeleton||!result.flashlightAttached)throw new Error("Integridade do player inválida: "+JSON.stringify(result));
+  const named=rig.bones.map(b=>b.name),arms=named.filter(n=>n.startsWith("upperArm.")),elbows=named.filter(n=>n.startsWith("elbow.")),hands=named.filter(n=>n.startsWith("wrist.")),legs=named.filter(n=>n.startsWith("hip.")),knees=named.filter(n=>n.startsWith("knee.")),heads=named.filter(n=>n==="head");
+  const flashlight=rig.flashlight,activePlayerInstances=avatar.parent?avatar.parent.children.filter(child=>child.name==="player-single-rig").length:1;
+  const result={playerInstances:activePlayerInstances,armChains:arms.length,elbowJoints:elbows.length,handJoints:hands.length,legChains:legs.length,kneeJoints:knees.length,heads:heads.length,bones:named.length,oneSkeleton:!!rig.skeleton&&rig.skeleton.bones.length===named.length,flashlightAttached:!flashlight||flashlight.parent===rig.flashlightSocket};
+  if(result.playerInstances!==1||result.armChains!==2||result.elbowJoints!==2||result.handJoints!==2||result.legChains!==2||result.kneeJoints!==2||result.heads!==1||!result.oneSkeleton||!result.flashlightAttached)throw new Error("Integridade do player inválida: "+JSON.stringify(result));
   return result;
  }
  function dispose(avatar){
