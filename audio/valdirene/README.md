@@ -28,7 +28,8 @@ audio/valdirene/pt-BR/capitulo-15/vd-c15-death.ogg
 - Manter o mesmo timbre entre capítulos; variar intensidade, distância vocal, sarcasmo, irritação e vulnerabilidade conforme a progressão.
 - Para sussurros, gravar uma interpretação sussurrada real; não apenas reduzir o volume de uma fala normal.
 - Nomear cada arquivo exatamente como no manifesto. Não alterar o identificador usado pelo código.
-- As falas de proximidade/perseguição usam espacialização 3D quando Valdirene está no mundo; as falas narrativas sem presença física são reproduzidas sem posição falsa.
+- As falas de proximidade/perseguição usam espacialização HRTF 3D com atualização da posição da personagem enquanto ela se move; a distância controla a atenuação.
+- A reverberação é processada por convolução e varia por cenário (aprox. 0,58 s a 1,15 s); falas sobrenaturais sem presença física não recebem uma posição falsa.
 
 ## Acessibilidade
 
