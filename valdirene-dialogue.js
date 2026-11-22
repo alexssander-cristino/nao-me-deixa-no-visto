@@ -132,7 +132,7 @@ function installHooks(){
  const wrap=(name,handler)=>{const original=root[name];if(typeof original!=="function")return;root[name]=function(){return handler.call(this,original,arguments)}};
  wrap("build",function(original,args){const result=original.apply(this,args);resetChapter(Number(args[0])||0);return result});
  wrap("go",function(original,args){const next=Number(args[0]);if(Number.isFinite(next)&&next>dialogueState.chapter)onTransition(next);return original.apply(this,args)});
- wrap("pick",function(original,args){const item=args[0];const result=original.apply(this,args);onPick(item);return result});
+ wrap("pick",function(original,args){const item=args[0],wasCollecting=!!(item&&item.collecting);const result=original.apply(this,args);if(item&&!wasCollecting&&item.collecting)onPick(item);return result});
  wrap("odoor",function(original,args){const result=original.apply(this,args);onDoor(args[0],!!args[1]);return result});
  wrap("act",function(original,args){const target=typeof tg!=="undefined"?tg:null,result=original.apply(this,args);if(target&&target.t&&target.t==="d")onDoor(target.o,!target.o.o);return result});
  wrap("die",function(original,args){onDeath();return original.apply(this,args)});
