@@ -122,7 +122,7 @@ pick=function(item){
  if(item&&item.k==="Q"){
   if(!active||active.done||item.collecting)return;
   if(item.challengeIndex!==active.progress){
-   active.progress=0;refreshHUD();note("Sequência incorreta. A pista foi reiniciada.",2600);th(120,.28,.3);return;
+   refreshHUD();note("Ainda não. Próximo passo: "+definitions[lv].labels[active.progress]+".",2600);th(120,.28,.3);return;
   }
   item.collecting=true;const index=items.indexOf(item);if(index>=0)items.splice(index,1);
   interactionTweens.push({object:item.m,elapsed:0,duration:.3,baseY:item.m.position.y});
