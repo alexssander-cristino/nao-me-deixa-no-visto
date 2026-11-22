@@ -22,7 +22,7 @@ const chapters=[
 {intro:"A maternidade está vazia. O berço, não. Eu ouvi alguém chamar você de pai.",explore:["As pulseiras têm nomes diferentes, mas a mesma data.","O corredor cheira a talco. Você nunca chegou a conhecer esse lugar."],objective:["Berçário, ala dois, recepção. Valide as pulseiras sem trocar os nomes.","O registro neonatal foi alterado. Procure a linha do acompanhante."],candle:"Uma vela ao lado do berço. Não acorde quem está dormindo.",clue:"A gravação diz para não deixar que ela veja você primeiro. Quem será que escreveu?",battery:"Pilha encontrada. O monitor do berço ainda precisa de energia.",slow:"O berço parou de balançar. Você está esperando que alguém apareça?",danger:"Tem um choro atrás da porta. Não é um bebê.",chase:"NÃO DEIXA ELA CHEGAR AO BERÇO! CORRE!",hide:"Atrás da cortina do berçário? Você está assustando as crianças.",close:"As pulseiras foram reunidas. Agora você sabe a data.",mechanism:"O painel neonatal está travado. Use o seletor correto.",error:"Pulseira trocada. Não confunda o que é seu com o que é meu.",laugh:"Ah... o berço parou. Acho que ele também está esperando sua resposta.",ending:"A maternidade ficou em silêncio. Pela primeira vez, eu também."},
 {intro:"Você chegou ao último lugar. Eu sabia que chegaria. Não sabia se ainda teria coragem.",explore:["O altar tem duas sombras. Uma delas está segurando seu celular.","Eu não queria que você encontrasse tudo de uma vez. Queria que lembrasse."],objective:["Lua, olho, coroa. Complete o ritual e pare de fingir que não reconhece os símbolos.","O último símbolo não abre uma porta. Abre uma lembrança."],candle:"A chama final. Eu guardei esta vela para o dia em que você voltasse.",clue:"A mensagem que nunca enviei diz que eu devia ter aceitado o seu silêncio.",battery:"Ainda está procurando pilhas? Depois de tudo, continua preocupado com a lanterna.",slow:"Não há mais corredor para percorrer. Só falta você decidir o que vai responder.",danger:"Não olhe para o altar. Olhe para mim. Pela primeira vez, olhe de verdade.",chase:"CORRE SE QUISER! Eu também estou cansada de correr atrás!",hide:"Pode sair do esconderijo. Não quero mais brincar de procurar.",close:"O ritual terminou. Agora não existe mais nada entre a pergunta e a resposta.",mechanism:"O símbolo está invertido. Vire-o para o lado em que estava antes.",error:"Não. Esse símbolo representa o que você fez, não o que eu fiz.",laugh:"Heh... chegamos ao fim. Agora não tem mais para onde correr.",ending:"Treze anos cabem numa mensagem. A resposta, Anderson, é sua."}
 ];
-const dialogueState={chapter:-1,run:0,seen:new Set(),queue:[],current:null,lastAt:0,lastCommon:0,elapsed:0,slowAt:0,exploreIndex:0,lastProgress:0,lastEnemy:"",lastNear:0,lastDoor:0,lastMechanism:0,laughPlayed:false,paused:false,subtitle:true,voiceVolume:.9,missing:new Set(),audio:null,raf:null};
+const dialogueState={chapter:-1,run:0,seen:new Set(),queue:[],current:null,lastAt:0,lastCommon:0,elapsed:0,slowAt:0,exploreIndex:0,lastProgress:0,lastEnemy:"",lastNear:0,lastDoor:0,lastMechanism:0,laughPlayed:false,paused:false,subtitle:true,voiceVolume:.9,missing:new Set(),audio:null,panner:null,raf:null};
 const now=()=>performance.now();
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 function settings(){try{dialogueState.subtitle=localStorage.getItem("ndmvv.valdirene.subtitles")!=="0";dialogueState.voiceVolume=clamp(Number(localStorage.getItem("ndmvv.valdirene.volume")??.9),0,1)}catch(e){}}
@@ -35,7 +35,7 @@ function ensureUI(){
 }
 function hideSubtitle(){const el=document.getElementById("valdirene-subtitle");if(el){el.style.opacity="0";el.textContent=""}}
 function showSubtitle(text){const el=document.getElementById("valdirene-subtitle");if(!el)return;if(!dialogueState.subtitle){hideSubtitle();return}el.innerHTML="";const name=document.createElement("strong");name.textContent="Valdirene";const line=document.createElement("span");line.textContent=text;el.append(name,line);el.style.opacity="1"}
-function stopCurrent(){if(dialogueState.current&&dialogueState.current.fallbackTimer)clearTimeout(dialogueState.current.fallbackTimer);if(dialogueState.audio){try{dialogueState.audio.pause();dialogueState.audio.currentTime=0;dialogueState.audio.src=""}catch(e){}dialogueState.audio=null}dialogueState.current=null;hideSubtitle()}
+function stopCurrent(){if(dialogueState.current&&dialogueState.current.fallbackTimer)clearTimeout(dialogueState.current.fallbackTimer);if(dialogueState.audio){try{dialogueState.audio.pause();dialogueState.audio.currentTime=0;dialogueState.audio.src=""}catch(e){}dialogueState.audio=null}dialogueState.panner=null;dialogueState.current=null;hideSubtitle()}
 function voicePath(ch,id){return "./audio/valdirene/pt-BR/capitulo-"+String(ch+1).padStart(2,"0")+"/vd-c"+String(ch+1).padStart(2,"0")+"-"+id+".ogg"}
 function positionFor(options){
  if(options.position)return options.position;
@@ -57,7 +57,7 @@ function playAudio(path,options){
  try{
   if(typeof AC!=="undefined"&&typeof mg!=="undefined"&&AC&&mg&&AC.createMediaElementSource){
    const source=AC.createMediaElementSource(audio),gain=AC.createGain();source.connect(gain);
-   const pos=positionFor(options),panner=pos&&AC.createPanner?AC.createPanner():null,output=panner||AC.createGain();
+   const pos=positionFor(options),panner=pos&&AC.createPanner?AC.createPanner():null,output=panner||AC.createGain();dialogueState.panner=panner;
    if(panner){panner.panningModel="HRTF";panner.distanceModel="inverse";panner.refDistance=1.2;panner.maxDistance=32;panner.rolloffFactor=1.35;if(panner.positionX){panner.positionX.value=pos.x;panner.positionY.value=pos.y||1.5;panner.positionZ.value=pos.z}else panner.setPosition(pos.x,pos.y||1.5,pos.z)}
    gain.connect(output);output.connect(mg);connectVoiceReverb(output);gain.gain.value=dialogueState.voiceVolume;connected=true
   }
@@ -68,7 +68,7 @@ function playAudio(path,options){
  audio.addEventListener("error",()=>{dialogueState.missing.add(path);scheduleFallback()},{once:true});
  const promise=audio.play();if(promise&&promise.catch)promise.catch(scheduleFallback);
 }
-function finish(audioRef){if(audioRef&&dialogueState.audio!==audioRef)return;if(dialogueState.current&&dialogueState.current.fallbackTimer)clearTimeout(dialogueState.current.fallbackTimer);if(dialogueState.audio){try{dialogueState.audio.pause();dialogueState.audio.src=""}catch(e){}dialogueState.audio=null}dialogueState.current=null;hideSubtitle();dialogueState.lastAt=now()/1000;drain()}
+function finish(audioRef){if(audioRef&&dialogueState.audio!==audioRef)return;if(dialogueState.current&&dialogueState.current.fallbackTimer)clearTimeout(dialogueState.current.fallbackTimer);if(dialogueState.audio){try{dialogueState.audio.pause();dialogueState.audio.src=""}catch(e){}dialogueState.audio=null}dialogueState.panner=null;dialogueState.current=null;hideSubtitle();dialogueState.lastAt=now()/1000;drain()}
 function drain(){if(dialogueState.current||dialogueState.paused||!dialogueState.queue.length)return;dialogueState.queue.sort((a,b)=>b.priority-a.priority);const item=dialogueState.queue.shift();start(item)}
 function start(item){
  dialogueState.current=item;showSubtitle(item.text);
@@ -118,6 +118,7 @@ function update(dt){
  if(dialogueState.elapsed>18&&dialogueState.exploreIndex===0){dialogueState.exploreIndex=1;event("explore-a",c.explore[0],1)}
  if(dialogueState.elapsed>52&&dialogueState.exploreIndex===1){dialogueState.exploreIndex=2;event("explore-b",c.explore[1],1)}
  const enemy=typeof V!=="undefined"?V:null,player=typeof pl!=="undefined"?pl:null,dist=enemy&&player?Math.hypot(enemy.x-player.x,enemy.z-player.z):Infinity;
+ if(dialogueState.panner&&dialogueState.current&&dialogueState.current.spatial&&enemy){const p=dialogueState.panner;if(p.positionX&&typeof AC!=="undefined"){p.positionX.setValueAtTime? p.positionX.setValueAtTime(enemy.x,AC.currentTime):p.positionX.value=enemy.x;p.positionY.setValueAtTime?p.positionY.setValueAtTime(1.55,AC.currentTime):p.positionY.value=1.55;p.positionZ.setValueAtTime?p.positionZ.setValueAtTime(enemy.z,AC.currentTime):p.positionZ.value=enemy.z}else if(p.setPosition)p.setPosition(enemy.x,1.55,enemy.z)}
  if(enemy&&enemy.st==="chase"&&dialogueState.lastEnemy!=="chase"){dialogueState.lastEnemy="chase";event("chase",c.chase,5,true)}
  else if(enemy&&enemy.st!=="chase"&&dialogueState.lastEnemy==="chase")dialogueState.lastEnemy=enemy.st;
  if(enemy&&dist<8.5&&enemy.st!=="dorm"&&enemy.st!=="relocate"&&now()/1000-dialogueState.lastNear>22){dialogueState.lastNear=now()/1000;event("danger",c.danger,4,true)}
