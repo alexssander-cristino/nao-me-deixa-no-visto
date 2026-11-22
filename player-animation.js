@@ -36,7 +36,7 @@
   const arms=[],legs=[];
   for(const side of [-1,1]){
    const label=side<0?"L":"R";
-   const clavicle=bone("clavicle."+label,spine,[side*.245,.39,-.005]);
+   const clavicle=bone("clavicle."+label,spine,[side<0?-.245:.14,side<0?.39:.55,-.005]);
    ellipsoid(clavicle,shirtEdge,[0,0,0],[.105,.105,.11]);
    const upper=bone("upperArm."+label,clavicle,[side*.055,-.055,-.005]);
    cylinder(upper,shirt,.075,.095,.30,-.16);
@@ -79,7 +79,7 @@
   const socket=rig.arms.find(a=>a.side===1)?.wrist;if(!socket)throw new Error("Socket da mão direita não encontrado");
   if(flashlight.parent)flashlight.parent.remove(flashlight);
   flashlight.name="player-flashlight-hand-attachment";
-  flashlight.position.set(0,-.055,-.12);
+  flashlight.position.set(-.28,-.055,-.12);
   flashlight.rotation.set(0,0,0);
   flashlight.userData.cameraMounted=false;
   socket.add(flashlight);rig.flashlight=flashlight;rig.flashlightSocket=socket;
@@ -115,9 +115,10 @@
    const swing=index===0?opposite:gait;
    const useReach=index===1?reach:reach*.12;
    arm.clavicle.rotation.z=arm.side*(crouched?-.08:0);
-   arm.upper.rotation.x=(moving?swing*(running?.48:.25)*amount:0)+(running?-.1:0)-useReach*.42+Math.sin(d.phase*2+index)*fear*.04;
-   arm.upper.rotation.z=arm.side*(crouched?-.12:0)+arm.side*useReach*.13;
-   arm.elbow.rotation.x=(running?.42:crouched?.34:.10)+useReach*.62+fear*.07;
+   arm.upper.rotation.x=(index===1?.65:0)+(moving?swing*(running?.48:.25)*amount:0)+(running?-.1:0)-useReach*.42+Math.sin(d.phase*2+index)*fear*.04;
+   arm.upper.rotation.z=(index===1?1.15:0)+arm.side*(crouched?-.12:0)+arm.side*useReach*.13;
+   arm.elbow.rotation.x=(index===1?-.15:0)+(running?.42:crouched?.34:.10)+useReach*.62+fear*.07;
+   arm.elbow.rotation.z=index===1?.5:0;
    arm.wrist.rotation.x=(index===1?-.08:0)+Math.sin(d.phase+index)*.025*amount;
   });
   if(rig.flashlight){rig.flashlight.rotation.x=Number(player.p)||0;rig.flashlight.rotation.y=0;rig.flashlight.rotation.z=0}
@@ -133,6 +134,8 @@
  }
  function dispose(avatar){
   if(!avatar)return;
+  const rig=avatar.userData&&avatar.userData.rig;
+  if(rig&&rig.flashlight&&rig.flashlight.parent)rig.flashlight.parent.remove(rig.flashlight);
   if(avatar.parent)avatar.parent.remove(avatar);
   avatar.traverse(o=>{if(o.isMesh){o.geometry&&o.geometry.dispose();if(Array.isArray(o.material))o.material.forEach(m=>m.dispose());else o.material&&o.material.dispose()}});
   if(activeAvatar===avatar)activeAvatar=null;
