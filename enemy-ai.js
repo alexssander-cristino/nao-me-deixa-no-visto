@@ -10,6 +10,22 @@
     const base=DIFFICULTY[difficulty]||DIFFICULTY.normal;
     return Object.freeze({...base,chaseSpeed:base.chaseSpeed*(finalChapter?1.09:1)});
   }
+  const MEMORY_TTL=Object.freeze({sight:24,hearing:13,interaction:18});
+  function remember(memory,event,now=0){
+    if(!event||!Number.isFinite(event.x)||!Number.isFinite(event.z))return memory||null;
+    const source=MEMORY_TTL[event.source]?event.source:"hearing";
+    const ttl=MEMORY_TTL[source];
+    return {x:event.x,z:event.z,source,kind:event.kind||"unknown",seenAt:now,expiresAt:now+ttl,confidence:source==="sight"?1:source==="interaction"?.72:.58};
+  }
+  function memoryConfidence(memory,now=0){
+    if(!memory||!Number.isFinite(memory.expiresAt)||now>=memory.expiresAt)return 0;
+    const duration=Math.max(.001,memory.expiresAt-memory.seenAt);
+    return Math.max(0,Math.min(1,memory.confidence*(memory.expiresAt-now)/duration));
+  }
+  function investigationTarget(memory,now=0){
+    const confidence=memoryConfidence(memory,now);
+    return confidence<=.08?null:{x:memory.x,z:memory.z,confidence,source:memory.source,kind:memory.kind};
+  }
   function perceive(enemy,player,context={}){
     if(!enemy||!player)throw new TypeError("Percepção exige entidade e jogador");
     const distance=Number.isFinite(context.distance)?Math.max(0,context.distance):Infinity;
@@ -32,5 +48,5 @@
     }
     return {type:"none",distance};
   }
-  root.GameEnemyAI=Object.freeze({perceive,tuning,difficulties:DIFFICULTY});
+  root.GameEnemyAI=Object.freeze({perceive,tuning,difficulties:DIFFICULTY,remember,memoryConfidence,investigationTarget});
 })(typeof window!=="undefined"?window:globalThis);
