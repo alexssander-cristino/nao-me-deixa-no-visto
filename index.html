@@ -754,7 +754,7 @@ function setupWardrobeMechanisms(){
 }
 
 function spawnDrawerKey(id,wardrobe){
- const x=wardrobe.x+.2,z=wardrobe.z+1.03,key='KEY:'+x+':'+z,keyId='wardrobe-key:'+lv;
+ const seed=window.GameRunSeed?window.GameRunSeed():0x4e444d56,hash=(Math.imul(Math.round(wardrobe.x*10)+17,73856093)^Math.imul(Math.round(wardrobe.z*10)+31,19349663)^seed)>>>0,jx=((hash&65535)/65535-.5)*.48,jz=(((hash>>>16)&65535)/65535-.5)*.16,x=wardrobe.x+.2+jx,z=wardrobe.z+1.03+jz,key='KEY:'+x+':'+z,keyId='wardrobe-key:'+lv;
  if(mechanismInventory.includes(keyId)||(SG&&Array.isArray(SG.collected)&&SG.collected.includes(key))||items.some(item=>item.lootId===id+':key'))return;
  const group=new THREE.Group(),gold=new THREE.MeshStandardMaterial({color:0xb68a3f,metalness:.78,roughness:.28}),dark=new THREE.MeshStandardMaterial({color:0x33271b,roughness:.72});
  const ring=new THREE.Mesh(new THREE.TorusGeometry(.075,.018,8,18),gold);ring.position.y=.04;group.add(ring);
@@ -765,7 +765,7 @@ function spawnDrawerKey(id,wardrobe){
  scene.add(group);items.push({k:'KEY',keyId,x,z,m:group,lootId:id+':key'});
 }
 function spawnDrawerLoot(id,wardrobe){
- const x=wardrobe.x-.18,z=wardrobe.z+1.03,key='B:'+x+':'+z;
+ const seed=window.GameRunSeed?window.GameRunSeed():0x4e444d56,hash=(Math.imul(Math.round(wardrobe.x*10)+7,83492791)^Math.imul(Math.round(wardrobe.z*10)+13,2654435761)^seed)>>>0,x=wardrobe.x-.18+((hash&65535)/65535-.5)*.42,z=wardrobe.z+1.03+(((hash>>>16)&65535)/65535-.5)*.14,key='B:'+x+':'+z;
  if(!(SG&&Array.isArray(SG.collected)&&SG.collected.includes(key))&&!items.some(item=>item.lootId===id)){
   const group=new THREE.Group(),body=new THREE.MeshStandardMaterial({color:0x252a2d,metalness:.72,roughness:.34}),cap=new THREE.MeshStandardMaterial({color:0x9a8b65,metalness:.78,roughness:.28}),label=new THREE.MeshStandardMaterial({color:0xd5c9a8,roughness:.9});
   const cell=new THREE.Mesh(new THREE.CylinderGeometry(.045,.045,.19,14),body);cell.rotation.x=Math.PI/2;group.add(cell);
@@ -838,4 +838,4 @@ upd = function(dt){
   }
 };
 
-</script><script src="./campaign-expansion.js"></script><script src="./chapter-objectives.js"></script><script src="./anderson-encounter.js"></script><script src="./audio-manager.js"></script><script src="./dynamic-world.js"></script></body></html>
+</script><script src="./campaign-expansion.js"></script><script src="./chapter-objectives.js"></script><script src="./anderson-encounter.js"></script><script src="./audio-manager.js"></script><script src="./dynamic-world.js"></script><script src="./scare-director.js"></script></body></html>
