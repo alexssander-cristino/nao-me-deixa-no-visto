@@ -86,7 +86,7 @@
   assertIntegrity(avatar);
   return flashlight;
  }
- function update(avatar,player,dt){
+ function update(avatar,player,dt,camera){
   if(!avatar||!avatar.userData||!player)return;
   const d=avatar.userData,rig=d.rig,delta=clamp(Number(dt)||0,0,.05);
   const speed=Math.hypot(player.mx||0,player.mz||0),moving=speed>.12,amount=clamp(speed/3.15,0,1.8),running=!!player.run,crouched=!!player.crouch;
@@ -121,7 +121,7 @@
    arm.elbow.rotation.z=index===1?.5:0;
    arm.wrist.rotation.x=(index===1?-.08:0)+Math.sin(d.phase+index)*.025*amount;
   });
-  if(rig.flashlight){rig.flashlight.rotation.x=Number(player.p)||0;rig.flashlight.rotation.y=0;rig.flashlight.rotation.z=0}
+  if(rig.flashlight&&camera&&root.THREE&&root.THREE.Quaternion){avatar.updateMatrixWorld(true);const parent=rig.flashlight.parent;if(parent){parent.updateWorldMatrix(true,false);const parentWorld=new root.THREE.Quaternion(),cameraWorld=new root.THREE.Quaternion();parent.getWorldQuaternion(parentWorld);camera.getWorldQuaternion(cameraWorld);rig.flashlight.quaternion.copy(parentWorld.invert().multiply(cameraWorld));}}
   d.animationState=state;
  }
  function assertIntegrity(avatar){
