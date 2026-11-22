@@ -13,7 +13,7 @@ const chapterData=[
  ["O HOTEL 13","#4b3940","#1d1117",4.1,"chaves dos quartos","Todos os quartos estão ocupados. O seu está esperando."],
  ["O SUBSOLO","#45434d","#17151d",3.2,"fusíveis","Há passos no teto. Você está no último andar subterrâneo."],
  ["A MATERNIDADE","#4d4543","#1b1514",4.0,"pulseiras","Um berço balança sozinho. A etiqueta tem seu nome."],
- ["O ARQUIVO","#48464a","#19171c",3.5,"fitas","As gravações reproduzem conversas que ainda não aconteceram."]
+ ["A IGREJA INVERTIDA","#48464a","#19171c",6.2,"velas","As gravações reproduzem conversas que ainda não aconteceram. O altar está esperando por você."]
 ];
 function makeMap(seed){
  const h=15,w=15,a=Array.from({length:h},()=>Array(w).fill("."));
@@ -76,6 +76,7 @@ function disposeObject(object){
 }
 function addCandlesToLevel(){
  candleSystems.length=0;
+ if(lv!==4&&lv!==14)return;
  const collectibleItems=items.filter(item=>item.k==="K");
  for(const item of collectibleItems){
   if(item.m){scene.remove(item.m);disposeObject(item.m)}
