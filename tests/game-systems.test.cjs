@@ -217,6 +217,21 @@ test("all 15 chapter objective sets retain their three-step sequences", () => {
   assert.doesNotMatch(html, /while\(q\.length\)\{const u=q\.shift\(\)/);
 });
 
+test("the five original playable phases remain present and ordered", () => {
+  const html = read("index.html");
+  const names = ["A CASA", "CORREDOR INFINITO", "MERCADO ABANDONADO", "MOTEL DECADENTE", "IGREJA ABANDONADA"];
+  let previous = -1;
+  for (const name of names) {
+    const index = html.indexOf("n:'" + name + "'");
+    assert.ok(index > previous, "Fase ausente ou fora de ordem: " + name);
+    previous = index;
+  }
+  const definitions = read("chapter-objectives.js");
+  for (let level = 0; level < names.length; level++) {
+    assert.match(definitions, new RegExp("title:" + JSON.stringify(["Reconstruir o código do quadro","Restaurar os circuitos do corredor","Rastrear o enxoval desaparecido","Rastrear a ligação do quarto 13","Reacender o altar"][level])));
+  }
+});
+
 test("Valdirene voice manifest accounts for all 360 assets across 15 chapters", () => {
   const manifest = JSON.parse(read("audio/valdirene/voice-manifest.json"));
   assert.equal(manifest.recordingsAvailable, false);
