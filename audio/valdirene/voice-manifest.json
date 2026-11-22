@@ -58,6 +58,22 @@
           "performance": "sarcastic"
         },
         {
+          "id": "jumpscare",
+          "path": "audio/valdirene/pt-BR/capitulo-01/vd-c01-jumpscare.ogg",
+          "status": "pending_recording",
+          "format": "ogg",
+          "language": "pt-BR",
+          "performance": "screamed"
+        },
+        {
+          "id": "wrong",
+          "path": "audio/valdirene/pt-BR/capitulo-01/vd-c01-wrong.ogg",
+          "status": "pending_recording",
+          "format": "ogg",
+          "language": "pt-BR",
+          "performance": "irritated"
+        },
+        {
           "id": "objective-complete",
           "path": "audio/valdirene/pt-BR/capitulo-01/vd-c01-objective-complete.ogg",
           "status": "pending_recording",
@@ -238,6 +254,22 @@
           "format": "ogg",
           "language": "pt-BR",
           "performance": "sarcastic"
+        },
+        {
+          "id": "jumpscare",
+          "path": "audio/valdirene/pt-BR/capitulo-02/vd-c02-jumpscare.ogg",
+          "status": "pending_recording",
+          "format": "ogg",
+          "language": "pt-BR",
+          "performance": "screamed"
+        },
+        {
+          "id": "wrong",
+          "path": "audio/valdirene/pt-BR/capitulo-02/vd-c02-wrong.ogg",
+          "status": "pending_recording",
+          "format": "ogg",
+          "language": "pt-BR",
+          "performance": "irritated"
         },
         {
           "id": "objective-complete",
@@ -422,6 +454,22 @@
           "performance": "sarcastic"
         },
         {
+          "id": "jumpscare",
+          "path": "audio/valdirene/pt-BR/capitulo-03/vd-c03-jumpscare.ogg",
+          "status": "pending_recording",
+          "format": "ogg",
+          "language": "pt-BR",
+          "performance": "screamed"
+        },
+        {
+          "id": "wrong",
+          "path": "audio/valdirene/pt-BR/capitulo-03/vd-c03-wrong.ogg",
+          "status": "pending_recording",
+          "format": "ogg",
+          "language": "pt-BR",
+          "performance": "irritated"
+        },
+        {
           "id": "objective-complete",
           "path": "audio/valdirene/pt-BR/capitulo-03/vd-c03-objective-complete.ogg",
           "status": "pending_recording",
@@ -602,6 +650,22 @@
           "format": "ogg",
           "language": "pt-BR",
           "performance": "sarcastic"
+        },
+        {
+          "id": "jumpscare",
+          "path": "audio/valdirene/pt-BR/capitulo-04/vd-c04-jumpscare.ogg",
+          "status": "pending_recording",
+          "format": "ogg",
+          "language": "pt-BR",
+          "performance": "screamed"
+        },
+        {
+          "id": "wrong",
+          "path": "audio/valdirene/pt-BR/capitulo-04/vd-c04-wrong.ogg",
+          "status": "pending_recording",
+          "format": "ogg",
+          "language": "pt-BR",
+          "performance": "irritated"
         },
         {
           "id": "objective-complete",
@@ -786,6 +850,22 @@
           "performance": "sarcastic"
         },
         {
+          "id": "jumpscare",
+          "path": "audio/valdirene/pt-BR/capitulo-05/vd-c05-jumpscare.ogg",
+          "status": "pending_recording",
+          "format": "ogg",
+          "language": "pt-BR",
+          "performance": "screamed"
+        },
+        {
+          "id": "wrong",
+          "path": "audio/valdirene/pt-BR/capitulo-05/vd-c05-wrong.ogg",
+          "status": "pending_recording",
+          "format": "ogg",
+          "language": "pt-BR",
+          "performance": "irritated"
+        },
+        {
           "id": "objective-complete",
           "path": "audio/valdirene/pt-BR/capitulo-05/vd-c05-objective-complete.ogg",
           "status": "pending_recording",
@@ -966,6 +1046,22 @@
           "format": "ogg",
           "language": "pt-BR",
           "performance": "sarcastic"
+        },
+        {
+          "id": "jumpscare",
+          "path": "audio/valdirene/pt-BR/capitulo-06/vd-c06-jumpscare.ogg",
+          "status": "pending_recording",
+          "format": "ogg",
+          "language": "pt-BR",
+          "performance": "screamed"
+        },
+        {
+          "id": "wrong",
+          "path": "audio/valdirene/pt-BR/capitulo-06/vd-c06-wrong.ogg",
+          "status": "pending_recording",
+          "format": "ogg",
+          "language": "pt-BR",
+          "performance": "irritated"
         },
         {
           "id": "objective-complete",
@@ -1150,6 +1246,22 @@
           "performance": "sarcastic"
         },
         {
+          "id": "jumpscare",
+          "path": "audio/valdirene/pt-BR/capitulo-07/vd-c07-jumpscare.ogg",
+          "status": "pending_recording",
+          "format": "ogg",
+          "language": "pt-BR",
+          "performance": "screamed"
+        },
+        {
+          "id": "wrong",
+          "path": "audio/valdirene/pt-BR/capitulo-07/vd-c07-wrong.ogg",
+          "status": "pending_recording",
+          "format": "ogg",
+          "language": "pt-BR",
+          "performance": "irritated"
+        },
+        {
           "id": "objective-complete",
           "path": "audio/valdirene/pt-BR/capitulo-07/vd-c07-objective-complete.ogg",
           "status": "pending_recording",
@@ -1330,6 +1442,22 @@
           "format": "ogg",
           "language": "pt-BR",
           "performance": "sarcastic"
+        },
+        {
+          "id": "jumpscare",
+          "path": "audio/valdirene/pt-BR/capitulo-08/vd-c08-jumpscare.ogg",
+          "status": "pending_recording",
+          "format": "ogg",
+          "language": "pt-BR",
+          "performance": "screamed"
+        },
+        {
+          "id": "wrong",
+          "path": "audio/valdirene/pt-BR/capitulo-08/vd-c08-wrong.ogg",
+          "status": "pending_recording",
+          "format": "ogg",
+          "language": "pt-BR",
+          "performance": "irritated"
         },
         {
           "id": "objective-complete",
@@ -1514,6 +1642,22 @@
           "performance": "sarcastic"
         },
         {
+          "id": "jumpscare",
+          "path": "audio/valdirene/pt-BR/capitulo-09/vd-c09-jumpscare.ogg",
+          "status": "pending_recording",
+          "format": "ogg",
+          "language": "pt-BR",
+          "performance": "screamed"
+        },
+        {
+          "id": "wrong",
+          "path": "audio/valdirene/pt-BR/capitulo-09/vd-c09-wrong.ogg",
+          "status": "pending_recording",
+          "format": "ogg",
+          "language": "pt-BR",
+          "performance": "irritated"
+        },
+        {
           "id": "objective-complete",
           "path": "audio/valdirene/pt-BR/capitulo-09/vd-c09-objective-complete.ogg",
           "status": "pending_recording",
@@ -1694,6 +1838,22 @@
           "format": "ogg",
           "language": "pt-BR",
           "performance": "sarcastic"
+        },
+        {
+          "id": "jumpscare",
+          "path": "audio/valdirene/pt-BR/capitulo-10/vd-c10-jumpscare.ogg",
+          "status": "pending_recording",
+          "format": "ogg",
+          "language": "pt-BR",
+          "performance": "screamed"
+        },
+        {
+          "id": "wrong",
+          "path": "audio/valdirene/pt-BR/capitulo-10/vd-c10-wrong.ogg",
+          "status": "pending_recording",
+          "format": "ogg",
+          "language": "pt-BR",
+          "performance": "irritated"
         },
         {
           "id": "objective-complete",
@@ -1878,6 +2038,22 @@
           "performance": "sarcastic"
         },
         {
+          "id": "jumpscare",
+          "path": "audio/valdirene/pt-BR/capitulo-11/vd-c11-jumpscare.ogg",
+          "status": "pending_recording",
+          "format": "ogg",
+          "language": "pt-BR",
+          "performance": "screamed"
+        },
+        {
+          "id": "wrong",
+          "path": "audio/valdirene/pt-BR/capitulo-11/vd-c11-wrong.ogg",
+          "status": "pending_recording",
+          "format": "ogg",
+          "language": "pt-BR",
+          "performance": "irritated"
+        },
+        {
           "id": "objective-complete",
           "path": "audio/valdirene/pt-BR/capitulo-11/vd-c11-objective-complete.ogg",
           "status": "pending_recording",
@@ -2058,6 +2234,22 @@
           "format": "ogg",
           "language": "pt-BR",
           "performance": "sarcastic"
+        },
+        {
+          "id": "jumpscare",
+          "path": "audio/valdirene/pt-BR/capitulo-12/vd-c12-jumpscare.ogg",
+          "status": "pending_recording",
+          "format": "ogg",
+          "language": "pt-BR",
+          "performance": "screamed"
+        },
+        {
+          "id": "wrong",
+          "path": "audio/valdirene/pt-BR/capitulo-12/vd-c12-wrong.ogg",
+          "status": "pending_recording",
+          "format": "ogg",
+          "language": "pt-BR",
+          "performance": "irritated"
         },
         {
           "id": "objective-complete",
@@ -2242,6 +2434,22 @@
           "performance": "sarcastic"
         },
         {
+          "id": "jumpscare",
+          "path": "audio/valdirene/pt-BR/capitulo-13/vd-c13-jumpscare.ogg",
+          "status": "pending_recording",
+          "format": "ogg",
+          "language": "pt-BR",
+          "performance": "screamed"
+        },
+        {
+          "id": "wrong",
+          "path": "audio/valdirene/pt-BR/capitulo-13/vd-c13-wrong.ogg",
+          "status": "pending_recording",
+          "format": "ogg",
+          "language": "pt-BR",
+          "performance": "irritated"
+        },
+        {
           "id": "objective-complete",
           "path": "audio/valdirene/pt-BR/capitulo-13/vd-c13-objective-complete.ogg",
           "status": "pending_recording",
@@ -2424,6 +2632,22 @@
           "performance": "sarcastic"
         },
         {
+          "id": "jumpscare",
+          "path": "audio/valdirene/pt-BR/capitulo-14/vd-c14-jumpscare.ogg",
+          "status": "pending_recording",
+          "format": "ogg",
+          "language": "pt-BR",
+          "performance": "screamed"
+        },
+        {
+          "id": "wrong",
+          "path": "audio/valdirene/pt-BR/capitulo-14/vd-c14-wrong.ogg",
+          "status": "pending_recording",
+          "format": "ogg",
+          "language": "pt-BR",
+          "performance": "irritated"
+        },
+        {
           "id": "objective-complete",
           "path": "audio/valdirene/pt-BR/capitulo-14/vd-c14-objective-complete.ogg",
           "status": "pending_recording",
@@ -2604,6 +2828,22 @@
           "format": "ogg",
           "language": "pt-BR",
           "performance": "sarcastic"
+        },
+        {
+          "id": "jumpscare",
+          "path": "audio/valdirene/pt-BR/capitulo-15/vd-c15-jumpscare.ogg",
+          "status": "pending_recording",
+          "format": "ogg",
+          "language": "pt-BR",
+          "performance": "screamed"
+        },
+        {
+          "id": "wrong",
+          "path": "audio/valdirene/pt-BR/capitulo-15/vd-c15-wrong.ogg",
+          "status": "pending_recording",
+          "format": "ogg",
+          "language": "pt-BR",
+          "performance": "irritated"
         },
         {
           "id": "objective-complete",
