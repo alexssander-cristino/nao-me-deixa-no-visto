@@ -157,6 +157,16 @@ test("enemy perception only acquires visible players or audible noise sources", 
     noise: { id: 3, x: 3, z: 2, radius: 5, expires: 12 }
   });
   assert.equal(result.type, "none");
+  const easy = globalThis.GameEnemyAI.tuning("easy");
+  const normal = globalThis.GameEnemyAI.tuning("normal");
+  const hard = globalThis.GameEnemyAI.tuning("hard");
+  assert.ok(easy.vision < normal.vision && normal.vision < hard.vision);
+  assert.ok(easy.hearing < normal.hearing && normal.hearing < hard.hearing);
+  assert.ok(easy.chaseSpeed < normal.chaseSpeed && normal.chaseSpeed < hard.chaseSpeed);
+  assert.ok(easy.searchDuration < normal.searchDuration && normal.searchDuration < hard.searchDuration);
+  assert.ok(globalThis.GameEnemyAI.tuning("hard", true).chaseSpeed > hard.chaseSpeed);
+  const html = read("index.html");
+  assert.doesNotMatch(html, /if\(!pl\.hid&&pl\.run&&dist<\(difficulty==/);
 });
 
 test("controller accelerates smoothly and respects the world collider", () => {
