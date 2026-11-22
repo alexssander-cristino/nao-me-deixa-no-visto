@@ -357,23 +357,23 @@ if(v.st=='relocate'){
  const step=Math.min(d2,2.6*dt);v.x+=dx2/d2*step;v.z+=dz2/d2*step;
  vm.position.set(v.x,0,v.z);vm.rotation.y=Math.atan2(dx2,dz2);return
 }
-const difficulty=S.diff||'normal',vision=difficulty=='easy'?15:difficulty=='hard'?29:22;
-const perception=GameEnemyAI.perceive(v,pl,{distance:dist,vision:vision*(pl.crouch?.42:(pl.on?1:.6)),lineOfSight:los(v.x,v.z,pl.x,pl.z),noise:noiseEvent,now:performance.now()/1000});
+const difficulty=S.diff||'normal',aiTuning=GameEnemyAI.tuning(difficulty,L5);
+const perception=GameEnemyAI.perceive(v,pl,{distance:dist,vision:aiTuning.vision*(pl.crouch?.42:(pl.on?1:.6)),lineOfSight:los(v.x,v.z,pl.x,pl.z),noise:noiseEvent?{...noiseEvent,radius:noiseEvent.radius*aiTuning.hearing}:null,now:performance.now()/1000});
 const see=perception.type==='sight';
 if(see){if(v.st!='chase'){say(pk(CH),1);sting(.5)}v.st='chase';v.last=[pl.x,pl.z];v.lost=0}
 else{
- if(v.st=='chase'){v.lost+=dt;if(v.lost>1.5){v.st='search';v.w=0}}
+ if(v.st=='chase'){v.lost+=dt;if(v.lost>aiTuning.loseSight){v.st='search';v.w=0}}
  if(perception.type==='hearing'&&v.st!=='chase'){v.st='inv';v.last=[perception.position.x,perception.position.z];v.w=0;at(perception.position.x,perception.position.z,q=>nz(.12,perception.kind==='door-open'?260:420,.28,q));}
 }
-if(!pl.hid&&pl.run&&dist<(difficulty=='easy'?12:difficulty=='hard'?22:16)&&v.st=='pat'){v.st='inv';v.last=[pl.x,pl.z]}
-if(pl.hid&&dist<5.5&&(v.st=='search'||v.st=='inv')){v.f=(v.f||0)+dt;if(v.f>2.5&&!v.c){v.c=1;if(R()<(difficulty=='easy'?.15:difficulty=='hard'?.55:.3)){die();return}}}else if(!pl.hid){v.f=0;v.c=0}
+
+if(pl.hid&&dist<5.5&&(v.st=='search'||v.st=='inv')){v.f=(v.f||0)+dt;if(v.f>aiTuning.hideSearchDelay&&!v.c){v.c=1;if(R()<aiTuning.hideSearchChance){die();return}}}else if(!pl.hid){v.f=0;v.c=0}
 let tx,tz,sp;
-if(v.st=='chase'){tx=pl.x;tz=pl.z;sp=difficulty=='easy'?(L5?4.2:3.7):difficulty=='hard'?(L5?5.7:5.2):(L5?4.9:4.4)}
-else if(v.st=='inv'||v.st=='search'){tx=v.last[0];tz=v.last[1];sp=v.st=='inv'?2.6:2.2}
+if(v.st=='chase'){tx=pl.x;tz=pl.z;sp=aiTuning.chaseSpeed}
+else if(v.st=='inv'||v.st=='search'){tx=v.last[0];tz=v.last[1];sp=v.st=='inv'?aiTuning.investigationSpeed:aiTuning.searchSpeed}
 else{if(!v.tg||Math.hypot(v.tg[1]*4-v.x,v.tg[0]*4-v.z)<1)v.tg=R()<.5?nearP():rc(0);tx=v.tg[1]*4;tz=v.tg[0]*4;sp=1.7;v.t-=dt;if(v.t<=0){v.st='dorm';v.t=14+R()*16;return}
 v.sp=(v.sp==null?8:v.sp)-dt;if(v.sp<0&&dist<26){say(pk(PT));v.sp=14+R()*10}}
 const dd=Math.hypot(tx-v.x,tz-v.z);
-if(dd<1.3&&(v.st=='inv'||v.st=='search')){if(v.st=='inv'){v.st='search';v.w=0}else{v.w=(v.w||0)+dt;if(v.w>5){v.st='pat';v.tg=null;v.t=Math.max(v.t,10);if(R()<.5)say(pk(SR))}}}
+if(dd<1.3&&(v.st=='inv'||v.st=='search')){if(v.st=='inv'){v.st='search';v.w=0}else{v.w=(v.w||0)+dt;if(v.w>aiTuning.searchDuration){v.st='pat';v.tg=null;v.t=Math.max(v.t,10);if(R()<.5)say(pk(SR))}}}
 else if(dd>.3){const a=cell(v),b=[Math.round(tz/4),Math.round(tx/4)];let nx=tx,nz2=tz;
 if(a[0]!=b[0]||a[1]!=b[1]){const n=bfs(a,b);if(n){nx=n[1]*4;nz2=n[0]*4}}
 const dr=doors[Math.round(nz2/4)+','+Math.round(nx/4)];
