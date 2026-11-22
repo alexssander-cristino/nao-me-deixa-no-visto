@@ -34,6 +34,20 @@
       model.head.rotation.z=damp(model.head.rotation.z,look,3,dt);
       model.head.rotation.x=damp(model.head.rotation.x,chase?-.08:0,3,dt);
     }
+    const face=d.face;
+    if(face){
+      const threat=chase?1:search?.42:0;
+      if(face.mouth){
+        face.mouth.scale.y=damp(face.mouth.scale.y,1+threat*.85,8,dt);
+        face.mouth.scale.x=damp(face.mouth.scale.x,1+threat*.28,6,dt);
+      }
+      for(const eye of face.eyes||[]){
+        if(eye.sclera&&eye.sclera.material){
+          eye.sclera.material.emissiveIntensity=damp(eye.sclera.material.emissiveIntensity??.12,.12+threat*.95,5,dt);
+        }
+        if(eye.pupil)eye.pupil.scale.y=damp(eye.pupil.scale.y,threat>.7?.004:.01,7,dt);
+      }
+    }
     d.animationState=enemy.st;
     d.distance=Number.isFinite(distance)?distance:null;
   }
