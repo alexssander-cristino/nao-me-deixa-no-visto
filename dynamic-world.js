@@ -30,6 +30,17 @@ function reachableCells(){
  for(let i=0;i<queue.length;i++){const [r,c]=queue[i],d=dist.get(r+","+c);for(const [dr,dc] of [[0,1],[1,0],[0,-1],[-1,0]]){const nr=r+dr,nc=c+dc,key=nr+","+nc,k=ch(nr,nc);if(k==="#"||k==="H"||dist.has(key))continue;dist.set(key,d+1);queue.push([nr,nc])}}
  return [...dist.entries()].map(([key,d])=>{const [r,c]=key.split(",").map(Number);return{r,c,d,x:c*4,z:r*4}}).filter(p=>ch(p.r,p.c)==="."&&p.d>=2&&(!ex||Math.hypot(p.x-ex.x,p.z-ex.z)>5));
 }
+function spawnChapterNote(level){
+ if(items.some(item=>item.k==="N"))return;
+ const candidates=reachableCells().filter(p=>!physics.overlapsCircle(p.x,p.z,.42)&&items.every(item=>Math.hypot(item.x-p.x,item.z-p.z)>2.65));
+ if(!candidates.length)return;
+ const random=rngFor(level,0x4e4f5445),p=candidates[Math.floor(random()*candidates.length)];
+ const group=new THREE.Group(),paper=new THREE.MeshStandardMaterial({color:0xc8b99d,roughness:.98}),ink=new THREE.MeshStandardMaterial({color:0x5b2727,roughness:.94});
+ const sheet=new THREE.Mesh(new THREE.BoxGeometry(.34,.44,.025),paper);sheet.position.set(0,1,0);sheet.rotation.z=-.09;group.add(sheet);
+ for(let i=0;i<4;i++){const line=new THREE.Mesh(new THREE.BoxGeometry(.23,.009,.008),ink);line.position.set(0,1.09-i*.075,.018);group.add(line)}
+ group.position.set(p.x,0,p.z);group.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true}});scene.add(group);
+ items.push({k:"N",x:p.x,z:p.z,m:group,dynamicLore:true});
+}
 function distribute(level){
  if(!Array.isArray(items)||!items.length)return;
  const movable=items.filter(item=>["K","N","B","X"].includes(item.k));
@@ -47,7 +58,7 @@ function distribute(level){
  }
 }
 const originalBuild=build;
-build=function(level){originalBuild(level);distribute(level);if(typeof refreshDynamicObjective==="function")refreshDynamicObjective()};
+build=function(level){originalBuild(level);spawnChapterNote(level);distribute(level);if(typeof refreshDynamicObjective==="function")refreshDynamicObjective()};
 const originalPick=pick;
 pick=function(item){originalPick(item);if(item&&item.k==="N"){const list=lore[lv]||lore[0],index=(Math.max(0,(SG&&SG.lore)||0)+Math.max(0,Number(item.x+item.z)||0))%list.length;note(list[Math.floor(index)%list.length],10500)}};
 const originalNewGame=newG;
