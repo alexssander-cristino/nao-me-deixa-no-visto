@@ -75,8 +75,7 @@ function spawnPoints(){
  const candidates=getReachableCells().filter(p=>
   Math.hypot(p.x-pl.x,p.z-pl.z)>7&&
   !items.some(it=>Math.hypot(it.x-p.x,it.z-p.z)<3.8)&&
-  (!ex||Math.hypot(ex.x-p.x,ex.z-p.z)>4)&&
-  !physics.overlapsCircle(p.x,p.z,.48)
+  (!ex||Math.hypot(ex.x-p.x,ex.z-p.z)>4)
  ).sort((a,b)=>a.d-b.d);
  if(candidates.length<3){
   const fallback=getReachableCells().filter(p=>ch(p.r,p.c)==="."&&Math.hypot(p.x-pl.x,p.z-pl.z)>4&&(!ex||Math.hypot(ex.x-p.x,ex.z-p.z)>3)&&!items.some(it=>Math.hypot(it.x-p.x,it.z-p.z)<2.4)).sort((a,b)=>b.d-a.d);
