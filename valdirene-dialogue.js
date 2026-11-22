@@ -86,9 +86,10 @@ function speak(chapter,id,text,options={}){
 function resetChapter(level){
  dialogueState.chapter=level;dialogueState.elapsed=0;dialogueState.slowAt=58;dialogueState.exploreIndex=0;dialogueState.lastProgress=0;dialogueState.lastEnemy="";dialogueState.lastNear=0;dialogueState.lastDoor=0;dialogueState.lastMechanism=0;dialogueState.laughPlayed=false;
  dialogueState.queue=dialogueState.queue.filter(x=>x.priority>=4);
- if(dialogueState.current&&dialogueState.current.id.indexOf("ending-")!==0)stopCurrent();
+ const transitionInProgress=!!(dialogueState.current&&dialogueState.current.id==="ending");
+ if(dialogueState.current&&!transitionInProgress)stopCurrent();
  const c=chapters[level];if(!c)return;
- speak(level,"intro-"+String(level+1).padStart(2,"0"),c.intro,{priority:4,interrupt:true});
+ speak(level,"intro-"+String(level+1).padStart(2,"0"),c.intro,{priority:4,interrupt:!transitionInProgress});
 }
 function event(id,text,priority=2,spatial=false,delivery){return speak(dialogueState.chapter,id,text,{priority,spatial,delivery})}
 function onPick(item){
