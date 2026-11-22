@@ -76,7 +76,6 @@ function disposeObject(object){
 }
 function addCandlesToLevel(){
  candleSystems.length=0;
- if(lv!==4&&lv!==14)return;
  const collectibleItems=items.filter(item=>item.k==="K");
  for(const item of collectibleItems){
   if(item.m){scene.remove(item.m);disposeObject(item.m)}
@@ -87,18 +86,71 @@ function addCandlesToLevel(){
    const [ox,oz]=offsets[i],candle=createCandle(ox,oz,i===0?1:.78+(i%2)*.08);
    cluster.add(candle);
   }
-  scene.add(cluster);item.m=cluster;item.candle=true;
+  const halo=new THREE.Mesh(new THREE.TorusGeometry(.42,.018,8,28),new THREE.MeshBasicMaterial({color:0xffc46b,transparent:true,opacity:.0,depthWrite:false}));
+  halo.rotation.x=Math.PI/2;halo.position.y=.035;cluster.add(halo);
+  cluster.userData.pickupHalo=halo;
+  scene.add(cluster);item.m=cluster;item.candle=true;item.spawnValid=true;
  }
- // Pequenos altares decorativos próximos a pontos de objetivo, sempre no piso livre.
- if(lv>=4){
-  for(const item of collectibleItems){
-   for(const [ox,oz] of [[.62,.35],[-.62,-.35]]){
-    const x=item.x+ox,z=item.z+oz;
-    if(sol(x,z)||Math.hypot(x-pl.x,z-pl.z)<1.1)continue;
-    const decor=createCandle(x,z,.62);scene.add(decor);
-   }
+}
+const pickupParticles=[];
+function playCandlePickup(){
+ if(!AC||!mg)return;
+ th(740,.16,.24);scheduleAudio(()=>{if(AC&&mg)th(1110,.24,.2)},90);
+}
+function spawnPickupParticles(x,y,z){
+ const group=new THREE.Group();group.position.set(x,y,z);
+ const material=new THREE.MeshBasicMaterial({color:0xffc46b,transparent:true,opacity:1});
+ for(let i=0;i<12;i++){
+  const particle=new THREE.Mesh(new THREE.TetrahedronGeometry(.035+Math.random()*.025),material.clone());
+  particle.position.set((Math.random()-.5)*.18,(Math.random()-.5)*.12,(Math.random()-.5)*.18);
+  particle.userData.velocity=new THREE.Vector3((Math.random()-.5)*1.8,.7+Math.random()*1.5,(Math.random()-.5)*1.8);
+  group.add(particle);
+ }
+ scene.add(group);pickupParticles.push({group,age:0,duration:.62});
+}
+function updatePickupParticles(dt){
+ for(let i=pickupParticles.length-1;i>=0;i--){
+  const p=pickupParticles[i];p.age+=dt;
+  for(const mesh of p.group.children){
+   mesh.position.addScaledVector(mesh.userData.velocity,dt);
+   mesh.userData.velocity.y-=2.4*dt;
+   mesh.rotation.x+=dt*5;mesh.rotation.y+=dt*7;
+   mesh.material.opacity=Math.max(0,1-p.age/p.duration);
+  }
+  if(p.age>=p.duration){scene.remove(p.group);for(const mesh of p.group.children){mesh.geometry.dispose();mesh.material.dispose()}pickupParticles.splice(i,1)}
+ }
+}
+const originalPick=pick;
+pick=function(item){
+ if(item&&item.k==="K"&&item.candle){
+  const x=item.x,y=.82,z=item.z;
+  spawnPickupParticles(x,y,z);playCandlePickup();
+ }
+ return originalPick(item);
+};
+const originalUpdWithCandles=upd;
+upd=function(dt){
+ originalUpdWithCandles(dt);
+ updatePickupParticles(dt);
+ const counter=document.getElementById("candle-progress");
+ if(counter)counter.textContent="VELAS  "+pl.got+" / "+pl.need+"   ·   FALTAM "+Math.max(0,pl.need-pl.got);
+ for(const item of items){
+  if(!item.candle||!item.m)continue;
+  const d=Math.hypot(item.x-pl.x,item.z-pl.z),halo=item.m.userData.pickupHalo;
+  if(halo){
+   const visible=d<3.4;
+   halo.material.opacity=visible?.2+(.18*(1+Math.sin(performance.now()*.008))):0;
+   const pulse=visible?1+Math.sin(performance.now()*.006)*.12:1;
+   halo.scale.setScalar(pulse);
   }
  }
+};
+function installCandleHUD(){
+ if(document.getElementById("candle-progress"))return;
+ const el=document.createElement("div");el.id="candle-progress";
+ el.textContent="VELAS  0 / 0";
+ Object.assign(el.style,{position:"fixed",top:"18px",left:"50%",transform:"translateX(-50%)",zIndex:"25",padding:"9px 15px",border:"1px solid rgba(255,190,110,.28)",borderRadius:"3px",background:"rgba(10,7,8,.72)",color:"#f4d3a0",font:"600 11px/1.2 system-ui,sans-serif",letterSpacing:".16em",textShadow:"0 1px 8px #000",pointerEvents:"none",whiteSpace:"nowrap"});
+ document.body.appendChild(el);
 }
 function animateCandles(dt){
  const t=performance.now()*.001;
@@ -139,6 +191,7 @@ const originalBuildWrapper=build;
 build=function(n){
  originalBuildWrapper(n);
  L5=n===L.length-1;
+ installCandleHUD();
  addCandlesToLevel();
  addChapterAudio();
 };
