@@ -141,5 +141,81 @@
     }
     return rootMesh;
   }
-  root.GameModels={createValdirene};
+
+  function createAnderson(THREE){
+    const root=new THREE.Group();root.name="anderson-full-character";
+    const mat=(color,rough=.82,metal=0,extra={})=>new THREE.MeshStandardMaterial({color,roughness:rough,metalness:metal,...extra});
+    const skin=mat(0x9a7462,.9),skinDark=mat(0x684b42,.94),hair=mat(0x171316,.94),hairHi=mat(0x342a2b,.9);
+    const jacket=mat(0x292d32,.92),jacketEdge=mat(0x45464a,.88),shirt=mat(0xaaa08d,.95),jeans=mat(0x202b37,.96),shoe=mat(0x101114,.72,.08);
+    const eye=mat(0xe2d8c8,.38,0,{emissive:0x24100b,emissiveIntensity:.08}),pupil=mat(0x09090b,.3),mouthMat=mat(0x3b1718,.9);
+    const add=(parent,geo,material,x=0,y=0,z=0)=>{const m=new THREE.Mesh(geo,material);m.position.set(x,y,z);m.castShadow=true;m.receiveShadow=true;parent.add(m);return m};
+    const ell=(parent,material,x,y,z,sx,sy,sz)=>{const m=add(parent,new THREE.SphereGeometry(1,20,16),material,x,y,z);m.scale.set(sx,sy,sz);return m};
+    const tube=(parent,points,radius,material)=>{const curve=new THREE.CatmullRomCurve3(points.map(p=>new THREE.Vector3(...p)));return add(parent,new THREE.TubeGeometry(curve,16,radius,7,false),material)};
+    const limb=(parent,material,rTop,rBottom,length,x,y,z)=>{const mesh=add(parent,new THREE.CylinderGeometry(rTop,rBottom,length,14,1),material,x,y,z);return mesh};
+    const torso=new THREE.Group();torso.position.y=1.02;root.add(torso);
+    ell(torso,jacket,0,.03,0,.31,.42,.18);
+    ell(torso,jacketEdge,0,.31,-.01,.32,.13,.185);
+    ell(torso,shirt,0,.04,.17,.19,.32,.035);
+    // Gola, lapelas e costuras tornam a roupa identificável de perto.
+    const lapelL=add(torso,new THREE.BufferGeometry(),jacketEdge);lapelL.geometry.setAttribute("position",new THREE.Float32BufferAttribute([-.2,.35,.16,-.04,.28,.2,-.11,-.04,.19],3));lapelL.geometry.setIndex([0,1,2]);lapelL.geometry.computeVertexNormals();
+    const lapelR=add(torso,new THREE.BufferGeometry(),jacketEdge);lapelR.geometry.setAttribute("position",new THREE.Float32BufferAttribute([.2,.35,.16,.04,.28,.2,.11,-.04,.19],3));lapelR.geometry.setIndex([0,1,2]);lapelR.geometry.computeVertexNormals();
+    for(let i=0;i<4;i++)ell(torso,mat(0x171719,.42,.45),.015,.17-i*.105,.21,.012,.012,.009);
+    const neck=add(root,new THREE.CylinderGeometry(.075,.09,.16,14),skin,0,1.48,0);
+    const head=new THREE.Group();head.position.set(0,1.66,.015);root.add(head);
+    ell(head,skin,0,.045,0,.19,.245,.17);
+    ell(head,skinDark,0,-.12,.09,.11,.075,.08);
+    ell(head,hair,0,.22,-.015,.198,.115,.177);
+    // Laterais curtas e mechas individuais.
+    for(let side of [-1,1]){
+      ell(head,hair,side*.17,.09,-.005,.045,.16,.14);
+      tube(head,[[side*.15,.2,.03],[side*.18,.08,.045],[side*.16,-.02,.055]],.018,hairHi);
+      ell(head,skin,side*.19,.005,0,.035,.055,.04);
+      ell(head,skinDark,side*.19,.005,.033,.012,.025,.009);
+      ell(head,skinDark,side*.078,.075,.145,.057,.026,.018);
+      ell(head,eye,side*.078,.065,.158,.035,.022,.012);
+      ell(head,pupil,side*.078,.065,.17,.012,.015,.006);
+      tube(head,[[side*.12,.115,.15],[side*.075,.13,.16],[side*.035,.115,.15]],.012,hair);
+    }
+    ell(head,skinDark,0,-.005,.17,.025,.05,.027);
+    ell(head,mouthMat,0,-.105,.15,.052,.012,.012);
+    tube(head,[[-.055,-.15,.12],[0,-.17,.14],[.055,-.15,.12]],.008,skinDark);
+    // Braços com pivôs separados, punhos e dedos.
+    const arms=[-1,1].map(side=>{
+      const shoulder=new THREE.Group();shoulder.position.set(side*.29,.31,0);torso.add(shoulder);
+      ell(shoulder,jacket,0,0,0,.13,.15,.13);
+      limb(shoulder,jacket,.105,.085,.34,0,-.19,0);
+      const elbow=new THREE.Group();elbow.position.set(0,-.36,0);shoulder.add(elbow);
+      ell(elbow,jacketEdge,0,0,0,.09,.09,.09);
+      limb(elbow,skin,.065,.052,.29,0,-.15,.01);
+      const hand=new THREE.Group();hand.position.set(0,-.31,.02);elbow.add(hand);
+      ell(hand,skin,0,-.015,0,.064,.075,.045);
+      for(let i=0;i<4;i++){const x=(i-1.5)*.027;tube(hand,[[x,-.04,.015],[x,-.085,.02],[x*1.08,-.11,.015]],.009,skin)}
+      tube(hand,[[side*.045,-.01,.02],[side*.075,-.055,.03],[side*.07,-.085,.03]],.011,skin);
+      return {shoulder,elbow,hand,side};
+    });
+    const legs=[-1,1].map(side=>{
+      const hip=new THREE.Group();hip.position.set(side*.14,.69,0);root.add(hip);
+      limb(hip,jeans,.125,.09,.48,0,-.23,0);
+      const knee=new THREE.Group();knee.position.set(0,-.46,0);hip.add(knee);
+      ell(knee,jeans,0,0,0,.09,.095,.095);
+      limb(knee,jeans,.085,.06,.39,0,-.19,0);
+      const foot=new THREE.Group();foot.position.set(0,-.39,.025);knee.add(foot);
+      ell(foot,shoe,0,-.01,-.055,.085,.06,.15);
+      return {hip,knee,foot,side};
+    });
+    // Pequenos vincos no jeans e costuras do casaco.
+    for(let side of [-1,1])tube(root,[[side*.14,.7,.105],[side*.15,.42,.1],[side*.14,.2,.08]],.006,jacketEdge);
+    root.userData={model:"anderson-procedural-v1",head,torso,arms,legs,phase:0,expression:0};
+    return root;
+  }
+  function updateAnderson(model,dt,mode="idle"){
+    if(!model||!model.userData)return;
+    const d=model.userData;d.phase+=Math.max(0,Math.min(.05,dt||0))*(mode==="run"?13:mode==="walk"?7:1.4);
+    const moving=mode==="run"||mode==="walk",amp=mode==="run"?.72:.38;
+    d.legs.forEach((leg,i)=>{const s=Math.sin(d.phase+(i?Math.PI:0));leg.hip.rotation.x=moving?s*amp:Math.sin(d.phase*.4)*.018;leg.knee.rotation.x=moving?Math.max(0,-s)*.55:0});
+    d.arms.forEach((arm,i)=>{const s=Math.sin(d.phase+(i?0:Math.PI));arm.shoulder.rotation.x=moving?s*amp*.62:Math.sin(d.phase*.5+i)*.025;arm.elbow.rotation.x=mode==="run"?.48:.12});
+    d.head.rotation.z=Math.sin(d.phase*.42)*.035;
+    d.head.rotation.x=mode==="run"?.07:Math.sin(d.phase*.3)*.018;
+  }
+\n  root.GameModels={createValdirene,createAnderson,updateAnderson};
 })(typeof window!=="undefined"?window:globalThis);
