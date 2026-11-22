@@ -39,17 +39,17 @@ function stopCurrent(){if(state.audio){try{state.audio.pause();state.audio.curre
 function voicePath(ch,id){return "./audio/valdirene/pt-BR/capitulo-"+String(ch+1).padStart(2,"0")+"/vd-c"+String(ch+1).padStart(2,"0")+"-"+id+".ogg"}
 function positionFor(options){
  if(options.position)return options.position;
- if(options.spatial&&root.V&&root.V.st!=="dorm"&&root.V.st!=="relocate")return{x:root.V.x,y:1.55,z:root.V.z};
+ if(options.spatial&&typeof V!=="undefined"&&V.st!=="dorm"&&V.st!=="relocate")return{x:V.x,y:1.55,z:V.z};
  return null;
 }
 function playAudio(path,options){
  const audio=new Audio();audio.preload="auto";audio.src=path;audio.volume=state.voiceVolume;audio.crossOrigin="anonymous";
  let connected=false;
  try{
-  if(root.AC&&root.mg&&root.AC.createMediaElementSource){
-   const source=root.AC.createMediaElementSource(audio),gain=root.AC.createGain();source.connect(gain);
+  if(typeof AC!=="undefined"&&typeof mg!=="undefined"&&AC&&mg&&AC.createMediaElementSource){
+   const source=AC.createMediaElementSource(audio),gain=AC.createGain();source.connect(gain);
    const pos=positionFor(options);
-   if(pos&&root.AC.createPanner){const p=root.AC.createPanner();p.panningModel="HRTF";p.distanceModel="inverse";p.refDistance=1.2;p.maxDistance=32;p.rolloffFactor=1.35;gain.connect(p);p.connect(root.mg);if(p.positionX){p.positionX.value=pos.x;p.positionY.value=pos.y||1.5;p.positionZ.value=pos.z}else p.setPosition(pos.x,pos.y||1.5,pos.z);gain.gain.value=state.voiceVolume;connected=true}
+   if(pos&&AC.createPanner){const p=AC.createPanner();p.panningModel="HRTF";p.distanceModel="inverse";p.refDistance=1.2;p.maxDistance=32;p.rolloffFactor=1.35;gain.connect(p);p.connect(root.mg);if(p.positionX){p.positionX.value=pos.x;p.positionY.value=pos.y||1.5;p.positionZ.value=pos.z}else p.setPosition(pos.x,pos.y||1.5,pos.z);gain.gain.value=state.voiceVolume;connected=true}
    else{gain.connect(root.mg);gain.gain.value=state.voiceVolume;connected=true}
   }
  }catch(e){}
@@ -100,21 +100,21 @@ function onPick(item){
  else if(item.k==="Q")event("objective-"+item.challengeIndex,c.objective[item.challengeIndex% c.objective.length],3);
 }
 function update(dt){
- if(state.chapter<0||state.chapter>=chapters.length||state.paused||root.state!=="play")return;
+ if(state.chapter<0||state.chapter>=chapters.length||state.paused||typeof root.state!="undefined"&&root.state!=="play"||typeof state==="undefined"||state!=="play")return;
  const c=chapters[state.chapter];state.elapsed+=Math.min(dt,.05);
  const objective=root.GameChapterObjectives&&root.GameChapterObjectives.getState?root.GameChapterObjectives.getState():null;
  if(objective&&objective.progress>state.lastProgress){state.lastProgress=objective.progress;if(objective.done)event("objective-complete","Muito bem. Você terminou. Não fique tão orgulhoso, ainda falta conversar comigo.",4)}
  if(state.elapsed>state.slowAt&&(!objective||!objective.done)){state.slowAt=Infinity;event("slow",c.slow,2)}
  if(state.elapsed>18&&state.exploreIndex===0){state.exploreIndex=1;event("explore-a",c.explore[0],1)}
  if(state.elapsed>52&&state.exploreIndex===1){state.exploreIndex=2;event("explore-b",c.explore[1],1)}
- const enemy=root.V,dist=enemy&&root.pl?Math.hypot(enemy.x-root.pl.x,enemy.z-root.pl.z):Infinity;
+ const enemy=typeof V!=="undefined"?V:null,player=typeof pl!=="undefined"?pl:null,dist=enemy&&player?Math.hypot(enemy.x-player.x,enemy.z-player.z):Infinity;
  if(enemy&&enemy.st==="chase"&&state.lastEnemy!=="chase"){state.lastEnemy="chase";event("chase",c.chase,5,true)}
  else if(enemy&&enemy.st!=="chase"&&state.lastEnemy==="chase")state.lastEnemy=enemy.st;
  if(enemy&&dist<8.5&&enemy.st!=="dorm"&&enemy.st!=="relocate"&&now()/1000-state.lastNear>22){state.lastNear=now()/1000;event("danger",c.danger,4,true)}
- if(root.pl&&root.pl.hid&&state.lastEnemy!=="hidden"){state.lastEnemy="hidden";event("hide",c.hide,3,!!(enemy&&dist<10))}
- if(root.pl&&!root.pl.hid&&state.lastEnemy==="hidden")state.lastEnemy="";
+ if(player&&player.hid&&state.lastEnemy!=="hidden"){state.lastEnemy="hidden";event("hide",c.hide,3,!!(enemy&&dist<10))}
+ if(player&&!player.hid&&state.lastEnemy==="hidden")state.lastEnemy="";
 }
-function onDoor(door,open){if(open&&door&&now()/1000-state.lastDoor>9){state.lastDoor=now()/1000;event("door",chapters[state.chapter].close,1,true)}}
+function onDoor(door,open){if(open&&door&&chapters[state.chapter]&&now()/1000-state.lastDoor>9){state.lastDoor=now()/1000;event("door",chapters[state.chapter].close,1,true)}}
 function onMechanism(success){const c=chapters[state.chapter];if(!c)return;const time=now()/1000;if(!success){if(time-state.lastMechanism>8){state.lastMechanism=time;event("error",c.error,2)}return}if(time-state.lastMechanism>12){state.lastMechanism=time;event("mechanism",c.mechanism,2)}}
 function onDeath(){const c=chapters[state.chapter];if(c)speak(state.chapter,"death","Você pode recomeçar quantas vezes quiser. Eu tive treze anos para praticar a espera.",{priority:5,interrupt:true})}
 function onTransition(next){const c=chapters[state.chapter];if(c&&next>state.chapter)speak(state.chapter,"ending",c.ending,{priority:5,interrupt:true})}
@@ -123,15 +123,17 @@ function pause(){state.paused=true;state.queue=[];stopCurrent()}
 function resume(){state.paused=false}
 function snapshot(){return{seen:Array.from(state.seen).slice(-600),chapter:state.chapter}}
 function restore(data){if(data&&Array.isArray(data.seen))state.seen=new Set(data.seen.filter(x=>typeof x==="string"&&x.length<120).slice(-600))}
-function manifest(){return chapters.map((c,index)=>({chapter:index+1,title:(root.L&&root.L[index]&&root.L[index].n)||"Capítulo "+(index+1),assets:["intro-"+String(index+1).padStart(2,"0"),"explore-a","explore-b","objective-0","objective-1","objective-2","objective-complete","candle","clue","battery","secret","key","slow","danger","chase","hide","door","mechanism","error","ending","death"].map(id=>({id,path:voicePath(index,id),status:"pending-recording"}))}))}
+function manifest(){return chapters.map((c,index)=>({chapter:index+1,title:(typeof L!=="undefined"&&L[index]&&L[index].n)||"Capítulo "+(index+1),assets:["intro-"+String(index+1).padStart(2,"0"),"explore-a","explore-b","objective-0","objective-1","objective-2","objective-complete","candle","clue","battery","secret","key","slow","danger","chase","hide","door","mechanism","error","ending","death"].map(id=>({id,path:voicePath(index,id),status:"pending-recording"}))}))}
 function installHooks(){
  ensureUI();
+ const mechanismPrototype=root.GameMechanisms&&root.GameMechanisms.MechanismSystem&&root.GameMechanisms.MechanismSystem.prototype;
+ if(mechanismPrototype&&typeof mechanismPrototype.toggle==="function"&&!mechanismPrototype.__valdireneWrapped){const originalToggle=mechanismPrototype.toggle;mechanismPrototype.toggle=function(id,inventory){const result=originalToggle.call(this,id,inventory);onMechanism(!!(result&&result.ok));return result};mechanismPrototype.__valdireneWrapped=true}
  const wrap=(name,handler)=>{const original=root[name];if(typeof original!=="function")return;root[name]=function(){return handler.call(this,original,arguments)}};
  wrap("build",function(original,args){const result=original.apply(this,args);resetChapter(Number(args[0])||0);return result});
  wrap("go",function(original,args){const next=Number(args[0]);if(Number.isFinite(next)&&next>state.chapter)onTransition(next);return original.apply(this,args)});
  wrap("pick",function(original,args){const item=args[0];const result=original.apply(this,args);onPick(item);return result});
  wrap("odoor",function(original,args){const result=original.apply(this,args);onDoor(args[0],!!args[1]);return result});
- wrap("act",function(original,args){const target=root.tg&&root.tg.o,result=original.apply(this,args);if(target&&root.tg&&root.tg.t==="mechanism")onMechanism(true);else if(target&&root.tg&&root.tg.t==="d")onDoor(target,!target.o);return result});
+ wrap("act",function(original,args){const target=typeof tg!=="undefined"?tg:null,result=original.apply(this,args);if(target&&target.t&&target.t==="d")onDoor(target.o,!target.o.o);return result});
  wrap("die",function(original,args){onDeath();return original.apply(this,args)});
  wrap("newG",function(original,args){resetRun();return original.apply(this,args)});
  wrap("retry",function(original,args){state.queue=[];stopCurrent();return original.apply(this,args)});
@@ -140,7 +142,7 @@ function installHooks(){
  wrap("menu",function(original,args){pause();return original.apply(this,args)});
  wrap("captureSavePayload",function(original,args){const payload=original.apply(this,args);payload.valdireneDialogue=snapshot();return payload});
  wrap("loadSaveSlot",function(original,args){const result=original.apply(this,args);const slot=root.GameSaveSystem&&root.GameSaveSystem.read(Number(args[0]));if(slot&&slot.ok)restore(slot.payload.valdireneDialogue);return result});
- wrap("cont",function(original,args){const result=original.apply(this,args);const slot=root.GameSaveSystem&&root.GameSaveSystem.read(root.activeSaveSlot||1);if(slot&&slot.ok)restore(slot.payload.valdireneDialogue);return result});
+ wrap("cont",function(original,args){const result=original.apply(this,args);let active=1;try{active=Number(localStorage.getItem("ndmvv.activeSaveSlot"))||1}catch(e){}const slot=root.GameSaveSystem&&root.GameSaveSystem.read(active);if(slot&&slot.ok)restore(slot.payload.valdireneDialogue);return result});
  const oldUpd=root.upd;if(typeof oldUpd==="function")root.upd=function(dt){const result=oldUpd.apply(this,arguments);update(dt);return result};
 }
 installHooks();
