@@ -24,7 +24,8 @@
     if(noise&&Number.isFinite(noise.id)&&noise.id!==enemy.heard&&Number.isFinite(noise.expires)&&noise.expires>now){
       const dx=(Number(noise.x)||0)-(Number(enemy.x)||0),dz=(Number(noise.z)||0)-(Number(enemy.z)||0);
       const heardDistance=Math.hypot(dx,dz),radius=Number.isFinite(noise.radius)?Math.max(0,noise.radius):0;
-      if(heardDistance<=radius){
+      const transmission=Number.isFinite(context.noiseTransmission)?Math.max(0,Math.min(1,context.noiseTransmission)):1;
+      if(heardDistance<=radius*transmission){
         enemy.heard=noise.id;
         return {type:"hearing",position:{x:noise.x,z:noise.z},distance:heardDistance,kind:noise.kind||"unknown"};
       }
