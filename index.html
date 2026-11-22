@@ -430,7 +430,7 @@ function die(){if(state!='play')return;invalidateAudioEvents();state='over';keys
 function fin(t,x){invalidateAudioEvents();state='end';modal=0;document.exitPointerLock&&document.exitPointerLock();$('et').textContent=E[t][0];$('ep').textContent=(x?'Você tenta responder, mas não sabe o que ela passou. O "digitando..." aparece e some. Ela viu. ':'')+E[t][1];sh('en',1);$('hud').style.display='none';$('dg').style.opacity=0}
 function alt(c){sh('al',0);if(!c)fin('bad');else if(lore>=4)fin(sec?'sec':'good');else fin('bad',1)}
 function upd(dt){
-controller.update3D(dt,pl,keys,camera,flashlightModel,moveCharacter,{fov:S.fov,headBob:S.headBob,reduceCameraEffects:S.reduceCameraEffects});if(playerAvatar)GamePlayerAnimation.update(playerAvatar,pl,dt);const playerSpeed=Math.hypot(pl.mx||0,pl.mz||0);if(!pl.hid&&playerSpeed>.65){const stride=pl.sa||0,threshold=pl.crouch?2.7:pl.run?1.05:1.8;if(stride-lastNoiseStep>threshold){lastNoiseStep=stride;emitNoise(pl.x,pl.z,pl.run?16:pl.crouch?3.5:7,pl.run?'sprint':'footstep')}}updatePhysicsProps(dt);animateInteractions(dt);
+controller.update3D(dt,pl,keys,camera,flashlightModel,moveCharacter,{fov:S.fov,headBob:S.headBob,reduceCameraEffects:S.reduceCameraEffects});if(playerAvatar)GamePlayerAnimation.update(playerAvatar,pl,dt,camera);const playerSpeed=Math.hypot(pl.mx||0,pl.mz||0);if(!pl.hid&&playerSpeed>.65){const stride=pl.sa||0,threshold=pl.crouch?2.7:pl.run?1.05:1.8;if(stride-lastNoiseStep>threshold){lastNoiseStep=stride;emitNoise(pl.x,pl.z,pl.run?16:pl.crouch?3.5:7,pl.run?'sprint':'footstep')}}updatePhysicsProps(dt);animateInteractions(dt);
  // interação
 tg=null;let md=9,txt='';
 if(pl.hid)txt='[E] sair do armário';else{
