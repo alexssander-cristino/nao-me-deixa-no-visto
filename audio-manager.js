@@ -72,6 +72,11 @@ function startLevel(level){
  lastWind=performance.now()+18000+Math.random()*16000;
 }
 function update(){
+ if(AC&&AC.listener&&camera&&typeof THREE!=="undefined"){
+  const listener=AC.listener,pos=camera.getWorldPosition(new THREE.Vector3()),forward=camera.getWorldDirection(new THREE.Vector3());
+  if(listener.positionX){listener.positionX.setValueAtTime(pos.x,AC.currentTime);listener.positionY.setValueAtTime(pos.y,AC.currentTime);listener.positionZ.setValueAtTime(pos.z,AC.currentTime);listener.forwardX.setValueAtTime(forward.x,AC.currentTime);listener.forwardY.setValueAtTime(forward.y,AC.currentTime);listener.forwardZ.setValueAtTime(forward.z,AC.currentTime);listener.upX.setValueAtTime(0,AC.currentTime);listener.upY.setValueAtTime(1,AC.currentTime);listener.upZ.setValueAtTime(0,AC.currentTime)}
+  else listener.setPosition(pos.x,pos.y,pos.z);
+ }
  if(state!=="play"||paused)return;
  const now=performance.now(),speed=Math.hypot(pl.mx||0,pl.mz||0);
  if(!pl.hid&&speed>.8&&now-lastStep>(pl.run?340:pl.crouch?850:570)){
