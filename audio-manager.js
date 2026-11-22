@@ -100,6 +100,8 @@ function getVolumes(){return {...volumes}}
 document.addEventListener("pointerdown",unlock,{once:true,capture:true});
 document.addEventListener("keydown",unlock,{once:true,capture:true});
 root.GameAudio=Object.freeze({play,stop,stopAll,unlock,startLevel,update,setMaster,setVolume,getVolumes,sources});
+const controls={audioAmbience:"ambience",audioValdirene:"valdireneScream",audioAnderson:"andersonScream",audioWorld:"footstep",audioScares:"stinger"};
+const savedVolumes=getVolumes();for(const [id,name] of Object.entries(controls)){const control=document.getElementById(id);if(control)control.value=String(savedVolumes[name]??.5)}
 const originalBuild=build;
 build=function(n){originalBuild(n);startLevel(n)};
 const originalDoor=odoor;
