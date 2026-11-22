@@ -42,6 +42,14 @@ function positionFor(options){
  if(options.spatial&&typeof V!=="undefined"&&V.st!=="dorm"&&V.st!=="relocate")return{x:V.x,y:1.55,z:V.z};
  return null;
 }
+function connectVoiceReverb(output){
+ if(!AC||!AC.createConvolver||!AC.createBuffer)return;
+ try{
+  if(!dialogueState.reverb){const convolver=AC.createConvolver(),wet=AC.createGain();wet.gain.value=.13;convolver.connect(wet);wet.connect(mg);dialogueState.reverb=convolver;dialogueState.reverbChapter=-1}
+  if(dialogueState.reverbChapter!==dialogueState.chapter){const seconds=dialogueState.chapter===4||dialogueState.chapter===14?1.15:dialogueState.chapter===1||dialogueState.chapter===12?.88:.58,length=Math.max(1,Math.floor(AC.sampleRate*seconds)),buffer=AC.createBuffer(2,length,AC.sampleRate);for(let channel=0;channel<2;channel++){const data=buffer.getChannelData(channel);for(let i=0;i<length;i++){const fade=Math.pow(1-i/length,2.25);data[i]=(Math.random()*2-1)*fade}}dialogueState.reverb.buffer=buffer;dialogueState.reverbChapter=dialogueState.chapter}
+  output.connect(dialogueState.reverb);
+ }catch(e){}
+}
 function playAudio(path,options){
  const audio=new Audio();audio.preload="auto";audio.src=path;audio.volume=dialogueState.voiceVolume;audio.crossOrigin="anonymous";
  const scheduleFallback=()=>{if(!dialogueState.current||dialogueState.audio!==audio)return;if(dialogueState.current.fallbackTimer)clearTimeout(dialogueState.current.fallbackTimer);dialogueState.current.fallbackTimer=setTimeout(()=>finish(audio),Math.max(2600,Math.min(7200,dialogueState.current.text.length*48)))};
@@ -49,9 +57,9 @@ function playAudio(path,options){
  try{
   if(typeof AC!=="undefined"&&typeof mg!=="undefined"&&AC&&mg&&AC.createMediaElementSource){
    const source=AC.createMediaElementSource(audio),gain=AC.createGain();source.connect(gain);
-   const pos=positionFor(options);
-   if(pos&&AC.createPanner){const p=AC.createPanner();p.panningModel="HRTF";p.distanceModel="inverse";p.refDistance=1.2;p.maxDistance=32;p.rolloffFactor=1.35;gain.connect(p);p.connect(mg);if(p.positionX){p.positionX.value=pos.x;p.positionY.value=pos.y||1.5;p.positionZ.value=pos.z}else p.setPosition(pos.x,pos.y||1.5,pos.z);gain.gain.value=dialogueState.voiceVolume;connected=true}
-   else{gain.connect(mg);gain.gain.value=dialogueState.voiceVolume;connected=true}
+   const pos=positionFor(options),panner=pos&&AC.createPanner?AC.createPanner():null,output=panner||AC.createGain();
+   if(panner){panner.panningModel="HRTF";panner.distanceModel="inverse";panner.refDistance=1.2;panner.maxDistance=32;panner.rolloffFactor=1.35;if(panner.positionX){panner.positionX.value=pos.x;panner.positionY.value=pos.y||1.5;panner.positionZ.value=pos.z}else panner.setPosition(pos.x,pos.y||1.5,pos.z)}
+   gain.connect(output);output.connect(mg);connectVoiceReverb(output);gain.gain.value=dialogueState.voiceVolume;connected=true
   }
  }catch(e){}
  if(!connected)audio.volume=dialogueState.voiceVolume;
