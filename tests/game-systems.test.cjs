@@ -434,7 +434,7 @@ test("Valdirene model exposes a named hierarchical skeleton used by animated lim
   const THREE = require("three");
   const model = globalThis.GameModels.createValdirene(THREE, false);
   const rig = model.userData.rig;
-  assert.equal(model.userData.model, "valdirene-procedural-v3");
+  assert.equal(model.userData.model, "valdirene-procedural-v4");
   assert.ok(rig.skeleton instanceof THREE.Skeleton);
   assert.equal(rig.spine.parent, rig.pelvis);
   assert.equal(rig.neck.parent, rig.spine);
