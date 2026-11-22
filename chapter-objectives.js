@@ -78,6 +78,10 @@ function spawnPoints(){
   (!ex||Math.hypot(ex.x-p.x,ex.z-p.z)>4)&&
   !physics.overlapsCircle(p.x,p.z,.48)
  ).sort((a,b)=>a.d-b.d);
+ if(candidates.length<3){
+  const fallback=getReachableCells().filter(p=>ch(p.r,p.c)==="."&&Math.hypot(p.x-pl.x,p.z-pl.z)>4&&(!ex||Math.hypot(ex.x-p.x,ex.z-p.z)>3)&&!items.some(it=>Math.hypot(it.x-p.x,it.z-p.z)<2.4)).sort((a,b)=>b.d-a.d);
+  for(const p of fallback){if(candidates.every(q=>Math.hypot(p.x-q.x,p.z-q.z)>4))candidates.push(p);if(candidates.length===3)break}
+ }
  if(candidates.length<3)return candidates.slice(0,3);
  const max=candidates[candidates.length-1].d,targets=[max*.32,max*.57,max*.82],chosen=[];
  for(const target of targets){
