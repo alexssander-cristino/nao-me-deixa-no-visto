@@ -35,7 +35,7 @@ function ensureUI(){
 }
 function hideSubtitle(){const el=document.getElementById("valdirene-subtitle");if(el){el.style.opacity="0";el.textContent=""}}
 function showSubtitle(text){const el=document.getElementById("valdirene-subtitle");if(!el)return;if(!dialogueState.subtitle){hideSubtitle();return}el.innerHTML="";const name=document.createElement("strong");name.textContent="Valdirene";const line=document.createElement("span");line.textContent=text;el.append(name,line);el.style.opacity="1"}
-function stopCurrent(){if(dialogueState.audio){try{dialogueState.audio.pause();dialogueState.audio.currentTime=0;dialogueState.audio.src=""}catch(e){}dialogueState.audio=null}dialogueState.current=null;hideSubtitle()}
+function stopCurrent(){if(dialogueState.current&&dialogueState.current.fallbackTimer)clearTimeout(dialogueState.current.fallbackTimer);if(dialogueState.audio){try{dialogueState.audio.pause();dialogueState.audio.currentTime=0;dialogueState.audio.src=""}catch(e){}dialogueState.audio=null}dialogueState.current=null;hideSubtitle()}
 function voicePath(ch,id){return "./audio/valdirene/pt-BR/capitulo-"+String(ch+1).padStart(2,"0")+"/vd-c"+String(ch+1).padStart(2,"0")+"-"+id+".ogg"}
 function positionFor(options){
  if(options.position)return options.position;
@@ -44,6 +44,7 @@ function positionFor(options){
 }
 function playAudio(path,options){
  const audio=new Audio();audio.preload="auto";audio.src=path;audio.volume=dialogueState.voiceVolume;audio.crossOrigin="anonymous";
+ const scheduleFallback=()=>{if(!dialogueState.current||dialogueState.audio!==audio)return;if(dialogueState.current.fallbackTimer)clearTimeout(dialogueState.current.fallbackTimer);dialogueState.current.fallbackTimer=setTimeout(()=>finish(audio),Math.max(2600,Math.min(7200,dialogueState.current.text.length*48)))};
  let connected=false;
  try{
   if(typeof AC!=="undefined"&&typeof mg!=="undefined"&&AC&&mg&&AC.createMediaElementSource){
@@ -55,11 +56,11 @@ function playAudio(path,options){
  }catch(e){}
  if(!connected)audio.volume=dialogueState.voiceVolume;
  dialogueState.audio=audio;
- audio.addEventListener("ended",finish,{once:true});
- audio.addEventListener("error",()=>{dialogueState.missing.add(path);if(!dialogueState.current)return;const current=dialogueState.current;const duration=Math.max(2600,Math.min(7200,current.text.length*48));current.fallbackTimer=setTimeout(finish,duration)},{once:true});
- const promise=audio.play();if(promise&&promise.catch)promise.catch(()=>{if(!dialogueState.current)return;const current=dialogueState.current;current.fallbackTimer=setTimeout(finish,Math.max(2600,Math.min(7200,current.text.length*48)))});
+ audio.addEventListener("ended",()=>finish(audio),{once:true});
+ audio.addEventListener("error",()=>{dialogueState.missing.add(path);scheduleFallback()},{once:true});
+ const promise=audio.play();if(promise&&promise.catch)promise.catch(scheduleFallback);
 }
-function finish(){if(dialogueState.current&&dialogueState.current.fallbackTimer)clearTimeout(dialogueState.current.fallbackTimer);if(dialogueState.audio){try{dialogueState.audio.pause()}catch(e){}dialogueState.audio=null}dialogueState.current=null;hideSubtitle();dialogueState.lastAt=now()/1000;drain()}
+function finish(audioRef){if(audioRef&&dialogueState.audio!==audioRef)return;if(dialogueState.current&&dialogueState.current.fallbackTimer)clearTimeout(dialogueState.current.fallbackTimer);if(dialogueState.audio){try{dialogueState.audio.pause();dialogueState.audio.src=""}catch(e){}dialogueState.audio=null}dialogueState.current=null;hideSubtitle();dialogueState.lastAt=now()/1000;drain()}
 function drain(){if(dialogueState.current||dialogueState.paused||!dialogueState.queue.length)return;dialogueState.queue.sort((a,b)=>b.priority-a.priority);const item=dialogueState.queue.shift();start(item)}
 function start(item){
  dialogueState.current=item;showSubtitle(item.text);
