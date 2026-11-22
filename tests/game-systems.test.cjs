@@ -181,8 +181,10 @@ test("enemy perception only acquires visible players or audible noise sources", 
 });
 
 test("all 15 chapter objective sets retain their three-step sequences", () => {
-  require("../chapter-objectives.js");
-  const definitions = globalThis.GameChapterObjectives.definitions;
+  const sandbox = { build() {}, pick() {}, go() {}, alt() {} };
+  sandbox.window = sandbox;
+  vm.runInNewContext(read("chapter-objectives.js"), sandbox);
+  const definitions = sandbox.GameChapterObjectives.definitions;
   assert.equal(definitions.length, 15);
   for (const chapter of definitions) {
     assert.equal(chapter.labels.length, 3);
