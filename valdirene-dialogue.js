@@ -22,7 +22,7 @@ const chapters=[
 {intro:"A maternidade está vazia. O berço, não. Eu ouvi alguém chamar você de pai.",explore:["As pulseiras têm nomes diferentes, mas a mesma data.","O corredor cheira a talco. Você nunca chegou a conhecer esse lugar."],objective:["Berçário, ala dois, recepção. Valide as pulseiras sem trocar os nomes.","O registro neonatal foi alterado. Procure a linha do acompanhante."],candle:"Uma vela ao lado do berço. Não acorde quem está dormindo.",clue:"A gravação diz para não deixar que ela veja você primeiro. Quem será que escreveu?",battery:"Pilha encontrada. O monitor do berço ainda precisa de energia.",slow:"O berço parou de balançar. Você está esperando que alguém apareça?",danger:"Tem um choro atrás da porta. Não é um bebê.",chase:"NÃO DEIXA ELA CHEGAR AO BERÇO! CORRE!",hide:"Atrás da cortina do berçário? Você está assustando as crianças.",close:"As pulseiras foram reunidas. Agora você sabe a data.",mechanism:"O painel neonatal está travado. Use o seletor correto.",error:"Pulseira trocada. Não confunda o que é seu com o que é meu.",laugh:"Ah... o berço parou. Acho que ele também está esperando sua resposta.",ending:"A maternidade ficou em silêncio. Pela primeira vez, eu também."},
 {intro:"Você chegou ao último lugar. Eu sabia que chegaria. Não sabia se ainda teria coragem.",explore:["O altar tem duas sombras. Uma delas está segurando seu celular.","Eu não queria que você encontrasse tudo de uma vez. Queria que lembrasse."],objective:["Lua, olho, coroa. Complete o ritual e pare de fingir que não reconhece os símbolos.","O último símbolo não abre uma porta. Abre uma lembrança."],candle:"A chama final. Eu guardei esta vela para o dia em que você voltasse.",clue:"A mensagem que nunca enviei diz que eu devia ter aceitado o seu silêncio.",battery:"Ainda está procurando pilhas? Depois de tudo, continua preocupado com a lanterna.",slow:"Não há mais corredor para percorrer. Só falta você decidir o que vai responder.",danger:"Não olhe para o altar. Olhe para mim. Pela primeira vez, olhe de verdade.",chase:"CORRE SE QUISER! Eu também estou cansada de correr atrás!",hide:"Pode sair do esconderijo. Não quero mais brincar de procurar.",close:"O ritual terminou. Agora não existe mais nada entre a pergunta e a resposta.",mechanism:"O símbolo está invertido. Vire-o para o lado em que estava antes.",error:"Não. Esse símbolo representa o que você fez, não o que eu fiz.",laugh:"Heh... chegamos ao fim. Agora não tem mais para onde correr.",ending:"Treze anos cabem numa mensagem. A resposta, Anderson, é sua."}
 ];
-const dialogueState={chapter:-1,run:0,seen:new Set(),queue:[],current:null,lastAt:0,lastCommon:0,elapsed:0,slowAt:0,exploreIndex:0,lastProgress:0,lastEnemy:"",lastNear:0,lastDoor:0,lastMechanism:0,laughPlayed:false,paused:false,subtitle:true,voiceVolume:.9,missing:new Set(),audio:null,panner:null,raf:null};
+const dialogueState={chapter:-1,run:0,seen:new Set(),queue:[],current:null,lastAt:0,lastCommon:0,elapsed:0,slowAt:0,exploreIndex:0,lastProgress:0,lastEnemy:"",lastNear:0,lastDoor:0,lastMechanism:0,laughPlayed:false,paused:false,subtitle:true,voiceVolume:.9,missing:new Set(),audio:null,panner:null,cooldownTimer:null,raf:null};
 const now=()=>performance.now();
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 function settings(){try{dialogueState.subtitle=localStorage.getItem("ndmvv.valdirene.subtitles")!=="0";dialogueState.voiceVolume=clamp(Number(localStorage.getItem("ndmvv.valdirene.volume")??.9),0,1)}catch(e){}}
@@ -69,9 +69,10 @@ function playAudio(path,options){
  const promise=audio.play();if(promise&&promise.catch)promise.catch(scheduleFallback);
 }
 function finish(audioRef){if(audioRef&&dialogueState.audio!==audioRef)return;if(dialogueState.current&&dialogueState.current.fallbackTimer)clearTimeout(dialogueState.current.fallbackTimer);if(dialogueState.audio){try{dialogueState.audio.pause();dialogueState.audio.src=""}catch(e){}dialogueState.audio=null}dialogueState.panner=null;dialogueState.current=null;hideSubtitle();dialogueState.lastAt=now()/1000;drain()}
-function drain(){if(dialogueState.current||dialogueState.paused||!dialogueState.queue.length)return;dialogueState.queue.sort((a,b)=>b.priority-a.priority);const item=dialogueState.queue.shift();start(item)}
+function scheduleDrain(){if(dialogueState.cooldownTimer||dialogueState.paused||dialogueState.current||!dialogueState.queue.length)return;const wait=Math.max(0,7000-(now()/1000-dialogueState.lastCommon)*1000);dialogueState.cooldownTimer=setTimeout(()=>{dialogueState.cooldownTimer=null;drain()},wait)}
+function drain(){if(dialogueState.current||dialogueState.paused||!dialogueState.queue.length)return;dialogueState.queue.sort((a,b)=>b.priority-a.priority);const item=dialogueState.queue[0];if(item.priority<4&&now()/1000-dialogueState.lastCommon<7){scheduleDrain();return}dialogueState.queue.shift();start(item)}
 function start(item){
- dialogueState.current=item;showSubtitle(item.text);
+ dialogueState.current=item;if(item.priority<4)dialogueState.lastCommon=now()/1000;showSubtitle(item.text);
  const path=voicePath(item.chapter,item.id);
  playAudio(path,{spatial:item.spatial,position:item.position});
 }
@@ -79,16 +80,16 @@ function speak(chapter,id,text,options={}){
  if(!text||chapter<0||chapter>=chapters.length)return false;
  const key=chapter+":"+id;if(options.once!==false&&dialogueState.seen.has(key))return false;
  const priority=options.priority??1,critical=priority>=4;
- if(!critical&&now()/1000-dialogueState.lastCommon<7)return false;
- if(!critical&&dialogueState.current&&dialogueState.current.priority>=priority){if(dialogueState.queue.length>=8)return false;if(options.once!==false)dialogueState.seen.add(key);dialogueState.queue.push({chapter,id,text,priority,spatial:!!options.spatial,position:options.position||null,delivery:options.delivery||"sarcastic"});return true}
- if(options.once!==false)dialogueState.seen.add(key);
  const item={chapter,id,text,priority,spatial:!!options.spatial,position:options.position||null,delivery:options.delivery||({intro:"calm-sarcastic","explore-a":"whisper","explore-b":"intimate-whisper",danger:"low-whisper",chase:"shouted",hide:"close-whisper",laugh:"disturbed-laugh",ending:"emotional",death:"cold"}[id]||"sarcastic")};
+ const blockedByCurrent=!critical&&dialogueState.current&&dialogueState.current.priority>=priority;
+ const blockedByCooldown=!critical&&now()/1000-dialogueState.lastCommon<7;
+ if(blockedByCurrent||blockedByCooldown){if(dialogueState.queue.length>=8)return false;if(options.once!==false)dialogueState.seen.add(key);dialogueState.queue.push(item);scheduleDrain();return true}
+ if(options.once!==false)dialogueState.seen.add(key);
  if(dialogueState.current){
   if(options.interrupt||priority>dialogueState.current.priority){stopCurrent();dialogueState.queue=[]}
-  else{dialogueState.queue.push(item);return true}
+  else{if(dialogueState.queue.length>=8)return false;dialogueState.queue.push(item);return true}
  }
- if(priority<4&&dialogueState.current===null&&now()/1000-dialogueState.lastAt<2.5){dialogueState.queue.push(item);return true}
- if(priority<4)dialogueState.lastCommon=now()/1000;
+ if(priority<4&&dialogueState.current===null&&now()/1000-dialogueState.lastAt<2.5){dialogueState.queue.push(item);scheduleDrain();return true}
  start(item);return true;
 }
 function resetChapter(level){
@@ -130,9 +131,9 @@ function onDoor(door,open){if(open&&door&&chapters[dialogueState.chapter]&&now()
 function onMechanism(success){const c=chapters[dialogueState.chapter];if(!c)return;const time=now()/1000;if(!success){if(time-dialogueState.lastMechanism>8){dialogueState.lastMechanism=time;event("error",c.error,2)}return}if(time-dialogueState.lastMechanism>12){dialogueState.lastMechanism=time;event("mechanism",c.mechanism,2)}}
 function onDeath(){const c=chapters[dialogueState.chapter];if(c)speak(dialogueState.chapter,"death","Você pode recomeçar quantas vezes quiser. Eu tive treze anos para praticar a espera.",{priority:5,interrupt:true})}
 function onTransition(next){const c=chapters[dialogueState.chapter];if(c&&next>dialogueState.chapter)speak(dialogueState.chapter,"ending",c.ending,{priority:5,interrupt:true})}
-function resetRun(){dialogueState.run++;dialogueState.seen.clear();dialogueState.queue=[];stopCurrent();dialogueState.chapter=-1;dialogueState.elapsed=0;dialogueState.lastCommon=0;dialogueState.lastAt=0;dialogueState.paused=false}
-function pause(){dialogueState.paused=true;dialogueState.queue=[];stopCurrent()}
-function resume(){dialogueState.paused=false}
+function resetRun(){dialogueState.run++;dialogueState.seen.clear();dialogueState.queue=[];if(dialogueState.cooldownTimer)clearTimeout(dialogueState.cooldownTimer);dialogueState.cooldownTimer=null;stopCurrent();dialogueState.chapter=-1;dialogueState.elapsed=0;dialogueState.lastCommon=0;dialogueState.lastAt=0;dialogueState.paused=false}
+function pause(){dialogueState.paused=true;dialogueState.queue=[];if(dialogueState.cooldownTimer)clearTimeout(dialogueState.cooldownTimer);dialogueState.cooldownTimer=null;stopCurrent()}
+function resume(){dialogueState.paused=false;scheduleDrain()}
 function snapshot(){return{seen:Array.from(dialogueState.seen).slice(-600),chapter:dialogueState.chapter}}
 function restore(data){if(data&&Array.isArray(data.seen))dialogueState.seen=new Set(data.seen.filter(x=>typeof x==="string"&&x.length<120).slice(-600))}
 function manifest(){return chapters.map((c,index)=>({chapter:index+1,title:(typeof L!=="undefined"&&L[index]&&L[index].n)||"Capítulo "+(index+1),assets:["intro-"+String(index+1).padStart(2,"0"),"explore-a","explore-b","objective-0","objective-1","objective-2","objective-complete","candle","clue","battery","secret","key","laugh","slow","danger","chase","hide","door","mechanism","error","ending","death"].map(id=>({id,path:voicePath(index,id),status:"pending-recording"}))}))}
