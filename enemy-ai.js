@@ -10,6 +10,28 @@
     const base=DIFFICULTY[difficulty]||DIFFICULTY.normal;
     return Object.freeze({...base,chaseSpeed:base.chaseSpeed*(finalChapter?1.09:1)});
   }
+  const STATE_TRANSITIONS=Object.freeze({
+    dorm:Object.freeze(["relocate"]),
+    relocate:Object.freeze(["dorm","pat"]),
+    pat:Object.freeze(["dorm","chase","inv"]),
+    inv:Object.freeze(["chase","search","pat"]),
+    search:Object.freeze(["chase","inv","pat"]),
+    chase:Object.freeze(["search"])
+  });
+  function transition(enemy,next,reason="unspecified",now=0){
+    if(!enemy||!STATE_TRANSITIONS[next])return false;
+    const current=enemy.st;
+    if(current===next)return true;
+    if(!STATE_TRANSITIONS[current]||!STATE_TRANSITIONS[current].includes(next))return false;
+    enemy.previousState=current;
+    enemy.st=next;
+    enemy.stateChangedAt=Number.isFinite(now)?now:0;
+    enemy.stateReason=String(reason).slice(0,64);
+    const history=Array.isArray(enemy.stateHistory)?enemy.stateHistory:[];
+    history.push({from:current,to:next,reason:enemy.stateReason,at:enemy.stateChangedAt});
+    enemy.stateHistory=history.slice(-8);
+    return true;
+  }
   const MEMORY_TTL=Object.freeze({sight:24,hearing:13,interaction:18});
   function remember(memory,event,now=0){
     if(!event||!Number.isFinite(event.x)||!Number.isFinite(event.z))return memory||null;
@@ -48,5 +70,5 @@
     }
     return {type:"none",distance};
   }
-  root.GameEnemyAI=Object.freeze({perceive,tuning,difficulties:DIFFICULTY,remember,memoryConfidence,investigationTarget});
+  root.GameEnemyAI=Object.freeze({perceive,tuning,difficulties:DIFFICULTY,remember,memoryConfidence,investigationTarget,transition,states:STATE_TRANSITIONS});
 })(typeof window!=="undefined"?window:globalThis);
