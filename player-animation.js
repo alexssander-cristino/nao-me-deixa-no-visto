@@ -73,8 +73,15 @@
     const data=avatar.userData,delta=clamp(Number(dt)||0,0,.05);
     const speed=Math.hypot(player.mx||0,player.mz||0),moving=speed>.12;
     const amount=clamp(speed/3.15,0,1.8),running=!!player.run,crouched=!!player.crouch;
+    if(data.wasCrouched&&!crouched)data.standUpRemaining=.3;
+    data.standUpRemaining=Math.max(0,(data.standUpRemaining||0)-delta);
+    const nextState=player.actionTime>0?"INTERACTING":data.standUpRemaining>0?"STANDING_UP":crouched?(moving?"CROUCH_WALKING":"CROUCHING"):running?"RUNNING":moving?"WALKING":"IDLE";
+    if(nextState!==data.state){data.previousState=data.state||"IDLE";data.state=nextState;data.stateTime=0}else data.stateTime=(data.stateTime||0)+delta;
+    data.stateBlend=(data.stateBlend||0)+(1-(data.stateBlend||0))*(1-Math.exp(-12*delta));
+    if(nextState==="IDLE"||nextState==="CROUCHING")data.stateBlend*=Math.exp(-5*delta);
+    data.wasCrouched=crouched;
     data.phase+=delta*(running?13.5:crouched?5.2:8.1)*amount;
-    const gait=moving?Math.sin(data.phase):0,opposite=moving?Math.sin(data.phase+Math.PI):0;
+    const gait=moving?Math.sin(data.phase)*data.stateBlend:0,opposite=moving?Math.sin(data.phase+Math.PI)*data.stateBlend:0;
     avatar.position.set(player.x||0,player.feetY||0,player.z||0);
     avatar.rotation.y=Number.isFinite(player.y)?player.y:0;
     avatar.visible=!player.hid;
@@ -101,6 +108,7 @@
     });
     data.torso.rotation.z=Math.sin(data.phase*1.7)*fear*.018;
     data.torso.rotation.x+=(fear*.025);
+    data.animationState=data.state;
   }
-  root.GamePlayerAnimation=Object.freeze({create,update});
+  root.GamePlayerAnimation=Object.freeze({create,update,getState:avatar=>avatar&&avatar.userData?avatar.userData.state:"IDLE"});
 })(typeof window!=="undefined"?window:globalThis);
