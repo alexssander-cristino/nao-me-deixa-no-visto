@@ -358,7 +358,7 @@ if(v.st=='relocate'){
  vm.position.set(v.x,0,v.z);vm.rotation.y=Math.atan2(dx2,dz2);return
 }
 const difficulty=S.diff||'normal',aiTuning=GameEnemyAI.tuning(difficulty,L5);
-const perception=GameEnemyAI.perceive(v,pl,{distance:dist,vision:aiTuning.vision*(pl.crouch?.42:(pl.on?1:.6)),lineOfSight:los(v.x,v.z,pl.x,pl.z),noise:noiseEvent?{...noiseEvent,radius:noiseEvent.radius*aiTuning.hearing}:null,now:performance.now()/1000});
+const perception=GameEnemyAI.perceive(v,pl,{distance:dist,vision:aiTuning.vision*(pl.crouch?.42:(pl.on?1:.6)),lineOfSight:los(v.x,v.z,pl.x,pl.z),noise:noiseEvent?{...noiseEvent,radius:noiseEvent.radius*aiTuning.hearing}:null,noiseTransmission:noiseEvent&&physics.raycast(v.x,v.z,noiseEvent.x,noiseEvent.z,{step:.22,radius:.04}).hit?.42:1,now:performance.now()/1000});
 const see=perception.type==='sight';
 if(see){if(v.st!='chase'){say(pk(CH),1);sting(.5)}v.st='chase';v.last=[pl.x,pl.z];v.lost=0}
 else{
