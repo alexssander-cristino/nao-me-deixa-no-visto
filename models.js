@@ -217,5 +217,6 @@
     d.head.rotation.z=Math.sin(d.phase*.42)*.035;
     d.head.rotation.x=mode==="run"?.07:Math.sin(d.phase*.3)*.018;
   }
-\n  root.GameModels={createValdirene,createAnderson,updateAnderson};
+
+  root.GameModels={createValdirene,createAnderson,updateAnderson};
 })(typeof window!=="undefined"?window:globalThis);
