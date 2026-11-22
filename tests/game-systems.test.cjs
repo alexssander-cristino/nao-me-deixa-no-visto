@@ -180,6 +180,25 @@ test("enemy perception only acquires visible players or audible noise sources", 
   assert.doesNotMatch(html, /if\(!pl\.hid&&pl\.run&&dist<\(difficulty==/);
 });
 
+test("Valdirene memory retains evidence with source-specific decay and expires fairly", () => {
+  require("../enemy-ai.js");
+  const ai = globalThis.GameEnemyAI;
+  const sight = ai.remember(null, { x: 8, z: -3, source: "sight", kind: "player" }, 10);
+  assert.equal(ai.investigationTarget(sight, 10).confidence, 1);
+  assert.equal(ai.investigationTarget(sight, 22), null);
+  const sound = ai.remember(sight, { x: 2, z: 4, source: "hearing", kind: "door-open" }, 20);
+  assert.deepEqual(
+    { x: sound.x, z: sound.z, source: sound.source, kind: sound.kind },
+    { x: 2, z: 4, source: "hearing", kind: "door-open" }
+  );
+  assert.ok(ai.memoryConfidence(sound, 26) > 0);
+  assert.equal(ai.investigationTarget(sound, 34), null);
+  assert.equal(ai.remember(sound, null, 35), sound);
+  const target = ai.investigationTarget(sound, 26);
+  assert.equal(target.source, "hearing");
+  assert.ok(target.confidence < 1);
+});
+
 test("all 15 chapter objective sets retain their three-step sequences", () => {
   const sandbox = { build() {}, pick() {}, go() {}, alt() {} };
   sandbox.window = sandbox;
