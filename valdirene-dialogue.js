@@ -22,20 +22,20 @@ const chapters=[
 {intro:"A maternidade está vazia. O berço, não. Eu ouvi alguém chamar você de pai.",explore:["As pulseiras têm nomes diferentes, mas a mesma data.","O corredor cheira a talco. Você nunca chegou a conhecer esse lugar."],objective:["Berçário, ala dois, recepção. Valide as pulseiras sem trocar os nomes.","O registro neonatal foi alterado. Procure a linha do acompanhante."],candle:"Uma vela ao lado do berço. Não acorde quem está dormindo.",clue:"A gravação diz para não deixar que ela veja você primeiro. Quem será que escreveu?",battery:"Pilha encontrada. O monitor do berço ainda precisa de energia.",slow:"O berço parou de balançar. Você está esperando que alguém apareça?",danger:"Tem um choro atrás da porta. Não é um bebê.",chase:"NÃO DEIXA ELA CHEGAR AO BERÇO! CORRE!",hide:"Atrás da cortina do berçário? Você está assustando as crianças.",close:"As pulseiras foram reunidas. Agora você sabe a data.",mechanism:"O painel neonatal está travado. Use o seletor correto.",error:"Pulseira trocada. Não confunda o que é seu com o que é meu.",ending:"A maternidade ficou em silêncio. Pela primeira vez, eu também."},
 {intro:"Você chegou ao último lugar. Eu sabia que chegaria. Não sabia se ainda teria coragem.",explore:["O altar tem duas sombras. Uma delas está segurando seu celular.","Eu não queria que você encontrasse tudo de uma vez. Queria que lembrasse."],objective:["Lua, olho, coroa. Complete o ritual e pare de fingir que não reconhece os símbolos.","O último símbolo não abre uma porta. Abre uma lembrança."],candle:"A chama final. Eu guardei esta vela para o dia em que você voltasse.",clue:"A mensagem que nunca enviei diz que eu devia ter aceitado o seu silêncio.",battery:"Ainda está procurando pilhas? Depois de tudo, continua preocupado com a lanterna.",slow:"Não há mais corredor para percorrer. Só falta você decidir o que vai responder.",danger:"Não olhe para o altar. Olhe para mim. Pela primeira vez, olhe de verdade.",chase:"CORRE SE QUISER! Eu também estou cansada de correr atrás!",hide:"Pode sair do esconderijo. Não quero mais brincar de procurar.",close:"O ritual terminou. Agora não existe mais nada entre a pergunta e a resposta.",mechanism:"O símbolo está invertido. Vire-o para o lado em que estava antes.",error:"Não. Esse símbolo representa o que você fez, não o que eu fiz.",ending:"Treze anos cabem numa mensagem. A resposta, Anderson, é sua."}
 ];
-const state={chapter:-1,run:0,seen:new Set(),queue:[],current:null,lastAt:0,lastCommon:0,elapsed:0,slowAt:0,exploreIndex:0,lastProgress:0,lastEnemy:"",lastNear:0,lastDoor:0,lastMechanism:0,paused:false,subtitle=true,voiceVolume:.9,missing:new Set(),audio:null,raf:null};
+const dialogueState={chapter:-1,run:0,seen:new Set(),queue:[],current:null,lastAt:0,lastCommon:0,elapsed:0,slowAt:0,exploreIndex:0,lastProgress:0,lastEnemy:"",lastNear:0,lastDoor:0,lastMechanism:0,paused:false,subtitle=true,voiceVolume:.9,missing:new Set(),audio:null,raf:null};
 const now=()=>performance.now();
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
-function settings(){try{state.subtitle=localStorage.getItem("ndmvv.valdirene.subtitles")!=="0";state.voiceVolume=clamp(Number(localStorage.getItem("ndmvv.valdirene.volume")??.9),0,1)}catch(e){}}
+function settings(){try{dialogueState.subtitle=localStorage.getItem("ndmvv.valdirene.subtitles")!=="0";dialogueState.voiceVolume=clamp(Number(localStorage.getItem("ndmvv.valdirene.volume")??.9),0,1)}catch(e){}}
 settings();
 function ensureUI(){
  if(!document.getElementById("valdirene-subtitle-style")){const style=document.createElement("style");style.id="valdirene-subtitle-style";style.textContent="#valdirene-subtitle{position:fixed;z-index:8;left:50%;bottom:5.5%;transform:translateX(-50%);width:min(680px,88vw);padding:7px 14px 9px;background:linear-gradient(90deg,transparent,rgba(0,0,0,.78) 12%,rgba(0,0,0,.78) 88%,transparent);color:#eee4d7;text-align:center;font:500 14px/1.45 system-ui,sans-serif;text-shadow:0 2px 5px #000;pointer-events:none;opacity:0;transition:opacity .18s}#valdirene-subtitle strong{display:block;color:#d98b8d;font-size:10px;letter-spacing:.2em;text-transform:uppercase;margin-bottom:2px}";document.head.appendChild(style)}
  if(!document.getElementById("valdirene-subtitle")){const el=document.createElement("div");el.id="valdirene-subtitle";el.setAttribute("aria-live","polite");el.setAttribute("role","status");document.body.appendChild(el)}
- const config=document.getElementById("cf");if(config&&!document.getElementById("valdireneSubtitles")){const wrap=document.createElement("label");wrap.innerHTML='<span>Legendas da Valdirene</span><input type="checkbox" id="valdireneSubtitles">';config.insertBefore(wrap,config.querySelector("button"));const input=wrap.querySelector("input");input.checked=state.subtitle;input.addEventListener("change",()=>{state.subtitle=input.checked;try{localStorage.setItem("ndmvv.valdirene.subtitles",state.subtitle?"1":"0")}catch(e){}if(!state.subtitle)hideSubtitle()})}
- if(config&&!document.getElementById("valdireneVoiceVolume")){const wrap=document.createElement("label");wrap.innerHTML='<span>Voz da Valdirene</span><input type="range" min="0" max="1" step=".05" id="valdireneVoiceVolume">';config.insertBefore(wrap,config.querySelector("button"));const input=wrap.querySelector("input");input.value=String(state.voiceVolume);input.addEventListener("input",()=>{state.voiceVolume=Number(input.value);try{localStorage.setItem("ndmvv.valdirene.volume",String(state.voiceVolume))}catch(e){}if(state.audio)state.audio.volume=state.voiceVolume})}
+ const config=document.getElementById("cf");if(config&&!document.getElementById("valdireneSubtitles")){const wrap=document.createElement("label");wrap.innerHTML='<span>Legendas da Valdirene</span><input type="checkbox" id="valdireneSubtitles">';config.insertBefore(wrap,config.querySelector("button"));const input=wrap.querySelector("input");input.checked=dialogueState.subtitle;input.addEventListener("change",()=>{dialogueState.subtitle=input.checked;try{localStorage.setItem("ndmvv.valdirene.subtitles",dialogueState.subtitle?"1":"0")}catch(e){}if(!dialogueState.subtitle)hideSubtitle()})}
+ if(config&&!document.getElementById("valdireneVoiceVolume")){const wrap=document.createElement("label");wrap.innerHTML='<span>Voz da Valdirene</span><input type="range" min="0" max="1" step=".05" id="valdireneVoiceVolume">';config.insertBefore(wrap,config.querySelector("button"));const input=wrap.querySelector("input");input.value=String(dialogueState.voiceVolume);input.addEventListener("input",()=>{dialogueState.voiceVolume=Number(input.value);try{localStorage.setItem("ndmvv.valdirene.volume",String(dialogueState.voiceVolume))}catch(e){}if(dialogueState.audio)dialogueState.audio.volume=dialogueState.voiceVolume})}
 }
 function hideSubtitle(){const el=document.getElementById("valdirene-subtitle");if(el){el.style.opacity="0";el.textContent=""}}
-function showSubtitle(text){const el=document.getElementById("valdirene-subtitle");if(!el)return;if(!state.subtitle){hideSubtitle();return}el.innerHTML="";const name=document.createElement("strong");name.textContent="Valdirene";const line=document.createElement("span");line.textContent=text;el.append(name,line);el.style.opacity="1"}
-function stopCurrent(){if(state.audio){try{state.audio.pause();state.audio.currentTime=0;state.audio.src=""}catch(e){}state.audio=null}state.current=null;hideSubtitle()}
+function showSubtitle(text){const el=document.getElementById("valdirene-subtitle");if(!el)return;if(!dialogueState.subtitle){hideSubtitle();return}el.innerHTML="";const name=document.createElement("strong");name.textContent="Valdirene";const line=document.createElement("span");line.textContent=text;el.append(name,line);el.style.opacity="1"}
+function stopCurrent(){if(dialogueState.audio){try{dialogueState.audio.pause();dialogueState.audio.currentTime=0;dialogueState.audio.src=""}catch(e){}dialogueState.audio=null}dialogueState.current=null;hideSubtitle()}
 function voicePath(ch,id){return "./audio/valdirene/pt-BR/capitulo-"+String(ch+1).padStart(2,"0")+"/vd-c"+String(ch+1).padStart(2,"0")+"-"+id+".ogg"}
 function positionFor(options){
  if(options.position)return options.position;
@@ -43,55 +43,55 @@ function positionFor(options){
  return null;
 }
 function playAudio(path,options){
- const audio=new Audio();audio.preload="auto";audio.src=path;audio.volume=state.voiceVolume;audio.crossOrigin="anonymous";
+ const audio=new Audio();audio.preload="auto";audio.src=path;audio.volume=dialogueState.voiceVolume;audio.crossOrigin="anonymous";
  let connected=false;
  try{
   if(typeof AC!=="undefined"&&typeof mg!=="undefined"&&AC&&mg&&AC.createMediaElementSource){
    const source=AC.createMediaElementSource(audio),gain=AC.createGain();source.connect(gain);
    const pos=positionFor(options);
-   if(pos&&AC.createPanner){const p=AC.createPanner();p.panningModel="HRTF";p.distanceModel="inverse";p.refDistance=1.2;p.maxDistance=32;p.rolloffFactor=1.35;gain.connect(p);p.connect(root.mg);if(p.positionX){p.positionX.value=pos.x;p.positionY.value=pos.y||1.5;p.positionZ.value=pos.z}else p.setPosition(pos.x,pos.y||1.5,pos.z);gain.gain.value=state.voiceVolume;connected=true}
-   else{gain.connect(root.mg);gain.gain.value=state.voiceVolume;connected=true}
+   if(pos&&AC.createPanner){const p=AC.createPanner();p.panningModel="HRTF";p.distanceModel="inverse";p.refDistance=1.2;p.maxDistance=32;p.rolloffFactor=1.35;gain.connect(p);p.connect(mg);if(p.positionX){p.positionX.value=pos.x;p.positionY.value=pos.y||1.5;p.positionZ.value=pos.z}else p.setPosition(pos.x,pos.y||1.5,pos.z);gain.gain.value=dialogueState.voiceVolume;connected=true}
+   else{gain.connect(mg);gain.gain.value=dialogueState.voiceVolume;connected=true}
   }
  }catch(e){}
- if(!connected)audio.volume=state.voiceVolume;
- state.audio=audio;
+ if(!connected)audio.volume=dialogueState.voiceVolume;
+ dialogueState.audio=audio;
  audio.addEventListener("ended",finish,{once:true});
- audio.addEventListener("error",()=>{state.missing.add(path);if(!state.current)return;const current=state.current;const duration=Math.max(2600,Math.min(7200,current.text.length*48));current.fallbackTimer=setTimeout(finish,duration)},{once:true});
- const promise=audio.play();if(promise&&promise.catch)promise.catch(()=>{if(!state.current)return;const current=state.current;current.fallbackTimer=setTimeout(finish,Math.max(2600,Math.min(7200,current.text.length*48)))});
+ audio.addEventListener("error",()=>{dialogueState.missing.add(path);if(!dialogueState.current)return;const current=dialogueState.current;const duration=Math.max(2600,Math.min(7200,current.text.length*48));current.fallbackTimer=setTimeout(finish,duration)},{once:true});
+ const promise=audio.play();if(promise&&promise.catch)promise.catch(()=>{if(!dialogueState.current)return;const current=dialogueState.current;current.fallbackTimer=setTimeout(finish,Math.max(2600,Math.min(7200,current.text.length*48)))});
 }
-function finish(){if(state.current&&state.current.fallbackTimer)clearTimeout(state.current.fallbackTimer);if(state.audio){try{state.audio.pause()}catch(e){}state.audio=null}state.current=null;hideSubtitle();state.lastAt=now()/1000;drain()}
-function drain(){if(state.current||state.paused||!state.queue.length)return;state.queue.sort((a,b)=>b.priority-a.priority);const item=state.queue.shift();start(item)}
+function finish(){if(dialogueState.current&&dialogueState.current.fallbackTimer)clearTimeout(dialogueState.current.fallbackTimer);if(dialogueState.audio){try{dialogueState.audio.pause()}catch(e){}dialogueState.audio=null}dialogueState.current=null;hideSubtitle();dialogueState.lastAt=now()/1000;drain()}
+function drain(){if(dialogueState.current||dialogueState.paused||!dialogueState.queue.length)return;dialogueState.queue.sort((a,b)=>b.priority-a.priority);const item=dialogueState.queue.shift();start(item)}
 function start(item){
- state.current=item;showSubtitle(item.text);
+ dialogueState.current=item;showSubtitle(item.text);
  const path=voicePath(item.chapter,item.id);
  playAudio(path,{spatial:item.spatial,position:item.position});
 }
 function speak(chapter,id,text,options={}){
  if(!text||chapter<0||chapter>=chapters.length)return false;
- const key=chapter+":"+id;if(options.once!==false&&state.seen.has(key))return false;
+ const key=chapter+":"+id;if(options.once!==false&&dialogueState.seen.has(key))return false;
  const priority=options.priority??1,critical=priority>=4;
- if(!critical&&now()/1000-state.lastCommon<7)return false;
- if(!critical&&state.current&&state.current.priority>=priority)return false;
- if(options.once!==false)state.seen.add(key);
+ if(!critical&&now()/1000-dialogueState.lastCommon<7)return false;
+ if(!critical&&dialogueState.current&&dialogueState.current.priority>=priority)return false;
+ if(options.once!==false)dialogueState.seen.add(key);
  const item={chapter,id,text,priority,spatial:!!options.spatial,position:options.position||null};
- if(state.current){
-  if(options.interrupt||priority>state.current.priority){stopCurrent();state.queue=[]}
-  else{state.queue.push(item);return true}
+ if(dialogueState.current){
+  if(options.interrupt||priority>dialogueState.current.priority){stopCurrent();dialogueState.queue=[]}
+  else{dialogueState.queue.push(item);return true}
  }
- if(priority<4&&state.current===null&&now()/1000-state.lastAt<2.5){state.queue.push(item);return true}
- if(priority<4)state.lastCommon=now()/1000;
+ if(priority<4&&dialogueState.current===null&&now()/1000-dialogueState.lastAt<2.5){dialogueState.queue.push(item);return true}
+ if(priority<4)dialogueState.lastCommon=now()/1000;
  start(item);return true;
 }
 function resetChapter(level){
- state.chapter=level;state.elapsed=0;state.slowAt=58;state.exploreIndex=0;state.lastProgress=0;state.lastEnemy="";state.lastNear=0;state.lastDoor=0;state.lastMechanism=0;
- state.queue=state.queue.filter(x=>x.priority>=4);
- if(state.current&&state.current.id.indexOf("ending-")!==0)stopCurrent();
+ dialogueState.chapter=level;dialogueState.elapsed=0;dialogueState.slowAt=58;dialogueState.exploreIndex=0;dialogueState.lastProgress=0;dialogueState.lastEnemy="";dialogueState.lastNear=0;dialogueState.lastDoor=0;dialogueState.lastMechanism=0;
+ dialogueState.queue=dialogueState.queue.filter(x=>x.priority>=4);
+ if(dialogueState.current&&dialogueState.current.id.indexOf("ending-")!==0)stopCurrent();
  const c=chapters[level];if(!c)return;
  speak(level,"intro-"+String(level+1).padStart(2,"0"),c.intro,{priority:4,interrupt:true});
 }
-function event(id,text,priority=2,spatial=false){return speak(state.chapter,id,text,{priority,spatial})}
+function event(id,text,priority=2,spatial=false){return speak(dialogueState.chapter,id,text,{priority,spatial})}
 function onPick(item){
- if(!item)return;const c=chapters[state.chapter];if(!c)return;
+ if(!item)return;const c=chapters[dialogueState.chapter];if(!c)return;
  if(item.k==="K")event("candle",c.candle,3);
  else if(item.k==="N")event("clue",c.clue,3);
  else if(item.k==="B")event("battery",c.battery,2);
@@ -100,29 +100,29 @@ function onPick(item){
  else if(item.k==="Q")event("objective-"+item.challengeIndex,c.objective[item.challengeIndex% c.objective.length],3);
 }
 function update(dt){
- if(state.chapter<0||state.chapter>=chapters.length||state.paused||typeof root.state!="undefined"&&root.state!=="play"||typeof state==="undefined"||state!=="play")return;
- const c=chapters[state.chapter];state.elapsed+=Math.min(dt,.05);
+ if(dialogueState.chapter<0||dialogueState.chapter>=chapters.length||dialogueState.paused||typeof state==="undefined"||state!=="play")return;
+ const c=chapters[dialogueState.chapter];dialogueState.elapsed+=Math.min(dt,.05);
  const objective=root.GameChapterObjectives&&root.GameChapterObjectives.getState?root.GameChapterObjectives.getState():null;
- if(objective&&objective.progress>state.lastProgress){state.lastProgress=objective.progress;if(objective.done)event("objective-complete","Muito bem. Você terminou. Não fique tão orgulhoso, ainda falta conversar comigo.",4)}
- if(state.elapsed>state.slowAt&&(!objective||!objective.done)){state.slowAt=Infinity;event("slow",c.slow,2)}
- if(state.elapsed>18&&state.exploreIndex===0){state.exploreIndex=1;event("explore-a",c.explore[0],1)}
- if(state.elapsed>52&&state.exploreIndex===1){state.exploreIndex=2;event("explore-b",c.explore[1],1)}
+ if(objective&&objective.progress>dialogueState.lastProgress){dialogueState.lastProgress=objective.progress;if(objective.done)event("objective-complete","Muito bem. Você terminou. Não fique tão orgulhoso, ainda falta conversar comigo.",4)}
+ if(dialogueState.elapsed>dialogueState.slowAt&&(!objective||!objective.done)){dialogueState.slowAt=Infinity;event("slow",c.slow,2)}
+ if(dialogueState.elapsed>18&&dialogueState.exploreIndex===0){dialogueState.exploreIndex=1;event("explore-a",c.explore[0],1)}
+ if(dialogueState.elapsed>52&&dialogueState.exploreIndex===1){dialogueState.exploreIndex=2;event("explore-b",c.explore[1],1)}
  const enemy=typeof V!=="undefined"?V:null,player=typeof pl!=="undefined"?pl:null,dist=enemy&&player?Math.hypot(enemy.x-player.x,enemy.z-player.z):Infinity;
- if(enemy&&enemy.st==="chase"&&state.lastEnemy!=="chase"){state.lastEnemy="chase";event("chase",c.chase,5,true)}
- else if(enemy&&enemy.st!=="chase"&&state.lastEnemy==="chase")state.lastEnemy=enemy.st;
- if(enemy&&dist<8.5&&enemy.st!=="dorm"&&enemy.st!=="relocate"&&now()/1000-state.lastNear>22){state.lastNear=now()/1000;event("danger",c.danger,4,true)}
- if(player&&player.hid&&state.lastEnemy!=="hidden"){state.lastEnemy="hidden";event("hide",c.hide,3,!!(enemy&&dist<10))}
- if(player&&!player.hid&&state.lastEnemy==="hidden")state.lastEnemy="";
+ if(enemy&&enemy.st==="chase"&&dialogueState.lastEnemy!=="chase"){dialogueState.lastEnemy="chase";event("chase",c.chase,5,true)}
+ else if(enemy&&enemy.st!=="chase"&&dialogueState.lastEnemy==="chase")dialogueState.lastEnemy=enemy.st;
+ if(enemy&&dist<8.5&&enemy.st!=="dorm"&&enemy.st!=="relocate"&&now()/1000-dialogueState.lastNear>22){dialogueState.lastNear=now()/1000;event("danger",c.danger,4,true)}
+ if(player&&player.hid&&dialogueState.lastEnemy!=="hidden"){dialogueState.lastEnemy="hidden";event("hide",c.hide,3,!!(enemy&&dist<10))}
+ if(player&&!player.hid&&dialogueState.lastEnemy==="hidden")dialogueState.lastEnemy="";
 }
-function onDoor(door,open){if(open&&door&&chapters[state.chapter]&&now()/1000-state.lastDoor>9){state.lastDoor=now()/1000;event("door",chapters[state.chapter].close,1,true)}}
-function onMechanism(success){const c=chapters[state.chapter];if(!c)return;const time=now()/1000;if(!success){if(time-state.lastMechanism>8){state.lastMechanism=time;event("error",c.error,2)}return}if(time-state.lastMechanism>12){state.lastMechanism=time;event("mechanism",c.mechanism,2)}}
-function onDeath(){const c=chapters[state.chapter];if(c)speak(state.chapter,"death","Você pode recomeçar quantas vezes quiser. Eu tive treze anos para praticar a espera.",{priority:5,interrupt:true})}
-function onTransition(next){const c=chapters[state.chapter];if(c&&next>state.chapter)speak(state.chapter,"ending",c.ending,{priority:5,interrupt:true})}
-function resetRun(){state.run++;state.seen.clear();state.queue=[];stopCurrent();state.chapter=-1;state.elapsed=0;state.lastCommon=0;state.lastAt=0;state.paused=false}
-function pause(){state.paused=true;state.queue=[];stopCurrent()}
-function resume(){state.paused=false}
-function snapshot(){return{seen:Array.from(state.seen).slice(-600),chapter:state.chapter}}
-function restore(data){if(data&&Array.isArray(data.seen))state.seen=new Set(data.seen.filter(x=>typeof x==="string"&&x.length<120).slice(-600))}
+function onDoor(door,open){if(open&&door&&chapters[dialogueState.chapter]&&now()/1000-dialogueState.lastDoor>9){dialogueState.lastDoor=now()/1000;event("door",chapters[dialogueState.chapter].close,1,true)}}
+function onMechanism(success){const c=chapters[dialogueState.chapter];if(!c)return;const time=now()/1000;if(!success){if(time-dialogueState.lastMechanism>8){dialogueState.lastMechanism=time;event("error",c.error,2)}return}if(time-dialogueState.lastMechanism>12){dialogueState.lastMechanism=time;event("mechanism",c.mechanism,2)}}
+function onDeath(){const c=chapters[dialogueState.chapter];if(c)speak(dialogueState.chapter,"death","Você pode recomeçar quantas vezes quiser. Eu tive treze anos para praticar a espera.",{priority:5,interrupt:true})}
+function onTransition(next){const c=chapters[dialogueState.chapter];if(c&&next>dialogueState.chapter)speak(dialogueState.chapter,"ending",c.ending,{priority:5,interrupt:true})}
+function resetRun(){dialogueState.run++;dialogueState.seen.clear();dialogueState.queue=[];stopCurrent();dialogueState.chapter=-1;dialogueState.elapsed=0;dialogueState.lastCommon=0;dialogueState.lastAt=0;dialogueState.paused=false}
+function pause(){dialogueState.paused=true;dialogueState.queue=[];stopCurrent()}
+function resume(){dialogueState.paused=false}
+function snapshot(){return{seen:Array.from(dialogueState.seen).slice(-600),chapter:dialogueState.chapter}}
+function restore(data){if(data&&Array.isArray(data.seen))dialogueState.seen=new Set(data.seen.filter(x=>typeof x==="string"&&x.length<120).slice(-600))}
 function manifest(){return chapters.map((c,index)=>({chapter:index+1,title:(typeof L!=="undefined"&&L[index]&&L[index].n)||"Capítulo "+(index+1),assets:["intro-"+String(index+1).padStart(2,"0"),"explore-a","explore-b","objective-0","objective-1","objective-2","objective-complete","candle","clue","battery","secret","key","slow","danger","chase","hide","door","mechanism","error","ending","death"].map(id=>({id,path:voicePath(index,id),status:"pending-recording"}))}))}
 function installHooks(){
  ensureUI();
@@ -130,13 +130,13 @@ function installHooks(){
  if(mechanismPrototype&&typeof mechanismPrototype.toggle==="function"&&!mechanismPrototype.__valdireneWrapped){const originalToggle=mechanismPrototype.toggle;mechanismPrototype.toggle=function(id,inventory){const result=originalToggle.call(this,id,inventory);onMechanism(!!(result&&result.ok));return result};mechanismPrototype.__valdireneWrapped=true}
  const wrap=(name,handler)=>{const original=root[name];if(typeof original!=="function")return;root[name]=function(){return handler.call(this,original,arguments)}};
  wrap("build",function(original,args){const result=original.apply(this,args);resetChapter(Number(args[0])||0);return result});
- wrap("go",function(original,args){const next=Number(args[0]);if(Number.isFinite(next)&&next>state.chapter)onTransition(next);return original.apply(this,args)});
+ wrap("go",function(original,args){const next=Number(args[0]);if(Number.isFinite(next)&&next>dialogueState.chapter)onTransition(next);return original.apply(this,args)});
  wrap("pick",function(original,args){const item=args[0];const result=original.apply(this,args);onPick(item);return result});
  wrap("odoor",function(original,args){const result=original.apply(this,args);onDoor(args[0],!!args[1]);return result});
  wrap("act",function(original,args){const target=typeof tg!=="undefined"?tg:null,result=original.apply(this,args);if(target&&target.t&&target.t==="d")onDoor(target.o,!target.o.o);return result});
  wrap("die",function(original,args){onDeath();return original.apply(this,args)});
  wrap("newG",function(original,args){resetRun();return original.apply(this,args)});
- wrap("retry",function(original,args){state.queue=[];stopCurrent();return original.apply(this,args)});
+ wrap("retry",function(original,args){dialogueState.queue=[];stopCurrent();return original.apply(this,args)});
  wrap("pause",function(original,args){pause();return original.apply(this,args)});
  wrap("resume",function(original,args){resume();return original.apply(this,args)});
  wrap("menu",function(original,args){pause();return original.apply(this,args)});
@@ -146,5 +146,5 @@ function installHooks(){
  const oldUpd=root.upd;if(typeof oldUpd==="function")root.upd=function(dt){const result=oldUpd.apply(this,arguments);update(dt);return result};
 }
 installHooks();
-root.GameValdireneDialogue=Object.freeze({speak,update,onPick,onDoor,onMechanism,onDeath,onTransition,resetRun,pause,resume,snapshot,restore,manifest,getState:()=>({chapter:state.chapter,elapsed:state.elapsed,queued:state.queue.length,speaking:!!state.current,subtitle:state.subtitle,missingAssets:state.missing.size})});
+root.GameValdireneDialogue=Object.freeze({speak,update,onPick,onDoor,onMechanism,onDeath,onTransition,resetRun,pause,resume,snapshot,restore,manifest,getState:()=>({chapter:dialogueState.chapter,elapsed:dialogueState.elapsed,queued:dialogueState.queue.length,speaking:!!dialogueState.current,subtitle:dialogueState.subtitle,missingAssets:dialogueState.missing.size})});
 })(typeof window!=="undefined"?window:globalThis);
