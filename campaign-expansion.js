@@ -132,6 +132,7 @@ const originalUpdWithCandles=upd;
 upd=function(dt){
  originalUpdWithCandles(dt);
  updatePickupParticles(dt);
+ if(tg&&tg.t==="i"&&tg.o&&tg.o.candle){const prompt=document.getElementById("pr");if(prompt)prompt.textContent="[E] COLETAR VELA";}
  const counter=document.getElementById("candle-progress");
  if(counter)counter.textContent="VELAS  "+pl.got+" / "+pl.need+"   ·   FALTAM "+Math.max(0,pl.need-pl.got);
  for(const item of items){
