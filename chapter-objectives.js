@@ -98,11 +98,12 @@ function installHUD(){
 }
 function refreshHUD(){
  const def=definitions[lv],el=document.getElementById("chapter-objective");
- if(el&&def)el.textContent="DESAFIO · "+def.title.toUpperCase()+"  |  "+(active?.progress||0)+"/3  ·  "+def.hint;
+ if(el&&def)el.textContent="DESAFIO · "+def.title.toUpperCase()+"  |  "+(active?.progress||0)+"/3  ·  ORDEM: "+(active?.labels||def.labels).join(" → ");
 }
 function setup(){
  active={level:lv,progress:0,done:false,stations:[]};
  const def=definitions[lv];if(!def)return;
+ active.labels=def.labels.slice();const seed=(root.GameRunSeed?root.GameRunSeed():0x4e444d56)>>>0;let state=(seed^Math.imul(lv+1,0x27d4eb2d))>>>0;const roll=()=>{state=(state+0x6D2B79F5)>>>0;let t=state;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return((t^(t>>>14))>>>0)/4294967296};for(let i=active.labels.length-1;i>0;i--){const j=Math.floor(roll()*(i+1));[active.labels[i],active.labels[j]]=[active.labels[j],active.labels[i]]}
  const points=spawnPoints();
  points.forEach((p,index)=>{
   const mesh=makeStation(def,index);mesh.position.set(p.x,0,p.z);scene.add(mesh);
@@ -122,13 +123,13 @@ pick=function(item){
  if(item&&item.k==="Q"){
   if(!active||active.done||item.collecting)return;
   if(item.challengeIndex!==active.progress){
-   refreshHUD();note("Ainda não. Próximo passo: "+definitions[lv].labels[active.progress]+".",2600);th(120,.28,.3);return;
+   refreshHUD();note("Ainda não. Próximo passo: "+active.labels[active.progress]+".",2600);th(120,.28,.3);return;
   }
   item.collecting=true;const index=items.indexOf(item);if(index>=0)items.splice(index,1);
   interactionTweens.push({object:item.m,elapsed:0,duration:.3,baseY:item.m.position.y});
   active.progress++;th(430+active.progress*130,.18,.28);
   if(active.progress===3){active.done=true;note("Desafio concluído: "+definitions[lv].title+".",4500);th(880,.35,.32)}
-  else note(definitions[lv].labels[item.challengeIndex]+" confirmado.",1800);
+  else note(active.labels[item.challengeIndex]+" confirmado.",1800);
   refreshHUD();saveProgress(item,true);return;
  }
  return originalPick(item);
@@ -140,8 +141,8 @@ go=function(next){
 };
 const originalAlt=alt;
 alt=function(choice){
- if(active&&lv===14&&!active.done){note("O ritual ainda não foi concluído. "+definitions[lv].hint,4000);refreshHUD();return}
+ if(active&&lv===14&&!active.done){note("O ritual ainda não foi concluído. "+active.labels.join(" → "),4000);refreshHUD();return}
  return originalAlt(choice);
 };
-root.GameChapterObjectives=Object.freeze({definitions,getState:()=>active?{level:active.level,progress:active.progress,done:active.done}:null});
+root.GameChapterObjectives=Object.freeze({definitions,getState:()=>active?{level:active.level,progress:active.progress,done:active.done,order:active.labels.slice()}:null});
 })(typeof window!=="undefined"?window:globalThis);
