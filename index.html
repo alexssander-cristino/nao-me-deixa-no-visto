@@ -319,7 +319,7 @@ else if(k=='B')items.push({k:'B',x,z,m:em(0x44ff66,x,z,1,'B')});else if(k=='X')i
 else if(k=='E'||k=='A'){const group=new THREE.Group(),frame=new THREE.MeshStandardMaterial({color:0x3a211b,roughness:.8}),panel=new THREE.MeshStandardMaterial({color:k=='E'?0x4c1018:0x241b2b,roughness:.55}),gold=new THREE.MeshStandardMaterial({color:0xb18a4e,metalness:.65,roughness:.3});const part=(geo,ma,px,py,pz)=>{const q=new THREE.Mesh(geo,ma);q.position.set(px,py,pz);q.castShadow=true;group.add(q)};part(new THREE.BoxGeometry(2.45,2.9,.24),frame,0,1.45,0);part(new THREE.BoxGeometry(2.15,2.62,.1),panel,0,1.45,.16);for(let yy of [.65,1.45,2.22])part(new THREE.BoxGeometry(1.72,.045,.025),frame,0,yy,.23);part(new THREE.SphereGeometry(.07,12,10),gold,.82,1.35,.29);group.position.set(x,0,z);scene.add(group);ex={x,z,m:group}}}
 wallBatch.instanceMatrix.needsUpdate=true;wallBatch.frustumCulled=false;scene.add(wallBatch);decorateLevel(n);addPhysicsProps();pl.need=items.filter(i=>i.k=='K').length;pl.got=0;pl.hid=null;pl.p=0;pl.y=0;pl.st=100;pl.bat=100;pl.on=1;
 scareSequence=null;const vspawn=rc(10);V={x:vspawn[1]*4,z:vspawn[0]*4,st:'dorm',t:n==4?12:28};vm=mkV(0);vm.visible=false;scene.add(vm);gh=mkV(1);gh.visible=false;scene.add(gh);gT=0;
-camera.position.set(pl.x,1.65,pl.z);playerAvatar=GamePlayerAnimation.create(THREE);scene.add(playerAvatar)}
+camera.position.set(pl.x,1.65,pl.z);playerAvatar=GamePlayerAnimation.create(THREE);scene.add(playerAvatar);GamePlayerAnimation.attachFlashlight(playerAvatar,flashlightModel);GamePlayerAnimation.assertIntegrity(playerAvatar)}
 // IA da Valdirene
 const cell=o=>[Math.round(o.z/4),Math.round(o.x/4)];
 function rc(far){for(let i=0;i<240;i++){const r=1+(0|R()*(rows-2)),c=1+(0|R()*(cols-2)),k=ch(r,c);if(k!='#'&&k!='H'&&(!far||Math.hypot(c*4-pl.x,r*4-pl.z)>far)&&!physics.overlapsCircle(c*4,r*4,.42))return[r,c]}return[1,1]}
@@ -478,14 +478,8 @@ const led=new THREE.Mesh(new THREE.CircleGeometry(.012,20),new THREE.MeshBasicMa
 led.position.z=-.242;flashlightModel.add(led);
 const switchButton=new THREE.Mesh(new THREE.CylinderGeometry(.018,.02,.025,16),flashlightTrim);
 switchButton.position.set(0,.059,.055);flashlightModel.add(switchButton);
-// Mão visível em primeira pessoa: a palma e os dedos envolvem o corpo da lanterna, presos ao mesmo attachment da câmera.
-const gripHand=new THREE.Group(),handSkin=new THREE.MeshStandardMaterial({color:0x987568,roughness:.9}),handShadow=new THREE.MeshStandardMaterial({color:0x55413b,roughness:.96});
-const palm=new THREE.Mesh(new THREE.SphereGeometry(1,16,12),handSkin);palm.scale.set(.075,.06,.105);palm.position.set(-.065,-.015,.075);gripHand.add(palm);
-for(let finger=0;finger<4;finger++){const f=new THREE.Mesh(new THREE.SphereGeometry(1,12,10),handSkin);f.scale.set(.025,.022,.052);f.position.set(.005,-.045+finger*.024,.015);f.rotation.y=.18;gripHand.add(f)}
-const thumb=new THREE.Mesh(new THREE.SphereGeometry(1,12,10),handSkin);thumb.scale.set(.025,.035,.062);thumb.position.set(-.115,.025,.035);thumb.rotation.z=-.45;gripHand.add(thumb);
-const cuff=new THREE.Mesh(new THREE.CylinderGeometry(.075,.07,.09,16),handShadow);cuff.rotation.x=-P/2;cuff.position.set(-.065,-.012,.17);gripHand.add(cuff);
-gripHand.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true}});flashlightModel.add(gripHand);
-flashlightModel.position.set(.32,-.28,-.48);flashlightModel.rotation.x=-.08;camera.add(flashlightModel);
+// A lanterna é anexada ao socket da mão direita do rig único durante a criação do player.
+flashlightModel.position.set(0,0,0);flashlightModel.rotation.set(0,0,0);flashlightModel.userData.cameraMounted=false;
 rs();addEventListener('resize',rs);build(0);ap();$('r1').value=S.vol;$('r2').value=S.sensX;$('sensVal').textContent=(Number(S.sensX)||.85).toFixed(2);$('r2y').value=S.sensY;$('sensYVal').textContent=(Number(S.sensY)||.85).toFixed(2);$('invertY').checked=!!S.invertY;$('headBob').checked=S.headBob!==false;$('reduceCamera').checked=!!S.reduceCameraEffects;$('r3').value=S.bri;$('ct').style.display=SG?'':'none';
 document.addEventListener('pointerlockchange',()=>{
  const active=!!document.pointerLockElement;
