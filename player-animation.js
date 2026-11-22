@@ -137,7 +137,9 @@
   const rig=avatar.userData&&avatar.userData.rig;
   if(rig&&rig.flashlight&&rig.flashlight.parent)rig.flashlight.parent.remove(rig.flashlight);
   if(avatar.parent)avatar.parent.remove(avatar);
-  avatar.traverse(o=>{if(o.isMesh){o.geometry&&o.geometry.dispose();if(Array.isArray(o.material))o.material.forEach(m=>m.dispose());else o.material&&o.material.dispose()}});
+  const geometries=new Set(),materials=new Set();
+  avatar.traverse(o=>{if(o.isMesh){if(o.geometry)geometries.add(o.geometry);if(Array.isArray(o.material))o.material.forEach(m=>materials.add(m));else if(o.material)materials.add(o.material)}});
+  geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());
   if(activeAvatar===avatar)activeAvatar=null;
  }
  root.GamePlayerAnimation=Object.freeze({create,update,attachFlashlight,assertIntegrity,dispose,getState:avatar=>avatar&&avatar.userData?avatar.userData.state:"IDLE"});
