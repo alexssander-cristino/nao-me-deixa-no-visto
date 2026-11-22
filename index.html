@@ -654,7 +654,7 @@ updV = function(dt){
   if(V && V.st==="pat" && soundMemory && soundMemory.time>0){
     const d=Math.hypot(V.x-soundMemory.x,V.z-soundMemory.z);
     if(d<soundMemory.radius){
-      V.st="inv";
+      GameEnemyAI.transition(V,"inv","legacy-sound-memory",performance.now()/1000);
       V.last=[soundMemory.x,soundMemory.z];
       V.lost=0;
       V.tg=null;
@@ -669,7 +669,7 @@ updV = function(dt){
     else entityLookTime=Math.max(0,entityLookTime-dt*1.8);
     if(entityLookTime>1.35){
       entityLookTime=0;
-      V.st="dorm";
+      GameEnemyAI.transition(V,"dorm","player-observed-entity",performance.now()/1000);
       V.t=2.2+Math.random()*1.2;
       vm.visible=false;
       sting(.22);
