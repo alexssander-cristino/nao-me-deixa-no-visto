@@ -77,7 +77,7 @@
       const baseFov=clamp(Number(settings.fov)||76,60,110);
       camera.fov=approach(camera.fov,baseFov+(player.run?3:0),5,delta);
       camera.updateProjectionMatrix();
-      if(flashlight){
+      if(flashlight&&flashlight.userData&&flashlight.userData.cameraMounted){
         flashlight.position.x=.32+(player.run?Math.sin(this.bobPhase)*.018:0);
         flashlight.position.y=-.28+(player.run?Math.abs(Math.sin(this.bobPhase))*.018:0);
       }
