@@ -180,6 +180,26 @@ test("enemy perception only acquires visible players or audible noise sources", 
   assert.doesNotMatch(html, /if\(!pl\.hid&&pl\.run&&dist<\(difficulty==/);
 });
 
+test("all 15 chapter objective sets retain their three-step sequences", () => {
+  require("../chapter-objectives.js");
+  const definitions = globalThis.GameChapterObjectives.definitions;
+  assert.equal(definitions.length, 15);
+  for (const chapter of definitions) {
+    assert.equal(chapter.labels.length, 3);
+    assert.ok(chapter.title && chapter.hint && chapter.kind);
+  }
+});
+
+test("Valdirene voice manifest accounts for all 360 assets across 15 chapters", () => {
+  const manifest = JSON.parse(read("audio/valdirene/voice-manifest.json"));
+  assert.equal(manifest.recordingsAvailable, false);
+  assert.equal(manifest.chapters.length, 15);
+  const assets = manifest.chapters.flatMap(chapter => chapter.assets);
+  assert.equal(assets.length, 360);
+  assert.equal(new Set(assets.map(asset => asset.path)).size, 360);
+  assert.ok(assets.every(asset => asset.status === "pending_recording"));
+});
+
 test("controller accelerates smoothly and respects the world collider", () => {
   require("../physics.js");
   require("../controller.js");
