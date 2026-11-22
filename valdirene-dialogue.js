@@ -36,7 +36,7 @@ function ensureUI(){
 function hideSubtitle(){const el=document.getElementById("valdirene-subtitle");if(el){el.style.opacity="0";el.textContent=""}}
 function showSubtitle(text){const el=document.getElementById("valdirene-subtitle");if(!el)return;if(!state.subtitle){hideSubtitle();return}el.innerHTML="";const name=document.createElement("strong");name.textContent="Valdirene";const line=document.createElement("span");line.textContent=text;el.append(name,line);el.style.opacity="1"}
 function stopCurrent(){if(state.audio){try{state.audio.pause();state.audio.currentTime=0;state.audio.src=""}catch(e){}state.audio=null}state.current=null;hideSubtitle()}
-function voicePath(ch,id){return "./audio/valdirene/pt-BR/capitulo-"+String(ch+1).padStart(2,"0")+"/"+id+".ogg"}
+function voicePath(ch,id){return "./audio/valdirene/pt-BR/capitulo-"+String(ch+1).padStart(2,"0")+"/vd-c"+String(ch+1).padStart(2,"0")+"-"+id+".ogg"}
 function positionFor(options){
  if(options.position)return options.position;
  if(options.spatial&&root.V&&root.V.st!=="dorm"&&root.V.st!=="relocate")return{x:root.V.x,y:1.55,z:root.V.z};
@@ -92,11 +92,11 @@ function resetChapter(level){
 function event(id,text,priority=2,spatial=false){return speak(state.chapter,id,text,{priority,spatial})}
 function onPick(item){
  if(!item)return;const c=chapters[state.chapter];if(!c)return;
- if(item.k==="K")event("candle-"+item.x+"-"+item.z,c.candle,3);
- else if(item.k==="N")event("clue-"+item.x+"-"+item.z,c.clue,3);
- else if(item.k==="B")event("battery-"+item.x+"-"+item.z,c.battery,2);
- else if(item.k==="X")event("secret-"+item.x+"-"+item.z,"Você encontrou o que estava escondido. Eu esperava que demorasse mais.",3);
- else if(item.k==="KEY")event("key-"+item.keyId,"A chave está com você agora. Não a perca. Algumas portas só abrem uma vez.",3);
+ if(item.k==="K")event("candle",c.candle,3);
+ else if(item.k==="N")event("clue",c.clue,3);
+ else if(item.k==="B")event("battery",c.battery,2);
+ else if(item.k==="X")event("secret","Você encontrou o que estava escondido. Eu esperava que demorasse mais.",3);
+ else if(item.k==="KEY")event("key","A chave está com você agora. Não a perca. Algumas portas só abrem uma vez.",3);
  else if(item.k==="Q")event("objective-"+item.challengeIndex,c.objective[item.challengeIndex% c.objective.length],3);
 }
 function update(dt){
@@ -104,26 +104,26 @@ function update(dt){
  const c=chapters[state.chapter];state.elapsed+=Math.min(dt,.05);
  const objective=root.GameChapterObjectives&&root.GameChapterObjectives.getState?root.GameChapterObjectives.getState():null;
  if(objective&&objective.progress>state.lastProgress){state.lastProgress=objective.progress;if(objective.done)event("objective-complete","Muito bem. Você terminou. Não fique tão orgulhoso, ainda falta conversar comigo.",4)}
- if(state.elapsed>state.slowAt&&(!objective||!objective.done)){state.slowAt=Infinity;event("slow-"+state.chapter,c.slow,2)}
+ if(state.elapsed>state.slowAt&&(!objective||!objective.done)){state.slowAt=Infinity;event("slow",c.slow,2)}
  if(state.elapsed>18&&state.exploreIndex===0){state.exploreIndex=1;event("explore-a",c.explore[0],1)}
  if(state.elapsed>52&&state.exploreIndex===1){state.exploreIndex=2;event("explore-b",c.explore[1],1)}
  const enemy=root.V,dist=enemy&&root.pl?Math.hypot(enemy.x-root.pl.x,enemy.z-root.pl.z):Infinity;
- if(enemy&&enemy.st==="chase"&&state.lastEnemy!=="chase"){state.lastEnemy="chase";event("chase-"+state.chapter,c.chase,5,true)}
+ if(enemy&&enemy.st==="chase"&&state.lastEnemy!=="chase"){state.lastEnemy="chase";event("chase",c.chase,5,true)}
  else if(enemy&&enemy.st!=="chase"&&state.lastEnemy==="chase")state.lastEnemy=enemy.st;
- if(enemy&&dist<8.5&&enemy.st!=="dorm"&&enemy.st!=="relocate"&&now()/1000-state.lastNear>22){state.lastNear=now()/1000;event("danger-"+state.chapter,c.danger,4,true)}
- if(root.pl&&root.pl.hid&&state.lastEnemy!=="hidden"){state.lastEnemy="hidden";event("hide-"+state.chapter,c.hide,3,!!(enemy&&dist<10))}
+ if(enemy&&dist<8.5&&enemy.st!=="dorm"&&enemy.st!=="relocate"&&now()/1000-state.lastNear>22){state.lastNear=now()/1000;event("danger",c.danger,4,true)}
+ if(root.pl&&root.pl.hid&&state.lastEnemy!=="hidden"){state.lastEnemy="hidden";event("hide",c.hide,3,!!(enemy&&dist<10))}
  if(root.pl&&!root.pl.hid&&state.lastEnemy==="hidden")state.lastEnemy="";
 }
-function onDoor(door,open){if(open&&door&&now()/1000-state.lastDoor>9){state.lastDoor=now()/1000;event("door-"+Math.round(door.x)+"-"+Math.round(door.z),chapters[state.chapter].close,1,true)}}
-function onMechanism(success){const c=chapters[state.chapter];if(!c)return;const time=now()/1000;if(!success){if(time-state.lastMechanism>8){state.lastMechanism=time;event("mechanism-error-"+Math.floor(time/10),c.error,2)}return}if(time-state.lastMechanism>12){state.lastMechanism=time;event("mechanism-"+Math.floor(time/10),c.mechanism,2)}}
-function onDeath(){const c=chapters[state.chapter];if(c)speak(state.chapter,"death-"+state.chapter,"Você pode recomeçar quantas vezes quiser. Eu tive treze anos para praticar a espera.",{priority:5,interrupt:true})}
-function onTransition(next){const c=chapters[state.chapter];if(c&&next>state.chapter)speak(state.chapter,"ending-"+state.chapter,c.ending,{priority:5,interrupt:true})}
+function onDoor(door,open){if(open&&door&&now()/1000-state.lastDoor>9){state.lastDoor=now()/1000;event("door",chapters[state.chapter].close,1,true)}}
+function onMechanism(success){const c=chapters[state.chapter];if(!c)return;const time=now()/1000;if(!success){if(time-state.lastMechanism>8){state.lastMechanism=time;event("error",c.error,2)}return}if(time-state.lastMechanism>12){state.lastMechanism=time;event("mechanism",c.mechanism,2)}}
+function onDeath(){const c=chapters[state.chapter];if(c)speak(state.chapter,"death","Você pode recomeçar quantas vezes quiser. Eu tive treze anos para praticar a espera.",{priority:5,interrupt:true})}
+function onTransition(next){const c=chapters[state.chapter];if(c&&next>state.chapter)speak(state.chapter,"ending",c.ending,{priority:5,interrupt:true})}
 function resetRun(){state.run++;state.seen.clear();state.queue=[];stopCurrent();state.chapter=-1;state.elapsed=0;state.lastCommon=0;state.lastAt=0;state.paused=false}
 function pause(){state.paused=true;state.queue=[];stopCurrent()}
 function resume(){state.paused=false}
 function snapshot(){return{seen:Array.from(state.seen).slice(-600),chapter:state.chapter}}
 function restore(data){if(data&&Array.isArray(data.seen))state.seen=new Set(data.seen.filter(x=>typeof x==="string"&&x.length<120).slice(-600))}
-function manifest(){return chapters.map((c,index)=>({chapter:index+1,title:(root.L&&root.L[index]&&root.L[index].n)||"Capítulo "+(index+1),assets:["intro","explore-a","explore-b","objective-0","objective-1","objective-complete","candle","clue","battery","slow","danger","chase","hide","mechanism","error","ending","death"].map(id=>({id,path:voicePath(index,"vd-c"+String(index+1).padStart(2,"0")+"-"+id+".ogg"),status:"pending-recording"}))}))}
+function manifest(){return chapters.map((c,index)=>({chapter:index+1,title:(root.L&&root.L[index]&&root.L[index].n)||"Capítulo "+(index+1),assets:["intro-"+String(index+1).padStart(2,"0"),"explore-a","explore-b","objective-0","objective-1","objective-2","objective-complete","candle","clue","battery","secret","key","slow","danger","chase","hide","door","mechanism","error","ending","death"].map(id=>({id,path:voicePath(index,id),status:"pending-recording"}))}))}
 function installHooks(){
  ensureUI();
  const wrap=(name,handler)=>{const original=root[name];if(typeof original!=="function")return;root[name]=function(){return handler.call(this,original,arguments)}};
