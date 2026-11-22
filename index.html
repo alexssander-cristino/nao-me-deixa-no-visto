@@ -73,7 +73,7 @@ try{
 }catch(e){}
 const sv=()=>{try{localStorage.setItem('vs',JSON.stringify(S))}catch(e){}};
 function sanitizeSave(value){
- if(!value||typeof value!=='object'||Array.isArray(value)||!Number.isInteger(value.lv)||value.lv<0||value.lv>4)return null;
+ if(!value||typeof value!=='object'||Array.isArray(value)||!Number.isInteger(value.lv)||value.lv<0||value.lv>14)return null;
  const number=(v,min,max,fallback)=>{const n=Number(v);return Number.isFinite(n)?Math.max(min,Math.min(max,n)):fallback};
  return {
   lv:value.lv,lore:Math.round(number(value.lore,0,20,0)),sec:value.sec?1:0,
@@ -411,7 +411,7 @@ function menu(){invalidateAudioEvents();state='menu';paused=0;modal=0;document.e
 function pause(){if(state!='play'||paused)return;invalidateAudioEvents();if($('iv').classList.contains('on')){sh('iv',0);modal=0}paused=1;sh('pa',1);document.exitPointerLock&&document.exitPointerLock();mouseLook.clear();keys={};if(AC&&AC.state==='running')AC.suspend();try{speechSynthesis.pause()}catch(e){}}
 function resume(){paused=0;sh('pa',0);sh('cf',0);if(AC&&AC.state==='suspended')AC.resume();try{speechSynthesis.resume()}catch(e){}lock()}
 function retry(){sh('go',0);if(SG&&SG.lv===lv){lore=SG.lore||0;sec=SG.sec||0;resumeCheckpoint=1}else resumeCheckpoint=0;ai();go(lv);lock()}
-function die(){if(state!='play')return;invalidateAudioEvents();state='over';keys={};mouseLook.clear();document.exitPointerLock&&document.exitPointerLock();sting(.8);if(lv==4){fin('bad');return}$('gt').textContent='Valdirene: '+pk(GT);sh('go',1)}
+function die(){if(state!='play')return;invalidateAudioEvents();state='over';keys={};mouseLook.clear();document.exitPointerLock&&document.exitPointerLock();sting(.8);if(lv===L.length-1){fin('bad');return}$('gt').textContent='Valdirene: '+pk(GT);sh('go',1)}
 function fin(t,x){invalidateAudioEvents();state='end';modal=0;document.exitPointerLock&&document.exitPointerLock();$('et').textContent=E[t][0];$('ep').textContent=(x?'Você tenta responder, mas não sabe o que ela passou. O "digitando..." aparece e some. Ela viu. ':'')+E[t][1];sh('en',1);$('hud').style.display='none';$('dg').style.opacity=0}
 function alt(c){sh('al',0);if(!c)fin('bad');else if(lore>=4)fin(sec?'sec':'good');else fin('bad',1)}
 function upd(dt){
@@ -827,4 +827,4 @@ upd = function(dt){
   }
 };
 
-</script></body></html>
+</script><script src="./campaign-expansion.js"></script></body></html>
