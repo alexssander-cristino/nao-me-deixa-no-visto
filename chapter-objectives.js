@@ -103,8 +103,12 @@ function setup(){
  points.forEach((p,index)=>{
   const mesh=makeStation(def,index);mesh.position.set(p.x,0,p.z);scene.add(mesh);
   const item={k:"Q",x:p.x,z:p.z,m:mesh,challengeIndex:index,collecting:false};
-  items.push(item);active.stations.push(item);
+  const key="Q:"+item.x+":"+item.z;
+  const restored=!!(resumeCheckpoint&&SG&&SG.lv===lv&&Array.isArray(SG.collected)&&SG.collected.includes(key));
+  if(restored){scene.remove(mesh);active.progress++}else items.push(item);
+  active.stations.push(item);
  });
+ active.done=active.progress>=3;
  installHUD();refreshHUD();
 }
 const originalBuild=build;
@@ -121,7 +125,7 @@ pick=function(item){
   active.progress++;th(430+active.progress*130,.18,.28);
   if(active.progress===3){active.done=true;note("Desafio concluído: "+definitions[lv].title+".",4500);th(880,.35,.32)}
   else note(definitions[lv].labels[item.challengeIndex]+" confirmado.",1800);
-  refreshHUD();saveProgress(null,true);return;
+  refreshHUD();saveProgress(item,true);return;
  }
  return originalPick(item);
 };
