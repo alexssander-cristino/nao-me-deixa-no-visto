@@ -192,8 +192,8 @@
       "title": "CORREDOR INFINITO",
       "assets": [
         {
-          "id": "intro-01",
-          "path": "audio/valdirene/pt-BR/capitulo-02/vd-c02-intro-01.ogg",
+          "id": "intro-02",
+          "path": "audio/valdirene/pt-BR/capitulo-02/vd-c02-intro-02.ogg",
           "status": "pending_recording",
           "format": "ogg",
           "language": "pt-BR",
@@ -374,8 +374,8 @@
       "title": "MERCADO ABANDONADO",
       "assets": [
         {
-          "id": "intro-01",
-          "path": "audio/valdirene/pt-BR/capitulo-03/vd-c03-intro-01.ogg",
+          "id": "intro-03",
+          "path": "audio/valdirene/pt-BR/capitulo-03/vd-c03-intro-03.ogg",
           "status": "pending_recording",
           "format": "ogg",
           "language": "pt-BR",
@@ -556,8 +556,8 @@
       "title": "MOTEL DECADENTE",
       "assets": [
         {
-          "id": "intro-01",
-          "path": "audio/valdirene/pt-BR/capitulo-04/vd-c04-intro-01.ogg",
+          "id": "intro-04",
+          "path": "audio/valdirene/pt-BR/capitulo-04/vd-c04-intro-04.ogg",
           "status": "pending_recording",
           "format": "ogg",
           "language": "pt-BR",
@@ -738,8 +738,8 @@
       "title": "IGREJA ABANDONADA",
       "assets": [
         {
-          "id": "intro-01",
-          "path": "audio/valdirene/pt-BR/capitulo-05/vd-c05-intro-01.ogg",
+          "id": "intro-05",
+          "path": "audio/valdirene/pt-BR/capitulo-05/vd-c05-intro-05.ogg",
           "status": "pending_recording",
           "format": "ogg",
           "language": "pt-BR",
@@ -920,8 +920,8 @@
       "title": "O PRÉDIO VAZIO",
       "assets": [
         {
-          "id": "intro-01",
-          "path": "audio/valdirene/pt-BR/capitulo-06/vd-c06-intro-01.ogg",
+          "id": "intro-06",
+          "path": "audio/valdirene/pt-BR/capitulo-06/vd-c06-intro-06.ogg",
           "status": "pending_recording",
           "format": "ogg",
           "language": "pt-BR",
@@ -1102,8 +1102,8 @@
       "title": "A ESCOLA FECHADA",
       "assets": [
         {
-          "id": "intro-01",
-          "path": "audio/valdirene/pt-BR/capitulo-07/vd-c07-intro-01.ogg",
+          "id": "intro-07",
+          "path": "audio/valdirene/pt-BR/capitulo-07/vd-c07-intro-07.ogg",
           "status": "pending_recording",
           "format": "ogg",
           "language": "pt-BR",
@@ -1284,8 +1284,8 @@
       "title": "A CLÍNICA",
       "assets": [
         {
-          "id": "intro-01",
-          "path": "audio/valdirene/pt-BR/capitulo-08/vd-c08-intro-01.ogg",
+          "id": "intro-08",
+          "path": "audio/valdirene/pt-BR/capitulo-08/vd-c08-intro-08.ogg",
           "status": "pending_recording",
           "format": "ogg",
           "language": "pt-BR",
@@ -1466,8 +1466,8 @@
       "title": "O ESTACIONAMENTO",
       "assets": [
         {
-          "id": "intro-01",
-          "path": "audio/valdirene/pt-BR/capitulo-09/vd-c09-intro-01.ogg",
+          "id": "intro-09",
+          "path": "audio/valdirene/pt-BR/capitulo-09/vd-c09-intro-09.ogg",
           "status": "pending_recording",
           "format": "ogg",
           "language": "pt-BR",
@@ -1648,8 +1648,8 @@
       "title": "A ESTAÇÃO",
       "assets": [
         {
-          "id": "intro-01",
-          "path": "audio/valdirene/pt-BR/capitulo-10/vd-c10-intro-01.ogg",
+          "id": "intro-10",
+          "path": "audio/valdirene/pt-BR/capitulo-10/vd-c10-intro-10.ogg",
           "status": "pending_recording",
           "format": "ogg",
           "language": "pt-BR",
@@ -1830,8 +1830,8 @@
       "title": "A CASA DE FESTAS",
       "assets": [
         {
-          "id": "intro-01",
-          "path": "audio/valdirene/pt-BR/capitulo-11/vd-c11-intro-01.ogg",
+          "id": "intro-11",
+          "path": "audio/valdirene/pt-BR/capitulo-11/vd-c11-intro-11.ogg",
           "status": "pending_recording",
           "format": "ogg",
           "language": "pt-BR",
@@ -2012,8 +2012,8 @@
       "title": "O HOTEL 13",
       "assets": [
         {
-          "id": "intro-01",
-          "path": "audio/valdirene/pt-BR/capitulo-12/vd-c12-intro-01.ogg",
+          "id": "intro-12",
+          "path": "audio/valdirene/pt-BR/capitulo-12/vd-c12-intro-12.ogg",
           "status": "pending_recording",
           "format": "ogg",
           "language": "pt-BR",
@@ -2194,8 +2194,8 @@
       "title": "O SUBSOLO",
       "assets": [
         {
-          "id": "intro-01",
-          "path": "audio/valdirene/pt-BR/capitulo-13/vd-c13-intro-01.ogg",
+          "id": "intro-13",
+          "path": "audio/valdirene/pt-BR/capitulo-13/vd-c13-intro-13.ogg",
           "status": "pending_recording",
           "format": "ogg",
           "language": "pt-BR",
@@ -2376,8 +2376,8 @@
       "title": "A MATERNIDADE",
       "assets": [
         {
-          "id": "intro-01",
-          "path": "audio/valdirene/pt-BR/capitulo-14/vd-c14-intro-01.ogg",
+          "id": "intro-14",
+          "path": "audio/valdirene/pt-BR/capitulo-14/vd-c14-intro-14.ogg",
           "status": "pending_recording",
           "format": "ogg",
           "language": "pt-BR",
@@ -2558,8 +2558,8 @@
       "title": "A IGREJA INVERTIDA",
       "assets": [
         {
-          "id": "intro-01",
-          "path": "audio/valdirene/pt-BR/capitulo-15/vd-c15-intro-01.ogg",
+          "id": "intro-15",
+          "path": "audio/valdirene/pt-BR/capitulo-15/vd-c15-intro-15.ogg",
           "status": "pending_recording",
           "format": "ogg",
           "language": "pt-BR",
