@@ -17,6 +17,8 @@ const sources={
  growl:"https://sfxmint.com/dl/horror-growl-11.mp3"
 };
 const cache=new Map();
+const volumes={ambience:.28,wind:.32,stinger:.72,valdireneScream:.9,andersonScream:.9,breathing:.32,door:.58,footstep:.24,growl:.58};
+try{Object.assign(volumes,JSON.parse(localStorage.getItem("ndmvv.audio.volumes")||"{}"))}catch(error){}
 let ambienceName=null,lastBreath=0,lastWind=0,lastStep=0,master=.8;
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 function get(name){
@@ -24,7 +26,7 @@ function get(name){
  let entry=cache.get(name);if(entry)return entry;
  const audio=new Audio();audio.crossOrigin="anonymous";audio.preload="auto";audio.src=sources[name];audio.volume=.7;
  entry={audio,source:null,panner:null,gain:null,failed:false};
- audio.addEventListener("error",()=>{entry.failed=true});
+ audio.addEventListener("error",()=>{entry.failed=true;console.warn("[GameAudio] Não foi possível carregar o efeito:",name,sources[name])});
  cache.set(name,entry);return entry;
 }
 function connect(entry){
@@ -53,7 +55,7 @@ function play(name,options={}){
   if(AC&&AC.state==="suspended")AC.resume();
   connect(entry);setPosition(entry,options.position);
   audio.pause();audio.currentTime=0;audio.loop=!!options.loop;
-  audio.volume=clamp((options.volume===undefined?.65:options.volume)*master*(typeof S!=="undefined"?S.vol:1),0,1);
+  audio.volume=clamp((volumes[name]===undefined?.65:volumes[name])*(options.volume===undefined?1:options.volume)*master*(typeof S!=="undefined"?S.vol:1),0,1);
   const result=audio.play();if(result&&result.catch)result.catch(()=>{});
   return true;
  }catch(error){return false}
@@ -93,9 +95,11 @@ function update(){
  }
 }
 function setMaster(value){master=clamp(Number(value)||0,0,1)}
+function setVolume(name,value){if(!(name in sources))return false;volumes[name]=clamp(Number(value)||0,0,1);try{localStorage.setItem("ndmvv.audio.volumes",JSON.stringify(volumes))}catch(error){}return true}
+function getVolumes(){return {...volumes}}
 document.addEventListener("pointerdown",unlock,{once:true,capture:true});
 document.addEventListener("keydown",unlock,{once:true,capture:true});
-root.GameAudio=Object.freeze({play,stop,stopAll,unlock,startLevel,update,setMaster,sources});
+root.GameAudio=Object.freeze({play,stop,stopAll,unlock,startLevel,update,setMaster,setVolume,getVolumes,sources});
 const originalBuild=build;
 build=function(n){originalBuild(n);startLevel(n)};
 const originalDoor=odoor;
