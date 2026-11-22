@@ -23,15 +23,27 @@ Sobreviver não significa apenas correr. É necessário prestar atenção ao amb
 
 ## Fases
 
-A campanha possui cinco cenários principais:
+A campanha possui **15 fases**, divididas entre os cenários originais e a expansão da campanha:
 
-| Fase | Cenário | Objetivo |
+| Fase | Cenário | Objetivo principal |
 |---|---|---|
-| 01 | A Casa | Investigar o ambiente e reconstruir o código do quadro |
-| 02 | Corredor Infinito | Restaurar os circuitos e sobreviver à perseguição |
-| 03 | Mercado Abandonado | Investigar o desaparecimento de objetos e pistas |
+| 01 | A Casa | Reconstruir o código do quadro |
+| 02 | Corredor Infinito | Restaurar os circuitos do corredor |
+| 03 | Mercado Abandonado | Rastrear o enxoval desaparecido |
 | 04 | Motel Decadente | Rastrear a ligação do quarto 13 |
-| 05 | Igreja Abandonada | Reacender o altar e enfrentar os acontecimentos finais |
+| 05 | Igreja Abandonada | Reacender o altar |
+| 06 | O Prédio Vazio | Liberar o prédio vazio |
+| 07 | A Escola Fechada | Encontrar a chamada correta |
+| 08 | A Clínica | Reativar a ala clínica |
+| 09 | O Estacionamento | Restaurar a saída do estacionamento |
+| 10 | A Estação | Liberar a plataforma |
+| 11 | A Casa de Festas | Preparar a saída da festa |
+| 12 | O Hotel 13 | Abrir a rota do hotel |
+| 13 | O Subsolo | Controlar a pressão do subsolo |
+| 14 | A Maternidade | Reunir as pulseiras |
+| 15 | A Igreja Invertida | Completar o ritual invertido |
+
+Cada fase possui cenário, ambientação, desafios e objetivos próprios. Os desafios de capítulo exigem a conclusão de uma sequência de três interações para liberar o progresso.
 
 ## Valdirene
 
