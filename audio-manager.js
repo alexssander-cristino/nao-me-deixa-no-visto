@@ -55,7 +55,8 @@ function play(name,options={}){
   if(AC&&AC.state==="suspended")AC.resume();
   connect(entry);setPosition(entry,options.position);
   audio.pause();audio.currentTime=0;audio.loop=!!options.loop;
-  audio.volume=clamp((volumes[name]===undefined?.65:volumes[name])*(options.volume===undefined?1:options.volume)*master*(typeof S!=="undefined"?S.vol:1),0,1);
+  const masterSetting=entry.source?1:(typeof S!=="undefined"?S.vol:1);
+  audio.volume=clamp((volumes[name]===undefined?.65:volumes[name])*(options.volume===undefined?1:options.volume)*master*masterSetting,0,1);
   const result=audio.play();if(result&&result.catch)result.catch(()=>{});
   return true;
  }catch(error){return false}
