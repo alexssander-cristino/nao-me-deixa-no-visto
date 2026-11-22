@@ -14,147 +14,176 @@
           "path": "audio/valdirene/pt-BR/capitulo-01/vd-c01-intro-01.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "calm-sarcastic"
         },
         {
           "id": "explore-a",
           "path": "audio/valdirene/pt-BR/capitulo-01/vd-c01-explore-a.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "whisper"
         },
         {
           "id": "explore-b",
           "path": "audio/valdirene/pt-BR/capitulo-01/vd-c01-explore-b.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "intimate-whisper"
         },
         {
           "id": "objective-0",
           "path": "audio/valdirene/pt-BR/capitulo-01/vd-c01-objective-0.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "objective-1",
           "path": "audio/valdirene/pt-BR/capitulo-01/vd-c01-objective-1.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "objective-2",
           "path": "audio/valdirene/pt-BR/capitulo-01/vd-c01-objective-2.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "objective-complete",
           "path": "audio/valdirene/pt-BR/capitulo-01/vd-c01-objective-complete.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "candle",
           "path": "audio/valdirene/pt-BR/capitulo-01/vd-c01-candle.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "clue",
           "path": "audio/valdirene/pt-BR/capitulo-01/vd-c01-clue.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "battery",
           "path": "audio/valdirene/pt-BR/capitulo-01/vd-c01-battery.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "secret",
           "path": "audio/valdirene/pt-BR/capitulo-01/vd-c01-secret.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "key",
           "path": "audio/valdirene/pt-BR/capitulo-01/vd-c01-key.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
+        },
+        {
+          "id": "laugh",
+          "path": "audio/valdirene/pt-BR/capitulo-01/vd-c01-laugh.ogg",
+          "status": "pending_recording",
+          "format": "ogg",
+          "language": "pt-BR",
+          "performance": "disturbed-laugh"
         },
         {
           "id": "slow",
           "path": "audio/valdirene/pt-BR/capitulo-01/vd-c01-slow.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "danger",
           "path": "audio/valdirene/pt-BR/capitulo-01/vd-c01-danger.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "low-whisper"
         },
         {
           "id": "chase",
           "path": "audio/valdirene/pt-BR/capitulo-01/vd-c01-chase.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "shouted"
         },
         {
           "id": "hide",
           "path": "audio/valdirene/pt-BR/capitulo-01/vd-c01-hide.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "close-whisper"
         },
         {
           "id": "door",
           "path": "audio/valdirene/pt-BR/capitulo-01/vd-c01-door.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "mechanism",
           "path": "audio/valdirene/pt-BR/capitulo-01/vd-c01-mechanism.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "error",
           "path": "audio/valdirene/pt-BR/capitulo-01/vd-c01-error.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "ending",
           "path": "audio/valdirene/pt-BR/capitulo-01/vd-c01-ending.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "emotional"
         },
         {
           "id": "death",
           "path": "audio/valdirene/pt-BR/capitulo-01/vd-c01-death.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "cold"
         }
       ]
     },
@@ -167,147 +196,176 @@
           "path": "audio/valdirene/pt-BR/capitulo-02/vd-c02-intro-01.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "calm-sarcastic"
         },
         {
           "id": "explore-a",
           "path": "audio/valdirene/pt-BR/capitulo-02/vd-c02-explore-a.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "whisper"
         },
         {
           "id": "explore-b",
           "path": "audio/valdirene/pt-BR/capitulo-02/vd-c02-explore-b.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "intimate-whisper"
         },
         {
           "id": "objective-0",
           "path": "audio/valdirene/pt-BR/capitulo-02/vd-c02-objective-0.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "objective-1",
           "path": "audio/valdirene/pt-BR/capitulo-02/vd-c02-objective-1.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "objective-2",
           "path": "audio/valdirene/pt-BR/capitulo-02/vd-c02-objective-2.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "objective-complete",
           "path": "audio/valdirene/pt-BR/capitulo-02/vd-c02-objective-complete.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "candle",
           "path": "audio/valdirene/pt-BR/capitulo-02/vd-c02-candle.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "clue",
           "path": "audio/valdirene/pt-BR/capitulo-02/vd-c02-clue.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "battery",
           "path": "audio/valdirene/pt-BR/capitulo-02/vd-c02-battery.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "secret",
           "path": "audio/valdirene/pt-BR/capitulo-02/vd-c02-secret.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "key",
           "path": "audio/valdirene/pt-BR/capitulo-02/vd-c02-key.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
+        },
+        {
+          "id": "laugh",
+          "path": "audio/valdirene/pt-BR/capitulo-02/vd-c02-laugh.ogg",
+          "status": "pending_recording",
+          "format": "ogg",
+          "language": "pt-BR",
+          "performance": "disturbed-laugh"
         },
         {
           "id": "slow",
           "path": "audio/valdirene/pt-BR/capitulo-02/vd-c02-slow.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "danger",
           "path": "audio/valdirene/pt-BR/capitulo-02/vd-c02-danger.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "low-whisper"
         },
         {
           "id": "chase",
           "path": "audio/valdirene/pt-BR/capitulo-02/vd-c02-chase.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "shouted"
         },
         {
           "id": "hide",
           "path": "audio/valdirene/pt-BR/capitulo-02/vd-c02-hide.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "close-whisper"
         },
         {
           "id": "door",
           "path": "audio/valdirene/pt-BR/capitulo-02/vd-c02-door.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "mechanism",
           "path": "audio/valdirene/pt-BR/capitulo-02/vd-c02-mechanism.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "error",
           "path": "audio/valdirene/pt-BR/capitulo-02/vd-c02-error.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "ending",
           "path": "audio/valdirene/pt-BR/capitulo-02/vd-c02-ending.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "emotional"
         },
         {
           "id": "death",
           "path": "audio/valdirene/pt-BR/capitulo-02/vd-c02-death.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "cold"
         }
       ]
     },
@@ -320,147 +378,176 @@
           "path": "audio/valdirene/pt-BR/capitulo-03/vd-c03-intro-01.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "calm-sarcastic"
         },
         {
           "id": "explore-a",
           "path": "audio/valdirene/pt-BR/capitulo-03/vd-c03-explore-a.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "whisper"
         },
         {
           "id": "explore-b",
           "path": "audio/valdirene/pt-BR/capitulo-03/vd-c03-explore-b.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "intimate-whisper"
         },
         {
           "id": "objective-0",
           "path": "audio/valdirene/pt-BR/capitulo-03/vd-c03-objective-0.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "objective-1",
           "path": "audio/valdirene/pt-BR/capitulo-03/vd-c03-objective-1.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "objective-2",
           "path": "audio/valdirene/pt-BR/capitulo-03/vd-c03-objective-2.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "objective-complete",
           "path": "audio/valdirene/pt-BR/capitulo-03/vd-c03-objective-complete.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "candle",
           "path": "audio/valdirene/pt-BR/capitulo-03/vd-c03-candle.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "clue",
           "path": "audio/valdirene/pt-BR/capitulo-03/vd-c03-clue.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "battery",
           "path": "audio/valdirene/pt-BR/capitulo-03/vd-c03-battery.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "secret",
           "path": "audio/valdirene/pt-BR/capitulo-03/vd-c03-secret.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "key",
           "path": "audio/valdirene/pt-BR/capitulo-03/vd-c03-key.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
+        },
+        {
+          "id": "laugh",
+          "path": "audio/valdirene/pt-BR/capitulo-03/vd-c03-laugh.ogg",
+          "status": "pending_recording",
+          "format": "ogg",
+          "language": "pt-BR",
+          "performance": "disturbed-laugh"
         },
         {
           "id": "slow",
           "path": "audio/valdirene/pt-BR/capitulo-03/vd-c03-slow.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "danger",
           "path": "audio/valdirene/pt-BR/capitulo-03/vd-c03-danger.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "low-whisper"
         },
         {
           "id": "chase",
           "path": "audio/valdirene/pt-BR/capitulo-03/vd-c03-chase.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "shouted"
         },
         {
           "id": "hide",
           "path": "audio/valdirene/pt-BR/capitulo-03/vd-c03-hide.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "close-whisper"
         },
         {
           "id": "door",
           "path": "audio/valdirene/pt-BR/capitulo-03/vd-c03-door.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "mechanism",
           "path": "audio/valdirene/pt-BR/capitulo-03/vd-c03-mechanism.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "error",
           "path": "audio/valdirene/pt-BR/capitulo-03/vd-c03-error.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "ending",
           "path": "audio/valdirene/pt-BR/capitulo-03/vd-c03-ending.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "emotional"
         },
         {
           "id": "death",
           "path": "audio/valdirene/pt-BR/capitulo-03/vd-c03-death.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "cold"
         }
       ]
     },
@@ -473,147 +560,176 @@
           "path": "audio/valdirene/pt-BR/capitulo-04/vd-c04-intro-01.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "calm-sarcastic"
         },
         {
           "id": "explore-a",
           "path": "audio/valdirene/pt-BR/capitulo-04/vd-c04-explore-a.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "whisper"
         },
         {
           "id": "explore-b",
           "path": "audio/valdirene/pt-BR/capitulo-04/vd-c04-explore-b.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "intimate-whisper"
         },
         {
           "id": "objective-0",
           "path": "audio/valdirene/pt-BR/capitulo-04/vd-c04-objective-0.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "objective-1",
           "path": "audio/valdirene/pt-BR/capitulo-04/vd-c04-objective-1.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "objective-2",
           "path": "audio/valdirene/pt-BR/capitulo-04/vd-c04-objective-2.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "objective-complete",
           "path": "audio/valdirene/pt-BR/capitulo-04/vd-c04-objective-complete.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "candle",
           "path": "audio/valdirene/pt-BR/capitulo-04/vd-c04-candle.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "clue",
           "path": "audio/valdirene/pt-BR/capitulo-04/vd-c04-clue.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "battery",
           "path": "audio/valdirene/pt-BR/capitulo-04/vd-c04-battery.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "secret",
           "path": "audio/valdirene/pt-BR/capitulo-04/vd-c04-secret.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "key",
           "path": "audio/valdirene/pt-BR/capitulo-04/vd-c04-key.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
+        },
+        {
+          "id": "laugh",
+          "path": "audio/valdirene/pt-BR/capitulo-04/vd-c04-laugh.ogg",
+          "status": "pending_recording",
+          "format": "ogg",
+          "language": "pt-BR",
+          "performance": "disturbed-laugh"
         },
         {
           "id": "slow",
           "path": "audio/valdirene/pt-BR/capitulo-04/vd-c04-slow.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "danger",
           "path": "audio/valdirene/pt-BR/capitulo-04/vd-c04-danger.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "low-whisper"
         },
         {
           "id": "chase",
           "path": "audio/valdirene/pt-BR/capitulo-04/vd-c04-chase.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "shouted"
         },
         {
           "id": "hide",
           "path": "audio/valdirene/pt-BR/capitulo-04/vd-c04-hide.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "close-whisper"
         },
         {
           "id": "door",
           "path": "audio/valdirene/pt-BR/capitulo-04/vd-c04-door.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "mechanism",
           "path": "audio/valdirene/pt-BR/capitulo-04/vd-c04-mechanism.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "error",
           "path": "audio/valdirene/pt-BR/capitulo-04/vd-c04-error.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "ending",
           "path": "audio/valdirene/pt-BR/capitulo-04/vd-c04-ending.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "emotional"
         },
         {
           "id": "death",
           "path": "audio/valdirene/pt-BR/capitulo-04/vd-c04-death.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "cold"
         }
       ]
     },
@@ -626,147 +742,176 @@
           "path": "audio/valdirene/pt-BR/capitulo-05/vd-c05-intro-01.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "calm-sarcastic"
         },
         {
           "id": "explore-a",
           "path": "audio/valdirene/pt-BR/capitulo-05/vd-c05-explore-a.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "whisper"
         },
         {
           "id": "explore-b",
           "path": "audio/valdirene/pt-BR/capitulo-05/vd-c05-explore-b.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "intimate-whisper"
         },
         {
           "id": "objective-0",
           "path": "audio/valdirene/pt-BR/capitulo-05/vd-c05-objective-0.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "objective-1",
           "path": "audio/valdirene/pt-BR/capitulo-05/vd-c05-objective-1.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "objective-2",
           "path": "audio/valdirene/pt-BR/capitulo-05/vd-c05-objective-2.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "objective-complete",
           "path": "audio/valdirene/pt-BR/capitulo-05/vd-c05-objective-complete.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "candle",
           "path": "audio/valdirene/pt-BR/capitulo-05/vd-c05-candle.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "clue",
           "path": "audio/valdirene/pt-BR/capitulo-05/vd-c05-clue.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "battery",
           "path": "audio/valdirene/pt-BR/capitulo-05/vd-c05-battery.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "secret",
           "path": "audio/valdirene/pt-BR/capitulo-05/vd-c05-secret.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "key",
           "path": "audio/valdirene/pt-BR/capitulo-05/vd-c05-key.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
+        },
+        {
+          "id": "laugh",
+          "path": "audio/valdirene/pt-BR/capitulo-05/vd-c05-laugh.ogg",
+          "status": "pending_recording",
+          "format": "ogg",
+          "language": "pt-BR",
+          "performance": "disturbed-laugh"
         },
         {
           "id": "slow",
           "path": "audio/valdirene/pt-BR/capitulo-05/vd-c05-slow.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "danger",
           "path": "audio/valdirene/pt-BR/capitulo-05/vd-c05-danger.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "low-whisper"
         },
         {
           "id": "chase",
           "path": "audio/valdirene/pt-BR/capitulo-05/vd-c05-chase.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "shouted"
         },
         {
           "id": "hide",
           "path": "audio/valdirene/pt-BR/capitulo-05/vd-c05-hide.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "close-whisper"
         },
         {
           "id": "door",
           "path": "audio/valdirene/pt-BR/capitulo-05/vd-c05-door.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "mechanism",
           "path": "audio/valdirene/pt-BR/capitulo-05/vd-c05-mechanism.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "error",
           "path": "audio/valdirene/pt-BR/capitulo-05/vd-c05-error.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "ending",
           "path": "audio/valdirene/pt-BR/capitulo-05/vd-c05-ending.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "emotional"
         },
         {
           "id": "death",
           "path": "audio/valdirene/pt-BR/capitulo-05/vd-c05-death.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "cold"
         }
       ]
     },
@@ -779,147 +924,176 @@
           "path": "audio/valdirene/pt-BR/capitulo-06/vd-c06-intro-01.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "calm-sarcastic"
         },
         {
           "id": "explore-a",
           "path": "audio/valdirene/pt-BR/capitulo-06/vd-c06-explore-a.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "whisper"
         },
         {
           "id": "explore-b",
           "path": "audio/valdirene/pt-BR/capitulo-06/vd-c06-explore-b.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "intimate-whisper"
         },
         {
           "id": "objective-0",
           "path": "audio/valdirene/pt-BR/capitulo-06/vd-c06-objective-0.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "objective-1",
           "path": "audio/valdirene/pt-BR/capitulo-06/vd-c06-objective-1.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "objective-2",
           "path": "audio/valdirene/pt-BR/capitulo-06/vd-c06-objective-2.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "objective-complete",
           "path": "audio/valdirene/pt-BR/capitulo-06/vd-c06-objective-complete.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "candle",
           "path": "audio/valdirene/pt-BR/capitulo-06/vd-c06-candle.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "clue",
           "path": "audio/valdirene/pt-BR/capitulo-06/vd-c06-clue.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "battery",
           "path": "audio/valdirene/pt-BR/capitulo-06/vd-c06-battery.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "secret",
           "path": "audio/valdirene/pt-BR/capitulo-06/vd-c06-secret.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "key",
           "path": "audio/valdirene/pt-BR/capitulo-06/vd-c06-key.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
+        },
+        {
+          "id": "laugh",
+          "path": "audio/valdirene/pt-BR/capitulo-06/vd-c06-laugh.ogg",
+          "status": "pending_recording",
+          "format": "ogg",
+          "language": "pt-BR",
+          "performance": "disturbed-laugh"
         },
         {
           "id": "slow",
           "path": "audio/valdirene/pt-BR/capitulo-06/vd-c06-slow.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "danger",
           "path": "audio/valdirene/pt-BR/capitulo-06/vd-c06-danger.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "low-whisper"
         },
         {
           "id": "chase",
           "path": "audio/valdirene/pt-BR/capitulo-06/vd-c06-chase.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "shouted"
         },
         {
           "id": "hide",
           "path": "audio/valdirene/pt-BR/capitulo-06/vd-c06-hide.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "close-whisper"
         },
         {
           "id": "door",
           "path": "audio/valdirene/pt-BR/capitulo-06/vd-c06-door.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "mechanism",
           "path": "audio/valdirene/pt-BR/capitulo-06/vd-c06-mechanism.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "error",
           "path": "audio/valdirene/pt-BR/capitulo-06/vd-c06-error.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "ending",
           "path": "audio/valdirene/pt-BR/capitulo-06/vd-c06-ending.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "emotional"
         },
         {
           "id": "death",
           "path": "audio/valdirene/pt-BR/capitulo-06/vd-c06-death.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "cold"
         }
       ]
     },
@@ -932,147 +1106,176 @@
           "path": "audio/valdirene/pt-BR/capitulo-07/vd-c07-intro-01.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "calm-sarcastic"
         },
         {
           "id": "explore-a",
           "path": "audio/valdirene/pt-BR/capitulo-07/vd-c07-explore-a.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "whisper"
         },
         {
           "id": "explore-b",
           "path": "audio/valdirene/pt-BR/capitulo-07/vd-c07-explore-b.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "intimate-whisper"
         },
         {
           "id": "objective-0",
           "path": "audio/valdirene/pt-BR/capitulo-07/vd-c07-objective-0.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "objective-1",
           "path": "audio/valdirene/pt-BR/capitulo-07/vd-c07-objective-1.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "objective-2",
           "path": "audio/valdirene/pt-BR/capitulo-07/vd-c07-objective-2.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "objective-complete",
           "path": "audio/valdirene/pt-BR/capitulo-07/vd-c07-objective-complete.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "candle",
           "path": "audio/valdirene/pt-BR/capitulo-07/vd-c07-candle.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "clue",
           "path": "audio/valdirene/pt-BR/capitulo-07/vd-c07-clue.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "battery",
           "path": "audio/valdirene/pt-BR/capitulo-07/vd-c07-battery.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "secret",
           "path": "audio/valdirene/pt-BR/capitulo-07/vd-c07-secret.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "key",
           "path": "audio/valdirene/pt-BR/capitulo-07/vd-c07-key.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
+        },
+        {
+          "id": "laugh",
+          "path": "audio/valdirene/pt-BR/capitulo-07/vd-c07-laugh.ogg",
+          "status": "pending_recording",
+          "format": "ogg",
+          "language": "pt-BR",
+          "performance": "disturbed-laugh"
         },
         {
           "id": "slow",
           "path": "audio/valdirene/pt-BR/capitulo-07/vd-c07-slow.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "danger",
           "path": "audio/valdirene/pt-BR/capitulo-07/vd-c07-danger.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "low-whisper"
         },
         {
           "id": "chase",
           "path": "audio/valdirene/pt-BR/capitulo-07/vd-c07-chase.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "shouted"
         },
         {
           "id": "hide",
           "path": "audio/valdirene/pt-BR/capitulo-07/vd-c07-hide.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "close-whisper"
         },
         {
           "id": "door",
           "path": "audio/valdirene/pt-BR/capitulo-07/vd-c07-door.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "mechanism",
           "path": "audio/valdirene/pt-BR/capitulo-07/vd-c07-mechanism.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "error",
           "path": "audio/valdirene/pt-BR/capitulo-07/vd-c07-error.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "ending",
           "path": "audio/valdirene/pt-BR/capitulo-07/vd-c07-ending.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "emotional"
         },
         {
           "id": "death",
           "path": "audio/valdirene/pt-BR/capitulo-07/vd-c07-death.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "cold"
         }
       ]
     },
@@ -1085,147 +1288,176 @@
           "path": "audio/valdirene/pt-BR/capitulo-08/vd-c08-intro-01.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "calm-sarcastic"
         },
         {
           "id": "explore-a",
           "path": "audio/valdirene/pt-BR/capitulo-08/vd-c08-explore-a.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "whisper"
         },
         {
           "id": "explore-b",
           "path": "audio/valdirene/pt-BR/capitulo-08/vd-c08-explore-b.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "intimate-whisper"
         },
         {
           "id": "objective-0",
           "path": "audio/valdirene/pt-BR/capitulo-08/vd-c08-objective-0.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "objective-1",
           "path": "audio/valdirene/pt-BR/capitulo-08/vd-c08-objective-1.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "objective-2",
           "path": "audio/valdirene/pt-BR/capitulo-08/vd-c08-objective-2.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "objective-complete",
           "path": "audio/valdirene/pt-BR/capitulo-08/vd-c08-objective-complete.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "candle",
           "path": "audio/valdirene/pt-BR/capitulo-08/vd-c08-candle.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "clue",
           "path": "audio/valdirene/pt-BR/capitulo-08/vd-c08-clue.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "battery",
           "path": "audio/valdirene/pt-BR/capitulo-08/vd-c08-battery.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "secret",
           "path": "audio/valdirene/pt-BR/capitulo-08/vd-c08-secret.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "key",
           "path": "audio/valdirene/pt-BR/capitulo-08/vd-c08-key.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
+        },
+        {
+          "id": "laugh",
+          "path": "audio/valdirene/pt-BR/capitulo-08/vd-c08-laugh.ogg",
+          "status": "pending_recording",
+          "format": "ogg",
+          "language": "pt-BR",
+          "performance": "disturbed-laugh"
         },
         {
           "id": "slow",
           "path": "audio/valdirene/pt-BR/capitulo-08/vd-c08-slow.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "danger",
           "path": "audio/valdirene/pt-BR/capitulo-08/vd-c08-danger.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "low-whisper"
         },
         {
           "id": "chase",
           "path": "audio/valdirene/pt-BR/capitulo-08/vd-c08-chase.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "shouted"
         },
         {
           "id": "hide",
           "path": "audio/valdirene/pt-BR/capitulo-08/vd-c08-hide.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "close-whisper"
         },
         {
           "id": "door",
           "path": "audio/valdirene/pt-BR/capitulo-08/vd-c08-door.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "mechanism",
           "path": "audio/valdirene/pt-BR/capitulo-08/vd-c08-mechanism.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "error",
           "path": "audio/valdirene/pt-BR/capitulo-08/vd-c08-error.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "ending",
           "path": "audio/valdirene/pt-BR/capitulo-08/vd-c08-ending.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "emotional"
         },
         {
           "id": "death",
           "path": "audio/valdirene/pt-BR/capitulo-08/vd-c08-death.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "cold"
         }
       ]
     },
@@ -1238,147 +1470,176 @@
           "path": "audio/valdirene/pt-BR/capitulo-09/vd-c09-intro-01.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "calm-sarcastic"
         },
         {
           "id": "explore-a",
           "path": "audio/valdirene/pt-BR/capitulo-09/vd-c09-explore-a.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "whisper"
         },
         {
           "id": "explore-b",
           "path": "audio/valdirene/pt-BR/capitulo-09/vd-c09-explore-b.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "intimate-whisper"
         },
         {
           "id": "objective-0",
           "path": "audio/valdirene/pt-BR/capitulo-09/vd-c09-objective-0.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "objective-1",
           "path": "audio/valdirene/pt-BR/capitulo-09/vd-c09-objective-1.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "objective-2",
           "path": "audio/valdirene/pt-BR/capitulo-09/vd-c09-objective-2.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "objective-complete",
           "path": "audio/valdirene/pt-BR/capitulo-09/vd-c09-objective-complete.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "candle",
           "path": "audio/valdirene/pt-BR/capitulo-09/vd-c09-candle.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "clue",
           "path": "audio/valdirene/pt-BR/capitulo-09/vd-c09-clue.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "battery",
           "path": "audio/valdirene/pt-BR/capitulo-09/vd-c09-battery.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "secret",
           "path": "audio/valdirene/pt-BR/capitulo-09/vd-c09-secret.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "key",
           "path": "audio/valdirene/pt-BR/capitulo-09/vd-c09-key.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
+        },
+        {
+          "id": "laugh",
+          "path": "audio/valdirene/pt-BR/capitulo-09/vd-c09-laugh.ogg",
+          "status": "pending_recording",
+          "format": "ogg",
+          "language": "pt-BR",
+          "performance": "disturbed-laugh"
         },
         {
           "id": "slow",
           "path": "audio/valdirene/pt-BR/capitulo-09/vd-c09-slow.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "danger",
           "path": "audio/valdirene/pt-BR/capitulo-09/vd-c09-danger.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "low-whisper"
         },
         {
           "id": "chase",
           "path": "audio/valdirene/pt-BR/capitulo-09/vd-c09-chase.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "shouted"
         },
         {
           "id": "hide",
           "path": "audio/valdirene/pt-BR/capitulo-09/vd-c09-hide.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "close-whisper"
         },
         {
           "id": "door",
           "path": "audio/valdirene/pt-BR/capitulo-09/vd-c09-door.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "mechanism",
           "path": "audio/valdirene/pt-BR/capitulo-09/vd-c09-mechanism.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "error",
           "path": "audio/valdirene/pt-BR/capitulo-09/vd-c09-error.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "ending",
           "path": "audio/valdirene/pt-BR/capitulo-09/vd-c09-ending.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "emotional"
         },
         {
           "id": "death",
           "path": "audio/valdirene/pt-BR/capitulo-09/vd-c09-death.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "cold"
         }
       ]
     },
@@ -1391,147 +1652,176 @@
           "path": "audio/valdirene/pt-BR/capitulo-10/vd-c10-intro-01.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "calm-sarcastic"
         },
         {
           "id": "explore-a",
           "path": "audio/valdirene/pt-BR/capitulo-10/vd-c10-explore-a.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "whisper"
         },
         {
           "id": "explore-b",
           "path": "audio/valdirene/pt-BR/capitulo-10/vd-c10-explore-b.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "intimate-whisper"
         },
         {
           "id": "objective-0",
           "path": "audio/valdirene/pt-BR/capitulo-10/vd-c10-objective-0.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "objective-1",
           "path": "audio/valdirene/pt-BR/capitulo-10/vd-c10-objective-1.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "objective-2",
           "path": "audio/valdirene/pt-BR/capitulo-10/vd-c10-objective-2.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "objective-complete",
           "path": "audio/valdirene/pt-BR/capitulo-10/vd-c10-objective-complete.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "candle",
           "path": "audio/valdirene/pt-BR/capitulo-10/vd-c10-candle.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "clue",
           "path": "audio/valdirene/pt-BR/capitulo-10/vd-c10-clue.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "battery",
           "path": "audio/valdirene/pt-BR/capitulo-10/vd-c10-battery.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "secret",
           "path": "audio/valdirene/pt-BR/capitulo-10/vd-c10-secret.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "key",
           "path": "audio/valdirene/pt-BR/capitulo-10/vd-c10-key.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
+        },
+        {
+          "id": "laugh",
+          "path": "audio/valdirene/pt-BR/capitulo-10/vd-c10-laugh.ogg",
+          "status": "pending_recording",
+          "format": "ogg",
+          "language": "pt-BR",
+          "performance": "disturbed-laugh"
         },
         {
           "id": "slow",
           "path": "audio/valdirene/pt-BR/capitulo-10/vd-c10-slow.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "danger",
           "path": "audio/valdirene/pt-BR/capitulo-10/vd-c10-danger.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "low-whisper"
         },
         {
           "id": "chase",
           "path": "audio/valdirene/pt-BR/capitulo-10/vd-c10-chase.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "shouted"
         },
         {
           "id": "hide",
           "path": "audio/valdirene/pt-BR/capitulo-10/vd-c10-hide.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "close-whisper"
         },
         {
           "id": "door",
           "path": "audio/valdirene/pt-BR/capitulo-10/vd-c10-door.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "mechanism",
           "path": "audio/valdirene/pt-BR/capitulo-10/vd-c10-mechanism.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "error",
           "path": "audio/valdirene/pt-BR/capitulo-10/vd-c10-error.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "ending",
           "path": "audio/valdirene/pt-BR/capitulo-10/vd-c10-ending.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "emotional"
         },
         {
           "id": "death",
           "path": "audio/valdirene/pt-BR/capitulo-10/vd-c10-death.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "cold"
         }
       ]
     },
@@ -1544,147 +1834,176 @@
           "path": "audio/valdirene/pt-BR/capitulo-11/vd-c11-intro-01.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "calm-sarcastic"
         },
         {
           "id": "explore-a",
           "path": "audio/valdirene/pt-BR/capitulo-11/vd-c11-explore-a.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "whisper"
         },
         {
           "id": "explore-b",
           "path": "audio/valdirene/pt-BR/capitulo-11/vd-c11-explore-b.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "intimate-whisper"
         },
         {
           "id": "objective-0",
           "path": "audio/valdirene/pt-BR/capitulo-11/vd-c11-objective-0.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "objective-1",
           "path": "audio/valdirene/pt-BR/capitulo-11/vd-c11-objective-1.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "objective-2",
           "path": "audio/valdirene/pt-BR/capitulo-11/vd-c11-objective-2.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "objective-complete",
           "path": "audio/valdirene/pt-BR/capitulo-11/vd-c11-objective-complete.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "candle",
           "path": "audio/valdirene/pt-BR/capitulo-11/vd-c11-candle.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "clue",
           "path": "audio/valdirene/pt-BR/capitulo-11/vd-c11-clue.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "battery",
           "path": "audio/valdirene/pt-BR/capitulo-11/vd-c11-battery.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "secret",
           "path": "audio/valdirene/pt-BR/capitulo-11/vd-c11-secret.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "key",
           "path": "audio/valdirene/pt-BR/capitulo-11/vd-c11-key.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
+        },
+        {
+          "id": "laugh",
+          "path": "audio/valdirene/pt-BR/capitulo-11/vd-c11-laugh.ogg",
+          "status": "pending_recording",
+          "format": "ogg",
+          "language": "pt-BR",
+          "performance": "disturbed-laugh"
         },
         {
           "id": "slow",
           "path": "audio/valdirene/pt-BR/capitulo-11/vd-c11-slow.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "danger",
           "path": "audio/valdirene/pt-BR/capitulo-11/vd-c11-danger.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "low-whisper"
         },
         {
           "id": "chase",
           "path": "audio/valdirene/pt-BR/capitulo-11/vd-c11-chase.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "shouted"
         },
         {
           "id": "hide",
           "path": "audio/valdirene/pt-BR/capitulo-11/vd-c11-hide.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "close-whisper"
         },
         {
           "id": "door",
           "path": "audio/valdirene/pt-BR/capitulo-11/vd-c11-door.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "mechanism",
           "path": "audio/valdirene/pt-BR/capitulo-11/vd-c11-mechanism.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "error",
           "path": "audio/valdirene/pt-BR/capitulo-11/vd-c11-error.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "ending",
           "path": "audio/valdirene/pt-BR/capitulo-11/vd-c11-ending.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "emotional"
         },
         {
           "id": "death",
           "path": "audio/valdirene/pt-BR/capitulo-11/vd-c11-death.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "cold"
         }
       ]
     },
@@ -1697,147 +2016,176 @@
           "path": "audio/valdirene/pt-BR/capitulo-12/vd-c12-intro-01.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "calm-sarcastic"
         },
         {
           "id": "explore-a",
           "path": "audio/valdirene/pt-BR/capitulo-12/vd-c12-explore-a.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "whisper"
         },
         {
           "id": "explore-b",
           "path": "audio/valdirene/pt-BR/capitulo-12/vd-c12-explore-b.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "intimate-whisper"
         },
         {
           "id": "objective-0",
           "path": "audio/valdirene/pt-BR/capitulo-12/vd-c12-objective-0.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "objective-1",
           "path": "audio/valdirene/pt-BR/capitulo-12/vd-c12-objective-1.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "objective-2",
           "path": "audio/valdirene/pt-BR/capitulo-12/vd-c12-objective-2.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "objective-complete",
           "path": "audio/valdirene/pt-BR/capitulo-12/vd-c12-objective-complete.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "candle",
           "path": "audio/valdirene/pt-BR/capitulo-12/vd-c12-candle.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "clue",
           "path": "audio/valdirene/pt-BR/capitulo-12/vd-c12-clue.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "battery",
           "path": "audio/valdirene/pt-BR/capitulo-12/vd-c12-battery.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "secret",
           "path": "audio/valdirene/pt-BR/capitulo-12/vd-c12-secret.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "key",
           "path": "audio/valdirene/pt-BR/capitulo-12/vd-c12-key.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
+        },
+        {
+          "id": "laugh",
+          "path": "audio/valdirene/pt-BR/capitulo-12/vd-c12-laugh.ogg",
+          "status": "pending_recording",
+          "format": "ogg",
+          "language": "pt-BR",
+          "performance": "disturbed-laugh"
         },
         {
           "id": "slow",
           "path": "audio/valdirene/pt-BR/capitulo-12/vd-c12-slow.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "danger",
           "path": "audio/valdirene/pt-BR/capitulo-12/vd-c12-danger.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "low-whisper"
         },
         {
           "id": "chase",
           "path": "audio/valdirene/pt-BR/capitulo-12/vd-c12-chase.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "shouted"
         },
         {
           "id": "hide",
           "path": "audio/valdirene/pt-BR/capitulo-12/vd-c12-hide.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "close-whisper"
         },
         {
           "id": "door",
           "path": "audio/valdirene/pt-BR/capitulo-12/vd-c12-door.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "mechanism",
           "path": "audio/valdirene/pt-BR/capitulo-12/vd-c12-mechanism.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "error",
           "path": "audio/valdirene/pt-BR/capitulo-12/vd-c12-error.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "ending",
           "path": "audio/valdirene/pt-BR/capitulo-12/vd-c12-ending.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "emotional"
         },
         {
           "id": "death",
           "path": "audio/valdirene/pt-BR/capitulo-12/vd-c12-death.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "cold"
         }
       ]
     },
@@ -1850,147 +2198,176 @@
           "path": "audio/valdirene/pt-BR/capitulo-13/vd-c13-intro-01.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "calm-sarcastic"
         },
         {
           "id": "explore-a",
           "path": "audio/valdirene/pt-BR/capitulo-13/vd-c13-explore-a.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "whisper"
         },
         {
           "id": "explore-b",
           "path": "audio/valdirene/pt-BR/capitulo-13/vd-c13-explore-b.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "intimate-whisper"
         },
         {
           "id": "objective-0",
           "path": "audio/valdirene/pt-BR/capitulo-13/vd-c13-objective-0.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "objective-1",
           "path": "audio/valdirene/pt-BR/capitulo-13/vd-c13-objective-1.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "objective-2",
           "path": "audio/valdirene/pt-BR/capitulo-13/vd-c13-objective-2.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "objective-complete",
           "path": "audio/valdirene/pt-BR/capitulo-13/vd-c13-objective-complete.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "candle",
           "path": "audio/valdirene/pt-BR/capitulo-13/vd-c13-candle.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "clue",
           "path": "audio/valdirene/pt-BR/capitulo-13/vd-c13-clue.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "battery",
           "path": "audio/valdirene/pt-BR/capitulo-13/vd-c13-battery.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "secret",
           "path": "audio/valdirene/pt-BR/capitulo-13/vd-c13-secret.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "key",
           "path": "audio/valdirene/pt-BR/capitulo-13/vd-c13-key.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
+        },
+        {
+          "id": "laugh",
+          "path": "audio/valdirene/pt-BR/capitulo-13/vd-c13-laugh.ogg",
+          "status": "pending_recording",
+          "format": "ogg",
+          "language": "pt-BR",
+          "performance": "disturbed-laugh"
         },
         {
           "id": "slow",
           "path": "audio/valdirene/pt-BR/capitulo-13/vd-c13-slow.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "danger",
           "path": "audio/valdirene/pt-BR/capitulo-13/vd-c13-danger.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "low-whisper"
         },
         {
           "id": "chase",
           "path": "audio/valdirene/pt-BR/capitulo-13/vd-c13-chase.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "shouted"
         },
         {
           "id": "hide",
           "path": "audio/valdirene/pt-BR/capitulo-13/vd-c13-hide.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "close-whisper"
         },
         {
           "id": "door",
           "path": "audio/valdirene/pt-BR/capitulo-13/vd-c13-door.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "mechanism",
           "path": "audio/valdirene/pt-BR/capitulo-13/vd-c13-mechanism.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "error",
           "path": "audio/valdirene/pt-BR/capitulo-13/vd-c13-error.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "ending",
           "path": "audio/valdirene/pt-BR/capitulo-13/vd-c13-ending.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "emotional"
         },
         {
           "id": "death",
           "path": "audio/valdirene/pt-BR/capitulo-13/vd-c13-death.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "cold"
         }
       ]
     },
@@ -2003,147 +2380,176 @@
           "path": "audio/valdirene/pt-BR/capitulo-14/vd-c14-intro-01.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "calm-sarcastic"
         },
         {
           "id": "explore-a",
           "path": "audio/valdirene/pt-BR/capitulo-14/vd-c14-explore-a.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "whisper"
         },
         {
           "id": "explore-b",
           "path": "audio/valdirene/pt-BR/capitulo-14/vd-c14-explore-b.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "intimate-whisper"
         },
         {
           "id": "objective-0",
           "path": "audio/valdirene/pt-BR/capitulo-14/vd-c14-objective-0.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "objective-1",
           "path": "audio/valdirene/pt-BR/capitulo-14/vd-c14-objective-1.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "objective-2",
           "path": "audio/valdirene/pt-BR/capitulo-14/vd-c14-objective-2.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "objective-complete",
           "path": "audio/valdirene/pt-BR/capitulo-14/vd-c14-objective-complete.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "candle",
           "path": "audio/valdirene/pt-BR/capitulo-14/vd-c14-candle.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "clue",
           "path": "audio/valdirene/pt-BR/capitulo-14/vd-c14-clue.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "battery",
           "path": "audio/valdirene/pt-BR/capitulo-14/vd-c14-battery.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "secret",
           "path": "audio/valdirene/pt-BR/capitulo-14/vd-c14-secret.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "key",
           "path": "audio/valdirene/pt-BR/capitulo-14/vd-c14-key.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
+        },
+        {
+          "id": "laugh",
+          "path": "audio/valdirene/pt-BR/capitulo-14/vd-c14-laugh.ogg",
+          "status": "pending_recording",
+          "format": "ogg",
+          "language": "pt-BR",
+          "performance": "disturbed-laugh"
         },
         {
           "id": "slow",
           "path": "audio/valdirene/pt-BR/capitulo-14/vd-c14-slow.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "danger",
           "path": "audio/valdirene/pt-BR/capitulo-14/vd-c14-danger.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "low-whisper"
         },
         {
           "id": "chase",
           "path": "audio/valdirene/pt-BR/capitulo-14/vd-c14-chase.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "shouted"
         },
         {
           "id": "hide",
           "path": "audio/valdirene/pt-BR/capitulo-14/vd-c14-hide.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "close-whisper"
         },
         {
           "id": "door",
           "path": "audio/valdirene/pt-BR/capitulo-14/vd-c14-door.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "mechanism",
           "path": "audio/valdirene/pt-BR/capitulo-14/vd-c14-mechanism.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "error",
           "path": "audio/valdirene/pt-BR/capitulo-14/vd-c14-error.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "ending",
           "path": "audio/valdirene/pt-BR/capitulo-14/vd-c14-ending.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "emotional"
         },
         {
           "id": "death",
           "path": "audio/valdirene/pt-BR/capitulo-14/vd-c14-death.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "cold"
         }
       ]
     },
@@ -2156,147 +2562,176 @@
           "path": "audio/valdirene/pt-BR/capitulo-15/vd-c15-intro-01.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "calm-sarcastic"
         },
         {
           "id": "explore-a",
           "path": "audio/valdirene/pt-BR/capitulo-15/vd-c15-explore-a.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "whisper"
         },
         {
           "id": "explore-b",
           "path": "audio/valdirene/pt-BR/capitulo-15/vd-c15-explore-b.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "intimate-whisper"
         },
         {
           "id": "objective-0",
           "path": "audio/valdirene/pt-BR/capitulo-15/vd-c15-objective-0.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "objective-1",
           "path": "audio/valdirene/pt-BR/capitulo-15/vd-c15-objective-1.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "objective-2",
           "path": "audio/valdirene/pt-BR/capitulo-15/vd-c15-objective-2.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "objective-complete",
           "path": "audio/valdirene/pt-BR/capitulo-15/vd-c15-objective-complete.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "candle",
           "path": "audio/valdirene/pt-BR/capitulo-15/vd-c15-candle.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "clue",
           "path": "audio/valdirene/pt-BR/capitulo-15/vd-c15-clue.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "battery",
           "path": "audio/valdirene/pt-BR/capitulo-15/vd-c15-battery.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "secret",
           "path": "audio/valdirene/pt-BR/capitulo-15/vd-c15-secret.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "key",
           "path": "audio/valdirene/pt-BR/capitulo-15/vd-c15-key.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
+        },
+        {
+          "id": "laugh",
+          "path": "audio/valdirene/pt-BR/capitulo-15/vd-c15-laugh.ogg",
+          "status": "pending_recording",
+          "format": "ogg",
+          "language": "pt-BR",
+          "performance": "disturbed-laugh"
         },
         {
           "id": "slow",
           "path": "audio/valdirene/pt-BR/capitulo-15/vd-c15-slow.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "danger",
           "path": "audio/valdirene/pt-BR/capitulo-15/vd-c15-danger.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "low-whisper"
         },
         {
           "id": "chase",
           "path": "audio/valdirene/pt-BR/capitulo-15/vd-c15-chase.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "shouted"
         },
         {
           "id": "hide",
           "path": "audio/valdirene/pt-BR/capitulo-15/vd-c15-hide.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "close-whisper"
         },
         {
           "id": "door",
           "path": "audio/valdirene/pt-BR/capitulo-15/vd-c15-door.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "mechanism",
           "path": "audio/valdirene/pt-BR/capitulo-15/vd-c15-mechanism.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "error",
           "path": "audio/valdirene/pt-BR/capitulo-15/vd-c15-error.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "sarcastic"
         },
         {
           "id": "ending",
           "path": "audio/valdirene/pt-BR/capitulo-15/vd-c15-ending.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "emotional"
         },
         {
           "id": "death",
           "path": "audio/valdirene/pt-BR/capitulo-15/vd-c15-death.ogg",
           "status": "pending_recording",
           "format": "ogg",
-          "language": "pt-BR"
+          "language": "pt-BR",
+          "performance": "cold"
         }
       ]
     }
