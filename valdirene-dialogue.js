@@ -22,6 +22,7 @@ const chapters=[
 {intro:"A maternidade está vazia. O berço, não. Eu ouvi alguém chamar você de pai.",explore:["As pulseiras têm nomes diferentes, mas a mesma data.","O corredor cheira a talco. Você nunca chegou a conhecer esse lugar."],objective:["Berçário, ala dois, recepção. Valide as pulseiras sem trocar os nomes.","O registro neonatal foi alterado. Procure a linha do acompanhante."],candle:"Uma vela ao lado do berço. Não acorde quem está dormindo.",clue:"A gravação diz para não deixar que ela veja você primeiro. Quem será que escreveu?",battery:"Pilha encontrada. O monitor do berço ainda precisa de energia.",slow:"O berço parou de balançar. Você está esperando que alguém apareça?",danger:"Tem um choro atrás da porta. Não é um bebê.",chase:"NÃO DEIXA ELA CHEGAR AO BERÇO! CORRE!",hide:"Atrás da cortina do berçário? Você está assustando as crianças.",close:"As pulseiras foram reunidas. Agora você sabe a data.",mechanism:"O painel neonatal está travado. Use o seletor correto.",error:"Pulseira trocada. Não confunda o que é seu com o que é meu.",laugh:"Ah... o berço parou. Acho que ele também está esperando sua resposta.",ending:"A maternidade ficou em silêncio. Pela primeira vez, eu também."},
 {intro:"Você chegou ao último lugar. Eu sabia que chegaria. Não sabia se ainda teria coragem.",explore:["O altar tem duas sombras. Uma delas está segurando seu celular.","Eu não queria que você encontrasse tudo de uma vez. Queria que lembrasse."],objective:["Lua, olho, coroa. Complete o ritual e pare de fingir que não reconhece os símbolos.","O último símbolo não abre uma porta. Abre uma lembrança."],candle:"A chama final. Eu guardei esta vela para o dia em que você voltasse.",clue:"A mensagem que nunca enviei diz que eu devia ter aceitado o seu silêncio.",battery:"Ainda está procurando pilhas? Depois de tudo, continua preocupado com a lanterna.",slow:"Não há mais corredor para percorrer. Só falta você decidir o que vai responder.",danger:"Não olhe para o altar. Olhe para mim. Pela primeira vez, olhe de verdade.",chase:"CORRE SE QUISER! Eu também estou cansada de correr atrás!",hide:"Pode sair do esconderijo. Não quero mais brincar de procurar.",close:"O ritual terminou. Agora não existe mais nada entre a pergunta e a resposta.",mechanism:"O símbolo está invertido. Vire-o para o lado em que estava antes.",error:"Não. Esse símbolo representa o que você fez, não o que eu fiz.",laugh:"Heh... chegamos ao fim. Agora não tem mais para onde correr.",ending:"Treze anos cabem numa mensagem. A resposta, Anderson, é sua."}
 ];
+const RECORDINGS_AVAILABLE=false; // Ative após adicionar os 330 OGGs listados no manifesto.
 const dialogueState={chapter:-1,run:0,seen:new Set(),queue:[],current:null,lastAt:0,lastCommon:0,elapsed:0,slowAt:0,exploreIndex:0,lastProgress:0,lastEnemy:"",lastNear:0,lastDoor:0,lastMechanism:0,laughPlayed:false,paused:false,subtitle:true,voiceVolume:.9,missing:new Set(),audio:null,panner:null,cooldownTimer:null,raf:null};
 const now=()=>performance.now();
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
@@ -73,8 +74,8 @@ function scheduleDrain(){if(dialogueState.cooldownTimer||dialogueState.paused||d
 function drain(){if(dialogueState.current||dialogueState.paused||!dialogueState.queue.length)return;dialogueState.queue.sort((a,b)=>b.priority-a.priority);const item=dialogueState.queue[0];if(item.priority<4&&now()/1000-dialogueState.lastCommon<7){scheduleDrain();return}dialogueState.queue.shift();start(item)}
 function start(item){
  dialogueState.current=item;if(item.priority<4)dialogueState.lastCommon=now()/1000;showSubtitle(item.text);
- const path=voicePath(item.chapter,item.id);
- playAudio(path,{spatial:item.spatial,position:item.position});
+ if(RECORDINGS_AVAILABLE){const path=voicePath(item.chapter,item.id);playAudio(path,{spatial:item.spatial,position:item.position})}
+ else{const duration=Math.max(2600,Math.min(7200,item.text.length*48));item.fallbackTimer=setTimeout(()=>finish(),duration)}
 }
 function speak(chapter,id,text,options={}){
  if(!text||chapter<0||chapter>=chapters.length)return false;
@@ -159,5 +160,5 @@ function installHooks(){
  const oldUpd=root.upd;if(typeof oldUpd==="function")root.upd=function(dt){const result=oldUpd.apply(this,arguments);update(dt);return result};
 }
 installHooks();
-root.GameValdireneDialogue=Object.freeze({speak,update,onPick,onDoor,onMechanism,onDeath,onTransition,resetRun,pause,resume,snapshot,restore,manifest,getState:()=>({chapter:dialogueState.chapter,elapsed:dialogueState.elapsed,queued:dialogueState.queue.length,speaking:!!dialogueState.current,subtitle:dialogueState.subtitle,missingAssets:dialogueState.missing.size})});
+root.GameValdireneDialogue=Object.freeze({speak,update,onPick,onDoor,onMechanism,onDeath,onTransition,resetRun,pause,resume,snapshot,restore,manifest,getState:()=>({chapter:dialogueState.chapter,elapsed:dialogueState.elapsed,queued:dialogueState.queue.length,speaking:!!dialogueState.current,subtitle:dialogueState.subtitle,missingAssets:dialogueState.missing.size,recordingsAvailable:RECORDINGS_AVAILABLE})});
 })(typeof window!=="undefined"?window:globalThis);
