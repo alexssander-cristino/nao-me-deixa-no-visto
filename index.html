@@ -329,7 +329,7 @@ if(!par[k(b)])return null;let c=b;while(par[k(c)]&&k(par[k(c)])!=k(a))c=par[k(c)
 function updateDoorCollider(d){if(!d||!d.physicsId)return;const a=d.pv.rotation.y,co=Math.cos(a),si=Math.sin(a),half=.54,depth=.075;let cx,cz,hx,hz;if(d.sx){cx=d.x-.54+half*co;cz=d.z-half*si;hx=half*Math.abs(co)+depth*Math.abs(si);hz=half*Math.abs(si)+depth*Math.abs(co)}else{cx=d.x+half*si;cz=d.z-.54+half*co;hx=depth*Math.abs(co)+half*Math.abs(si);hz=depth*Math.abs(si)+half*Math.abs(co)}physics.updateOBB(d.physicsId,cx,cz,hx,hz,-a);if(d.body3d){d.body3d.x=cx;d.body3d.z=cz;d.body3d.hx=hx;d.body3d.hz=hz}}
 function emitNoise(x,z,radius=8,kind='environment'){noiseEvent={id:++noiseSerial,x,z,radius:radius*(powerOn?1:1.2),kind,expires:performance.now()/1000+3};}
 function odoor(d,s){d.o=s?1:0;emitNoise(d.x,d.z,s?12:8,s?'door-open':'door-close');at(d.x,d.z,q=>nz(.35,s?500:250,.8,q))}
-function updV(dt){if(attackSequence)return;const v=V,dx=pl.x-v.x,dz=pl.z-v.z,dist=Math.hypot(dx,dz);pl.fear=v.st==='chase'?Math.max(0,Math.min(1,1-dist/14)):v.st==='search'||v.st==='inv'?Math.max(0,.35-dist/24):0;
+function updV(dt){if(attackSequence)return;const v=V,setEnemyState=(next,reason)=>GameEnemyAI.transition(v,next,reason,performance.now()/1000),dx=pl.x-v.x,dz=pl.z-v.z,dist=Math.hypot(dx,dz);pl.fear=v.st==='chase'?Math.max(0,Math.min(1,1-dist/14)):v.st==='search'||v.st==='inv'?Math.max(0,.35-dist/24):0;
 if(v.st=='dorm'){
  vm.visible=false;v.t-=dt;
  if(v.t<=0){
@@ -338,19 +338,19 @@ if(v.st=='dorm'){
    const candidate=rc(12),tx=candidate[1]*4,tz=candidate[0]*4;
    if(bfs(cell(v),candidate)&&!los(pl.x,pl.z,tx,tz)){destination=candidate;break}
   }
-  v.route=destination||rc(8);v.st='relocate';v.bk=0;
+  v.route=destination||rc(8);setEnemyState('relocate','patrol-expired');v.bk=0;
  }
  return
 }
 if(v.st=='relocate'){
  vm.visible=false;
  const here=cell(v),dest=v.route;
- if(!dest){v.st='dorm';v.t=4;return}
+ if(!dest){setEnemyState('dorm','relocation-unavailable');v.t=4;return}
  if(here[0]===dest[0]&&here[1]===dest[1]){
-  v.st='pat';v.t=35+R()*25;v.tg=null;vm.position.set(v.x,0,v.z);vm.visible=true;sting(.3);return
+  setEnemyState('pat','relocation-complete');v.t=35+R()*25;v.tg=null;vm.position.set(v.x,0,v.z);vm.visible=true;sting(.3);return
  }
  const next=bfs(here,dest);
- if(!next){v.st='dorm';v.t=5;return}
+ if(!next){setEnemyState('dorm','relocation-unavailable');v.t=5;return}
  const door=doors[next[0]+','+next[1]];
  if(door&&!door.o){odoor(door,1);v.bk+=dt;if(v.bk<.18)return}
  const tx=next[1]*4,tz=next[0]*4,dx2=tx-v.x,dz2=tz-v.z,d2=Math.hypot(dx2,dz2)||1;
@@ -361,10 +361,10 @@ const difficulty=S.diff||'normal',aiTuning=GameEnemyAI.tuning(difficulty,L5);
 const perception=GameEnemyAI.perceive(v,pl,{distance:dist,vision:aiTuning.vision*(pl.crouch?.42:(pl.on?1:.6)),lineOfSight:los(v.x,v.z,pl.x,pl.z),noise:noiseEvent?{...noiseEvent,radius:noiseEvent.radius*aiTuning.hearing}:null,noiseTransmission:noiseEvent&&physics.raycast(v.x,v.z,noiseEvent.x,noiseEvent.z,{step:.22,radius:.04}).hit?.42:1,now:performance.now()/1000});
 const see=perception.type==='sight';
 const aiNow=performance.now()/1000;
-if(see){if(v.st!='chase'){say(pk(CH),1);sting(.5)}v.st='chase';v.last=[pl.x,pl.z];v.memory=GameEnemyAI.remember(v.memory,{x:pl.x,z:pl.z,source:'sight',kind:'player'},aiNow);v.lost=0}
+if(see){if(v.st!='chase'){say(pk(CH),1);sting(.5)}setEnemyState('chase','visual-contact');v.last=[pl.x,pl.z];v.memory=GameEnemyAI.remember(v.memory,{x:pl.x,z:pl.z,source:'sight',kind:'player'},aiNow);v.lost=0}
 else{
- if(v.st=='chase'){v.lost+=dt;if(v.lost>aiTuning.loseSight){v.st='search';v.w=0}}
- if(perception.type==='hearing'&&v.st!=='chase'){v.st='inv';v.last=[perception.position.x,perception.position.z];v.memory=GameEnemyAI.remember(v.memory,{x:perception.position.x,z:perception.position.z,source:'hearing',kind:perception.kind},aiNow);v.w=0;at(perception.position.x,perception.position.z,q=>nz(.12,perception.kind==='door-open'?260:420,.28,q));}
+ if(v.st=='chase'){v.lost+=dt;if(v.lost>aiTuning.loseSight){setEnemyState('search','visual-contact-lost');v.w=0}}
+ if(perception.type==='hearing'&&v.st!=='chase'){setEnemyState('inv','sound-investigation');v.last=[perception.position.x,perception.position.z];v.memory=GameEnemyAI.remember(v.memory,{x:perception.position.x,z:perception.position.z,source:'hearing',kind:perception.kind},aiNow);v.w=0;at(perception.position.x,perception.position.z,q=>nz(.12,perception.kind==='door-open'?260:420,.28,q));}
 }
 if(v.st==='search'||v.st==='inv'){const remembered=GameEnemyAI.investigationTarget(v.memory,aiNow);if(remembered){v.last=[remembered.x,remembered.z];v.memoryConfidence=remembered.confidence}}
 
@@ -372,10 +372,10 @@ if(pl.hid&&dist<5.5&&(v.st=='search'||v.st=='inv')){v.f=(v.f||0)+dt;if(v.f>aiTun
 let tx,tz,sp;
 if(v.st=='chase'){tx=pl.x;tz=pl.z;sp=aiTuning.chaseSpeed}
 else if(v.st=='inv'||v.st=='search'){tx=v.last[0];tz=v.last[1];sp=v.st=='inv'?aiTuning.investigationSpeed:aiTuning.searchSpeed}
-else{if(!v.tg||Math.hypot(v.tg[1]*4-v.x,v.tg[0]*4-v.z)<1)v.tg=R()<.5?nearP():rc(0);tx=v.tg[1]*4;tz=v.tg[0]*4;sp=1.7;v.t-=dt;if(v.t<=0){v.st='dorm';v.t=14+R()*16;return}
+else{if(!v.tg||Math.hypot(v.tg[1]*4-v.x,v.tg[0]*4-v.z)<1)v.tg=R()<.5?nearP():rc(0);tx=v.tg[1]*4;tz=v.tg[0]*4;sp=1.7;v.t-=dt;if(v.t<=0){setEnemyState('dorm','relocation-unavailable');v.t=14+R()*16;return}
 v.sp=(v.sp==null?8:v.sp)-dt;if(v.sp<0&&dist<26){say(pk(PT));v.sp=14+R()*10}}
 const dd=Math.hypot(tx-v.x,tz-v.z);
-if(dd<1.3&&(v.st=='inv'||v.st=='search')){if(v.st=='inv'){v.st='search';v.w=0}else{v.w=(v.w||0)+dt;if(v.w>aiTuning.searchDuration){v.st='pat';v.tg=null;v.t=Math.max(v.t,10);if(R()<.5)say(pk(SR))}}}
+if(dd<1.3&&(v.st=='inv'||v.st=='search')){if(v.st=='inv'){setEnemyState('search','visual-contact-lost');v.w=0}else{v.w=(v.w||0)+dt;if(v.w>aiTuning.searchDuration){setEnemyState('pat','relocation-complete');v.tg=null;v.t=Math.max(v.t,10);if(R()<.5)say(pk(SR))}}}
 else if(dd>.3){const a=cell(v),b=[Math.round(tz/4),Math.round(tx/4)];let nx=tx,nz2=tz;
 if(a[0]!=b[0]||a[1]!=b[1]){const n=bfs(a,b);if(n){nx=n[1]*4;nz2=n[0]*4}}
 const dr=doors[Math.round(nz2/4)+','+Math.round(nx/4)];
