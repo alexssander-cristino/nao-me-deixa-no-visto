@@ -72,7 +72,7 @@ function speak(chapter,id,text,options={}){
  const key=chapter+":"+id;if(options.once!==false&&dialogueState.seen.has(key))return false;
  const priority=options.priority??1,critical=priority>=4;
  if(!critical&&now()/1000-dialogueState.lastCommon<7)return false;
- if(!critical&&dialogueState.current&&dialogueState.current.priority>=priority)return false;
+ if(!critical&&dialogueState.current&&dialogueState.current.priority>=priority){if(dialogueState.queue.length>=8)return false;if(options.once!==false)dialogueState.seen.add(key);dialogueState.queue.push({chapter,id,text,priority,spatial:!!options.spatial,position:options.position||null});return true}
  if(options.once!==false)dialogueState.seen.add(key);
  const item={chapter,id,text,priority,spatial:!!options.spatial,position:options.position||null};
  if(dialogueState.current){
