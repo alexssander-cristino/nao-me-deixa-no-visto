@@ -52,6 +52,12 @@ const originalPick=pick;
 pick=function(item){originalPick(item);if(item&&item.k==="N"){const list=lore[lv]||lore[0],index=(Math.max(0,(SG&&SG.lore)||0)+Math.max(0,Number(item.x+item.z)||0))%list.length;note(list[Math.floor(index)%list.length],10500)}};
 const originalNewGame=newG;
 newG=function(){runSeed=makeSeed();try{localStorage.setItem(STORAGE_KEY,String(runSeed))}catch(_){}return originalNewGame()};
+const originalCapture=captureSavePayload;
+captureSavePayload=function(){const payload=originalCapture();payload.seed=runSeed;return payload};
+const originalLoadSlot=loadSaveSlot;
+loadSaveSlot=function(slot){const result=GameSaveSystem.read(slot);if(result.ok&&Number(result.payload.seed)){runSeed=Number(result.payload.seed)>>>0;try{localStorage.setItem(STORAGE_KEY,String(runSeed))}catch(_){}}return originalLoadSlot(slot)};
+const originalContinue=cont;
+cont=function(){const result=GameSaveSystem.read(activeSaveSlot);if(result.ok&&Number(result.payload.seed)){runSeed=Number(result.payload.seed)>>>0;try{localStorage.setItem(STORAGE_KEY,String(runSeed))}catch(_){}}return originalContinue()};
 function refreshDynamicObjective(){
  let el=document.getElementById("run-seed");
  if(!el){el=document.createElement("div");el.id="run-seed";Object.assign(el.style,{position:"fixed",top:"94px",left:"50%",transform:"translateX(-50%)",zIndex:"24",font:"10px/1.4 system-ui,sans-serif",letterSpacing:".12em",color:"rgba(220,205,185,.42)",pointerEvents:"none"});document.body.appendChild(el)}
