@@ -152,9 +152,20 @@ test("enemy perception only acquires visible players or audible noise sources", 
   assert.equal(result.type, "hearing");
   assert.deepEqual(result.position, { x: 3, z: 2 });
   assert.equal(enemy.heard, 2);
+  const occludedNoise = { id: 4, x: 3, z: 2, radius: 5, expires: 20, kind: "sprint" };
   result = globalThis.GameEnemyAI.perceive(enemy, player, {
-    distance: 20, vision: 8, lineOfSight: false, now: 13,
-    noise: { id: 3, x: 3, z: 2, radius: 5, expires: 12 }
+    distance: 20, vision: 8, lineOfSight: false, now: 14,
+    noise: occludedNoise, noiseTransmission: .4
+  });
+  assert.equal(result.type, "none");
+  result = globalThis.GameEnemyAI.perceive(enemy, player, {
+    distance: 20, vision: 8, lineOfSight: false, now: 14,
+    noise: occludedNoise, noiseTransmission: .8
+  });
+  assert.equal(result.type, "hearing");
+  result = globalThis.GameEnemyAI.perceive(enemy, player, {
+    distance: 20, vision: 8, lineOfSight: false, now: 21,
+    noise: { id: 5, x: 3, z: 2, radius: 5, expires: 12 }
   });
   assert.equal(result.type, "none");
   const easy = globalThis.GameEnemyAI.tuning("easy");
