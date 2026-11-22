@@ -190,6 +190,9 @@ test("all 15 chapter objective sets retain their three-step sequences", () => {
     assert.equal(chapter.labels.length, 3);
     assert.ok(chapter.title && chapter.hint && chapter.kind);
   }
+  const html = read("index.html");
+  assert.match(html, /let head=0;while\(head<q\.length\)/);
+  assert.doesNotMatch(html, /while\(q\.length\)\{const u=q\.shift\(\)/);
 });
 
 test("Valdirene voice manifest accounts for all 360 assets across 15 chapters", () => {
