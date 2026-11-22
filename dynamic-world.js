@@ -53,11 +53,9 @@ pick=function(item){originalPick(item);if(item&&item.k==="N"){const list=lore[lv
 const originalNewGame=newG;
 newG=function(){runSeed=makeSeed();try{localStorage.setItem(STORAGE_KEY,String(runSeed))}catch(_){}return originalNewGame()};
 function refreshDynamicObjective(){
- const el=document.getElementById("chapter-objective");if(!el)return;
- const remaining=items.filter(item=>item.k==="K").length;
- el.textContent="VELAS · "+(pl.got||0)+"/"+(pl.need||0)+"  |  RESTANTES "+remaining+"  ·  "+(L[lv]?.n||"");
+ let el=document.getElementById("run-seed");
+ if(!el){el=document.createElement("div");el.id="run-seed";Object.assign(el.style,{position:"fixed",top:"94px",left:"50%",transform:"translateX(-50%)",zIndex:"24",font:"10px/1.4 system-ui,sans-serif",letterSpacing:".12em",color:"rgba(220,205,185,.42)",pointerEvents:"none"});document.body.appendChild(el)}
+ el.textContent="SEMENTE DA PARTIDA · "+runSeed.toString(16).toUpperCase();
 }
-const originalUpdate=upd;
-upd=function(dt){originalUpdate(dt);refreshDynamicObjective()};
 root.GameDynamicWorld=Object.freeze({getSeed:()=>runSeed,getLore:level=>(lore[level]||[]).slice(),refresh:refreshDynamicObjective});
 })(typeof window!=="undefined"?window:globalThis);
