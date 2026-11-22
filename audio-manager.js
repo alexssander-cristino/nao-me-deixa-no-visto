@@ -22,7 +22,7 @@ const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 function get(name){
  if(!sources[name])return null;
  let entry=cache.get(name);if(entry)return entry;
- const audio=new Audio(sources[name]);audio.preload="auto";audio.crossOrigin="anonymous";audio.volume=.7;
+ const audio=new Audio();audio.crossOrigin="anonymous";audio.preload="auto";audio.src=sources[name];audio.volume=.7;
  entry={audio,source:null,panner:null,gain:null,failed:false};
  audio.addEventListener("error",()=>{entry.failed=true});
  cache.set(name,entry);return entry;
