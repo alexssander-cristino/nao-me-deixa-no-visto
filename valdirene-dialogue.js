@@ -36,7 +36,7 @@ function ensureUI(){
 function hideSubtitle(){const el=document.getElementById("valdirene-subtitle");if(el){el.style.opacity="0";el.textContent=""}}
 function showSubtitle(text){const el=document.getElementById("valdirene-subtitle");if(!el)return;if(!dialogueState.subtitle){hideSubtitle();return}el.innerHTML="";const name=document.createElement("strong");name.textContent="Valdirene";const line=document.createElement("span");line.textContent=text;el.append(name,line);el.style.opacity="1"}
 function stopCurrent(){if(dialogueState.current&&dialogueState.current.fallbackTimer)clearTimeout(dialogueState.current.fallbackTimer);if(dialogueState.audio){try{dialogueState.audio.pause();dialogueState.audio.currentTime=0;dialogueState.audio.src=""}catch(e){}dialogueState.audio=null}dialogueState.panner=null;dialogueState.current=null;hideSubtitle()}
-function voicePath(ch,id){return "./audio/valdirene/pt-BR/capitulo-"+String(ch+1).padStart(2,"0")+"/vd-c"+String(ch+1).padStart(2,"0")+"-"+id+".ogg"}
+function voicePath(ch,id){return "audio/valdirene/pt-BR/capitulo-"+String(ch+1).padStart(2,"0")+"/vd-c"+String(ch+1).padStart(2,"0")+"-"+id+".ogg"}
 function positionFor(options){
  if(options.position)return options.position;
  if(options.spatial&&typeof V!=="undefined"&&V.st!=="dorm"&&V.st!=="relocate")return{x:V.x,y:1.55,z:V.z};
@@ -136,7 +136,7 @@ function pause(){dialogueState.paused=true;dialogueState.queue=[];if(dialogueSta
 function resume(){dialogueState.paused=false;scheduleDrain()}
 function snapshot(){return{seen:Array.from(dialogueState.seen).slice(-600),chapter:dialogueState.chapter}}
 function restore(data){if(data&&Array.isArray(data.seen))dialogueState.seen=new Set(data.seen.filter(x=>typeof x==="string"&&x.length<120).slice(-600))}
-function manifest(){return chapters.map((c,index)=>({chapter:index+1,title:(typeof L!=="undefined"&&L[index]&&L[index].n)||"Capítulo "+(index+1),assets:["intro-"+String(index+1).padStart(2,"0"),"explore-a","explore-b","objective-0","objective-1","objective-2","objective-complete","candle","clue","battery","secret","key","laugh","slow","danger","chase","hide","door","mechanism","error","ending","death"].map(id=>({id,path:voicePath(index,id),status:"pending-recording"}))}))}
+function manifest(){return chapters.map((c,index)=>({chapter:index+1,title:(typeof L!=="undefined"&&L[index]&&L[index].n)||"Capítulo "+(index+1),assets:["intro-"+String(index+1).padStart(2,"0"),"explore-a","explore-b","objective-0","objective-1","objective-2","objective-complete","candle","clue","battery","secret","key","laugh","slow","danger","chase","hide","door","mechanism","error","ending","death"].map(id=>({id,path:voicePath(index,id),status:"pending_recording",performance:({intro:"calm-sarcastic","explore-a":"whisper","explore-b":"intimate-whisper",danger:"low-whisper",chase:"shouted",hide:"close-whisper",laugh:"disturbed-laugh",ending:"emotional",death:"cold"}[id]||"sarcastic")}))}))}
 function installHooks(){
  ensureUI();
  const mechanismPrototype=root.GameMechanisms&&root.GameMechanisms.MechanismSystem&&root.GameMechanisms.MechanismSystem.prototype;
