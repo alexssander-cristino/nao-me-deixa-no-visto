@@ -137,6 +137,7 @@ function pause(){dialogueState.paused=true;dialogueState.queue=[];if(dialogueSta
 function resume(){dialogueState.paused=false;scheduleDrain()}
 function snapshot(){return{seen:Array.from(dialogueState.seen).slice(-600),chapter:dialogueState.chapter}}
 function restore(data){if(data&&Array.isArray(data.seen))dialogueState.seen=new Set(data.seen.filter(x=>typeof x==="string"&&x.length<120).slice(-600))}
+function audit(){const checks=chapters.map((c,index)=>({chapter:index+1,intro:!!c.intro,exploration:Array.isArray(c.explore)&&c.explore.length>=2,objectives:Array.isArray(c.objective)&&c.objective.length>=2,items:!!(c.candle&&c.clue&&c.battery),slow:!!c.slow,danger:!!c.danger,chase:!!c.chase,hide:!!c.hide,door:!!c.close,mechanism:!!c.mechanism,mechanismError:!!c.error,objectiveError:!!c.wrong,jumpscare:!!c.jumpscare,laugh:!!c.laugh,ending:!!c.ending}));return{chapterCount:checks.length,complete:checks.every(c=>Object.entries(c).every(([k,v])=>k==="chapter"||v===true)),chapters:checks}}
 function manifest(){return chapters.map((c,index)=>({chapter:index+1,title:(typeof L!=="undefined"&&L[index]&&L[index].n)||"Capítulo "+(index+1),assets:["intro-"+String(index+1).padStart(2,"0"),"explore-a","explore-b","objective-0","objective-1","objective-2","objective-complete","wrong","jumpscare","candle","clue","battery","secret","key","laugh","slow","danger","chase","hide","door","mechanism","error","ending","death"].map(id=>({id,path:voicePath(index,id),status:"pending_recording",performance:({intro:"calm-sarcastic","explore-a":"whisper","explore-b":"intimate-whisper",danger:"low-whisper",chase:"shouted",hide:"close-whisper",laugh:"disturbed-laugh",ending:"emotional",death:"cold"}[id]||"sarcastic")}))}))}
 function installHooks(){
  ensureUI();
@@ -148,7 +149,7 @@ function installHooks(){
  wrap("pick",function(original,args){const item=args[0],wasCollecting=!!(item&&item.collecting);const result=original.apply(this,args);if(item&&!wasCollecting&&item.collecting)onPick(item);else if(item&&item.k==="Q"&&!wasCollecting&&!item.collecting){const c=chapters[dialogueState.chapter];if(c)event("wrong",c.wrong,3)}return result});
  wrap("odoor",function(original,args){const result=original.apply(this,args);onDoor(args[0],!!args[1]);return result});
  wrap("act",function(original,args){const target=typeof tg!=="undefined"?tg:null,result=original.apply(this,args);if(target&&target.t&&target.t==="d")onDoor(target.o,!target.o.o);return result});
- wrap("startAttack",function(original,args){const c=chapters[dialogueState.chapter];if(c)speak(dialogueState.chapter,"jumpscare",c.jumpscare,{priority:6,interrupt:true,spatial:true,delivery:"screamed"});return original.apply(this,args)});
+ wrap("startAttack",function(original,args){const c=chapters[dialogueState.chapter];if(c&&typeof state!=="undefined"&&state==="play")speak(dialogueState.chapter,"jumpscare",c.jumpscare,{priority:6,interrupt:true,spatial:true,delivery:"screamed"});return original.apply(this,args)});
  wrap("die",function(original,args){onDeath();return original.apply(this,args)});
  wrap("newG",function(original,args){resetRun();return original.apply(this,args)});
  wrap("retry",function(original,args){dialogueState.queue=[];stopCurrent();return original.apply(this,args)});
@@ -161,5 +162,5 @@ function installHooks(){
  const oldUpd=root.upd;if(typeof oldUpd==="function")root.upd=function(dt){const result=oldUpd.apply(this,arguments);update(dt);return result};
 }
 installHooks();
-root.GameValdireneDialogue=Object.freeze({speak,update,onPick,onDoor,onMechanism,onDeath,onTransition,resetRun,pause,resume,snapshot,restore,manifest,getState:()=>({chapter:dialogueState.chapter,elapsed:dialogueState.elapsed,queued:dialogueState.queue.length,speaking:!!dialogueState.current,subtitle:dialogueState.subtitle,missingAssets:dialogueState.missing.size,recordingsAvailable:RECORDINGS_AVAILABLE})});
+root.GameValdireneDialogue=Object.freeze({speak,update,onPick,onDoor,onMechanism,onDeath,onTransition,resetRun,pause,resume,snapshot,restore,manifest,audit,getState:()=>({chapter:dialogueState.chapter,elapsed:dialogueState.elapsed,queued:dialogueState.queue.length,speaking:!!dialogueState.current,subtitle:dialogueState.subtitle,missingAssets:dialogueState.missing.size,recordingsAvailable:RECORDINGS_AVAILABLE})});
 })(typeof window!=="undefined"?window:globalThis);
