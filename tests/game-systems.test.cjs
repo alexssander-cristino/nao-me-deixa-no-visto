@@ -182,6 +182,23 @@ test("enemy perception only acquires visible players or audible noise sources", 
   assert.doesNotMatch(html, /if\(!pl\.hid&&pl\.run&&dist<\(difficulty==/);
 });
 
+test("Valdirene state transitions are explicit, constrained and traceable", () => {
+  require("../enemy-ai.js");
+  const ai = globalThis.GameEnemyAI;
+  const enemy = { st: "pat" };
+  assert.equal(ai.transition(enemy, "chase", "visual-contact", 2), true);
+  assert.equal(ai.transition(enemy, "search", "lost-sight", 4), true);
+  assert.equal(ai.transition(enemy, "pat", "search-finished", 9), true);
+  assert.equal(ai.transition(enemy, "relocate", "invalid-skip", 10), false);
+  assert.equal(enemy.st, "pat");
+  assert.equal(enemy.previousState, "search");
+  assert.equal(enemy.stateReason, "search-finished");
+  assert.equal(enemy.stateHistory.length, 3);
+  assert.equal(ai.transition(enemy, "pat", "same-state", 11), true);
+  assert.equal(enemy.stateHistory.length, 3);
+  assert.equal(ai.transition(enemy, "not-a-state", "invalid", 12), false);
+});
+
 test("Valdirene memory retains evidence with source-specific decay and expires fairly", () => {
   require("../enemy-ai.js");
   const ai = globalThis.GameEnemyAI;
