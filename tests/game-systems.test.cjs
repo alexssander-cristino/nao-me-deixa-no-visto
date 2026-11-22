@@ -185,7 +185,8 @@ test("Valdirene memory retains evidence with source-specific decay and expires f
   const ai = globalThis.GameEnemyAI;
   const sight = ai.remember(null, { x: 8, z: -3, source: "sight", kind: "player" }, 10);
   assert.equal(ai.investigationTarget(sight, 10).confidence, 1);
-  assert.equal(ai.investigationTarget(sight, 22), null);
+  assert.ok(ai.investigationTarget(sight, 22).confidence < 1);
+  assert.equal(ai.investigationTarget(sight, 34), null);
   const sound = ai.remember(sight, { x: 2, z: 4, source: "hearing", kind: "door-open" }, 20);
   assert.deepEqual(
     { x: sound.x, z: sound.z, source: sound.source, kind: sound.kind },
