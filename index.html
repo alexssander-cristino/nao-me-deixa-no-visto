@@ -360,11 +360,13 @@ if(v.st=='relocate'){
 const difficulty=S.diff||'normal',aiTuning=GameEnemyAI.tuning(difficulty,L5);
 const perception=GameEnemyAI.perceive(v,pl,{distance:dist,vision:aiTuning.vision*(pl.crouch?.42:(pl.on?1:.6)),lineOfSight:los(v.x,v.z,pl.x,pl.z),noise:noiseEvent?{...noiseEvent,radius:noiseEvent.radius*aiTuning.hearing}:null,noiseTransmission:noiseEvent&&physics.raycast(v.x,v.z,noiseEvent.x,noiseEvent.z,{step:.22,radius:.04}).hit?.42:1,now:performance.now()/1000});
 const see=perception.type==='sight';
-if(see){if(v.st!='chase'){say(pk(CH),1);sting(.5)}v.st='chase';v.last=[pl.x,pl.z];v.lost=0}
+const aiNow=performance.now()/1000;
+if(see){if(v.st!='chase'){say(pk(CH),1);sting(.5)}v.st='chase';v.last=[pl.x,pl.z];v.memory=GameEnemyAI.remember(v.memory,{x:pl.x,z:pl.z,source:'sight',kind:'player'},aiNow);v.lost=0}
 else{
  if(v.st=='chase'){v.lost+=dt;if(v.lost>aiTuning.loseSight){v.st='search';v.w=0}}
- if(perception.type==='hearing'&&v.st!=='chase'){v.st='inv';v.last=[perception.position.x,perception.position.z];v.w=0;at(perception.position.x,perception.position.z,q=>nz(.12,perception.kind==='door-open'?260:420,.28,q));}
+ if(perception.type==='hearing'&&v.st!=='chase'){v.st='inv';v.last=[perception.position.x,perception.position.z];v.memory=GameEnemyAI.remember(v.memory,{x:perception.position.x,z:perception.position.z,source:'hearing',kind:perception.kind},aiNow);v.w=0;at(perception.position.x,perception.position.z,q=>nz(.12,perception.kind==='door-open'?260:420,.28,q));}
 }
+if(v.st==='search'||v.st==='inv'){const remembered=GameEnemyAI.investigationTarget(v.memory,aiNow);if(remembered){v.last=[remembered.x,remembered.z];v.memoryConfidence=remembered.confidence}}
 
 if(pl.hid&&dist<5.5&&(v.st=='search'||v.st=='inv')){v.f=(v.f||0)+dt;if(v.f>aiTuning.hideSearchDelay&&!v.c){v.c=1;if(R()<aiTuning.hideSearchChance){die();return}}}else if(!pl.hid){v.f=0;v.c=0}
 let tx,tz,sp;
