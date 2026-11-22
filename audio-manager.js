@@ -85,7 +85,12 @@ function update(){
  if(!pl.hid&&speed>.8&&now-lastStep>(pl.run?340:pl.crouch?850:570)){
   lastStep=now;play("footstep",{volume:pl.run?.32:.22,position:{x:pl.x,y:.1,z:pl.z}});
  }
- const fear=pl.fear||0;
+ const fear=clamp(pl.fear||0,0,1);
+ const ambience=cache.get("ambience");
+ if(ambience&&ambience.gain&&AC){
+  const duck=1-fear*.48;
+  ambience.gain.gain.setTargetAtTime(duck,AC.currentTime,.32);
+ }
  if(fear>.48&&now-lastBreath>Math.max(1700,3700-fear*1500)){
   lastBreath=now;play("breathing",{volume:.28+fear*.2,position:{x:pl.x,y:1.4,z:pl.z}});
  }
